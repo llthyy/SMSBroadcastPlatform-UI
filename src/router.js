@@ -24,7 +24,7 @@ export default new Router({
         },
         {
           path: '/about',
-          name: '信息编辑',
+          name: '短信编辑',
           component: () => import('@/views/About')
         },
         {
@@ -51,11 +51,6 @@ export default new Router({
           path: '/account',
           name:'账号管理',
           component: () => import('@/components/Account')
-        },
-        {
-          path: '/privilege',
-          name:'权限管理',
-          component: () => import('@/components/Privilege')
         },
         {
           path: '/role',

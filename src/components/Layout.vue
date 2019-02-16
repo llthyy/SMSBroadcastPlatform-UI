@@ -12,6 +12,7 @@
                     <div class="xfind-line" v-if="!isCollapsed">
                         <div class="line-h"></div>
                     </div>
+                    <!-- 左边logo -->
                     <div v-if="!isCollapsed" class="logo-saiqu">    
                         <Avatar icon="ios-person" size="large"/>    
                         <span class="user-name">Admin</span>
@@ -89,7 +90,7 @@
                     <div class="header-wapper">
                         <div class="header-left">
                             <Icon @click.native="collapsedSider" :class="rotateIcon" type="md-menu" size="28"></Icon>
-                            <span class="header-title">iView后台管理系统</span>
+                            <span class="header-title">短信应急广播平台</span>
                         </div>
                         <div class="header-right" style="margin-right:20px">
                             <Button type="text" icon="person" size="large">个人中心</Button>
@@ -100,8 +101,8 @@
                                     <Icon type="ios-arrow-down"></Icon>
                                 </a>
                                 <DropdownMenu slot="list">
-                                    <DropdownItem>驴打滚</DropdownItem>
-                                    <DropdownItem>炸酱面</DropdownItem>
+                                    <DropdownItem>个人设置</DropdownItem>
+                                    <DropdownItem>退出登录</DropdownItem>
                                 </DropdownMenu>
                             </Dropdown>
                             <Button type="text" icon="md-exit" class="btn-blue" size="large" @click="quit">退出系统</Button>
@@ -274,15 +275,7 @@ export default {
                             showInMenus:true,
                             choosed:false
                         },
-                        {
-                            title:'权限管理',
-                            name:'Privilege-management',
-                            href:'/privilege',
-                            closable:true,
-                            showInTags:false,
-                            showInMenus:true,
-                            choosed:false
-                        },
+                        
                         {
                             title:'角色管理',
                             name:'Role-management',

@@ -1,22 +1,23 @@
 <template>
- <div style="margin-top:30px;">
-        <Button type="success" @click="modal1= true" >添加角色</Button>
-        <Button type="error" @click="removes">删除多个</Button>
-        <Input search  v-model="input2" placeholder="Search title..." :style="{width:200+'px'}" />
+ <div style="margin-top:30px;padding-left:10px">
+   <div style="margin:0 0 20px 10px;font-size:20px">账号管理</div>
+        <Button type="success" @click="modal1= true" style="margin-right:5px">添加账号</Button>
+        <Button type="error" @click="removes" style="margin-right:5px">删除多个</Button>        
+        <Input search  v-model="input2" placeholder="请输入姓名" :style="{width:200+'px'}" />
         <Button type="info" @click="sousuo" >搜索</Button>
         <Modal
            v-model = "modal1"
            title   = "修改信息"
            :loading  = "loading"
            @on-ok  = "asyncOK">
-            <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
+            <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">               
                  <FormItem label="姓名">
                     <Input v-model="formValidate.input" placeholder="请输入姓名"></Input>
-                </FormItem>
-
+                </FormItem>              
+               
                 <FormItem label="性别" prop="desc">
                     <Input v-model="formValidate.desc"  placeholder="请输入性别"></Input>
-                </FormItem>
+                </FormItem> 
                 <FormItem label="登录名">
                     <Input v-model="formValidate.input1" placeholder="请输入登录名"></Input>
                 </FormItem>
@@ -38,7 +39,7 @@
 						     <option value="1">管理员</option>
 					     </select>
                 </FormItem>
-
+               
 
                 <FormItem >
                     <Button type="primary" @click="handleSubmit('formValidate')" >提交</Button>
@@ -75,12 +76,12 @@ export default {
         ],
         desc: [
           //{ required: true, message: 'Please enter a personal introduction', trigger: 'blur' },
-          {
+         /*  {
             type: "string",
             min: 20,
             message: "Introduce no less than 20 words",
             trigger: "blur"
-          }
+          } */
         ]
       },
 
@@ -93,7 +94,7 @@ export default {
 
         {
           title: "姓名",
-          key: "articalname",
+          key: "name",
           render: (h, params) => {
             return h("div", [
               h("Icon", {
@@ -101,30 +102,30 @@ export default {
                   type: "person"
                 }
               }),
-              h("strong", params.row.articalname)
+              h("strong", params.row.name)
             ]);
           }
         },
 
         {
           title: "性别",
-          key: "authorname"
+          key: "agender"
         },
         {
           title: "登录名",
-          key: "postingtime"
+          key: "loginname"
         },
         {
           title: "密码",
-          key: "content"
+          key: "password"
         },
         {
           title: "联系方式",
-          key: "Lastreviewer"
+          key: "contact"
         },
         {
           title: "所属角色",
-          key: "Lastreviewtime"
+          key: "role"
         },
         {
           title: "功能",
@@ -205,7 +206,7 @@ export default {
                              性别：${this.data[index].authorname}<br>
                              登录名：${
                                this.data[index].postingtime
-                             }<br>
+                             }<br>                            
                             密码：${this.data[index].content}<br>
                              联系方式：${this.data[index].Lastreviewer}<br>
                              所属角色：${

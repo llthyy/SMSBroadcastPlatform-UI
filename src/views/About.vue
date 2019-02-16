@@ -2,18 +2,345 @@
 h1 {
  color: red;
 }
+textarea {
+    display: inline-block;
+    width: 100%;
+    height: 60px;
+    line-height: 1.5;
+    padding: 4px 7px;
+    font-size: 12px;
+    border: 1px solid #dcdee2;
+    border-radius: 4px;
+    color: #515a6e;
+    background-color: #fff;
+    background-image: none;
+    position: relative;
+    cursor: text;
+    transition: border .2s ease-in-out,background .2s ease-in-out,box-shadow .2s ease-in-out;
+}
 </style>
 <template>
-  <div class="about">
-    <h1>信息编辑</h1>
-  </div>
-</template>
- 
+ <div style="margin-top:30px;padding-left:10px">
+   <div style="margin:0 0 20px 10px;font-size:20px">短信编辑</div>
+        <Button type="success" @click="modal1= true" style="margin-right:5px">短信编辑</Button>
+        <Button type="error" @click="removes" style="margin-right:5px">删除多个</Button>        
+        <Input search  v-model="input2" placeholder="请输入姓名" :style="{width:200+'px'}" />
+        <Button type="info" @click="sousuo" >搜索</Button>
+        <Modal
+           v-model = "modal1"
+           title   = "添加信息"
+           :loading  = "loading"
+           @on-ok  = "asyncOK">
+            <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">               
+                 <FormItem label="标题">
+                    <Input v-model="formValidate.input" placeholder="请输入标题"></Input>
+                </FormItem>              
+               
+                <FormItem label="内容" prop="desc">
+                  <textarea v-model="formValidate.desc"  placeholder="请输入内容"></textarea>
+                </FormItem> 
 
- <script>
- export default{
-   
- }
- 
- 
- </script>
+                <FormItem >
+                    <Button type="primary" @click="handleSubmit('formValidate')" >提交</Button>
+                    <Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
+                </FormItem>
+            </Form>
+             <div slot="footer">
+            </div>
+            </Modal>
+        <Table border ref="selection" :columns="columns1" :data="data" @on-selection-change="onSelect"></Table>
+         <Page :total="total" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer></Page>
+    </div>
+</template>
+Vue.use(axios);
+<script>
+export default {
+  data() {
+    return {
+      formValidate: {
+        input: "",
+        desc: "",
+      },
+      ruleValidate: {
+        date: [
+          {
+            required: true,
+            type: "date",
+            message: "Please select the date",
+            trigger: "change"
+          }
+        ],
+        desc: [
+          { required: true, message: 'Please enter a personal introduction', trigger: 'blur' },
+         /*  {
+            type: "string",
+            min: 20,
+            message: "Introduce no less than 20 words",
+            trigger: "blur"
+          } */
+        ]
+      },
+
+      columns1: [
+        {
+          type: "selection",
+          width: 60,
+          align: "center"
+        },
+
+        {
+          title: "标题",
+          key: "title",
+          width:200,
+          render: (h, params) => {
+            return h("div", [
+              h("Icon", {
+                props: {
+                  type: "person"
+                }
+              }),
+              h("strong", params.row.title)
+            ]);
+          }
+        },
+
+        {
+          title: "内容",
+          key: "content"
+        },
+        {
+          title: "功能",
+          key: "action",
+          width: 200,
+          align: "center",
+          render: (h, params) => {
+            return h("div", [
+              h(
+                "Button",
+                {
+                  props: {
+                    type: "primary",
+                    size: "small"
+                  },
+                  style: {
+                    marginRight: "5px"
+                  },
+                  on: {
+                    click: () => {
+                      this.show(params.index);
+                    }
+                  }
+                },
+                "查看"
+              ),
+              h(
+                "Button",
+                {
+                  props: {
+                    type: "warning",
+                    size: "small"
+                  },
+                  style: {
+                    marginRight: "5px"
+                  },
+                  on: {
+                    click: () => {
+                      this.edit(params.row._id);
+                    }
+                  }
+                },
+                "修改"
+              ),
+              h(
+                "Button",
+                {
+                  props: {
+                    type: "error",
+                    size: "small"
+                  },
+                  on: {
+                    click: () => {
+                      this.remove(params.row._id);
+                    }
+                  }
+                },
+                "删除"
+              )
+            ]);
+          }
+        }
+      ],
+      data: [],
+      total: 0,
+      page: 1,
+      list: 10,
+      modal1: false,
+      loading: true,
+      removesdata: []
+    };
+  },
+  methods: {
+    show(index) {
+      this.$Modal.info({
+        title: "",
+        content: `表题：${this.data[index].title}<br>
+                  内容：${this.data[index].content}<br>`
+      });
+    },
+    edit(id) {
+      /* console.log('修改啊'); */
+      this.axios({
+        url: `http://10.31.162.59:3000/forum/${id}`,
+        method: "get"
+      }).then(res => {
+        console.log(res);
+        this.formValidate = res.data;
+        this.formValidate.input = res.data.title;
+        this.formValidate.desc = res.data.content;
+        this.modal1 = true;
+      });
+    },
+    remove(index) {
+      this.data.splice(index, 1);
+    },
+    getData() {
+      this.axios({
+        method: "post",
+        url: "http://10.31.162.59:3000/forum/list",
+        data: {
+          page: this.page,
+          limit: this.list
+        }
+      }).then(function(res){
+        this.total = res.data.total;
+        this.data = res.data.docs;
+      });
+    },
+    asyncOK() {
+      setTimeout(() => {
+        this.modal1 = false;
+      }, 500);
+    },
+    onSelect(selections) {
+      /*  console.log(selections); */
+      var ids = [];
+      for (let i = 0; i < selections.length; i++) {
+        ids.push(selections[i]._id);
+      }
+      this.ids = ids.toString();
+      console.log(ids);
+    },
+    sousuo() {
+      console.log(this.input);
+      this.axios({
+        method: "post",
+        url: "http://10.31.162.59:3000/forum/list",
+        data: {
+          page: this.page,
+          limit: this.list,
+          title: this.input
+        }
+      }).then(res => {
+        this.total = res.data.total;
+        this.data = res.data.docs;
+      });
+    },
+    remove(id) {
+      this.$Modal.confirm({
+        title: "确认操作",
+        content: "<p>你确认删除该记录吗?</p>",
+        onOk: () => {
+          this.axios({
+            url: `http://10.31.162.59:3000/forum/${id}`,
+            method: "delete"
+          }).then(res => {
+            alert("你已经删除成功");
+            this.getData();
+          });
+        },
+        onCancel: () => {
+          this.$Message.info("Clicked cancel");
+        }
+      });
+    },
+    // 多选删除
+    removes() {
+      console.log(this.ids);
+      this.$Modal.confirm({
+        title: "确认操作",
+        content: "<p>你确认删除该记录吗?</p>",
+        onOk: () => {
+          this.axios({
+            url: `http://10.31.162.59:3000/forum`,
+            method: "delete",
+            data: {
+              ids: this.ids
+            }
+          }).then(res => {
+            alert("你已经删除成功");
+            this.getData();
+          });
+        },
+        onCancel: () => {
+          this.$Message.info("Clicked cancel");
+        }
+      });
+    },
+    // 在此函数进行帖子提交
+    handleSubmit(name) {
+      this.$refs[name].validate(valid => {
+        var misstimel = new Date(this.formValidate.date);
+        var misstimeleft = misstimel.toLocaleDateString();
+        let misstime = misstimeleft + " " + this.formValidate.time;
+        if (this.formValidate._id) {
+          this.axios({
+            url: `http://10.31.162.59:3000/forum/${this.formValidate._id}`,
+            method: "put",
+            data: {
+              title: this.formValidate.input,
+              content: this.formValidate.desc
+            }
+          }).then(res => {
+            this.modal1 = false;
+            this.$refs[name].resetFields();
+            this.getData();
+          });
+        } else {
+          this.axios({
+            method: "post",
+            url: "http://10.31.162.59:3000/forum",
+            data: {
+              articalname: this.formValidate.input,
+              content: this.formValidate.desc
+            }
+          }).then(res => {
+            this.modal1 = false;
+            this.$refs[name].resetFields();
+            this.getData();
+          });
+        }
+      });
+    }
+  },
+  onChangePage(page) {
+    this.page = page;
+    if (this.input2 != "") {
+      this.sousuo();
+    } else {
+      this.getData();
+    }
+  },
+  onPageSizeChange(list) {
+    console.log(list);
+    this.list = list;
+    if (this.input2 != "") {
+      this.sousuo();
+    } else {
+      this.getData();
+    }
+  },
+  mounted() {
+    this.getData();
+  }
+};
+</script>
