@@ -59,17 +59,17 @@
             position: relative;
             display: flex;
             flex-direction: column;
-          
+
             box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
             z-index: 11;
-            & .dw-content{    
+            & .dw-content{
                 height: 100%;
                 & .dd-btn{
                     width: 83px;
                     margin-left: -5px;
                     padding:10px 0;
-                }          
-            }              
+                }
+            }
         }
         & .logo{
             width: auto;
@@ -87,15 +87,15 @@
                 display: flex;
                 align-items: center;
                 justify-content: flex-start;
-                position: relative;     
-                
+                position: relative;
+
                 & .user-name{
                     color:#fff;
                     font-size:16px;
                     margin-left:15px;
                 }
             }
-           
+
         }
     }
     & .layout-header-bar{
@@ -124,7 +124,7 @@
                 }
             }
             & .header-right{
-                margin-right:20px;                
+                margin-right:20px;
                 & .btn-blue{
                     color: #fff;
                     font-size:16px;
@@ -170,7 +170,7 @@
                         height: 100%;
                         background: #fff;
                         padding-top: 3px;
-                        z-index: 10;            
+                        z-index: 10;
                     }
                     & button{
                         padding: 6px 4px;
@@ -234,8 +234,8 @@
         background: #5b6270;
         border-radius: 3px;
         margin: 15px auto;
-    }   
-    
+    }
+
     & .menu-icon{
         cursor: pointer;
         transition: all .3s;
@@ -256,7 +256,7 @@
             white-space: nowrap;
             vertical-align: bottom;
             transition: width .2s ease .2s;
-        }        
+        }
         & i{
             transform: translateX(0px);
             transition: font-size .2s ease, transform .2s ease;

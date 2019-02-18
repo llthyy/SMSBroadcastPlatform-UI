@@ -2,7 +2,7 @@
  <div style="margin-top:30px;padding-left:10px">
    <div style="margin:0 0 20px 10px;font-size:20px">账号管理</div>
         <Button type="success" @click="modal1= true" style="margin-right:5px">添加账号</Button>
-        <Button type="error" @click="removes" style="margin-right:5px">删除多个</Button>        
+        <Button type="error" @click="removes" style="margin-right:5px">删除多个</Button>
         <Input search  v-model="input2" placeholder="请输入姓名" :style="{width:200+'px'}" />
         <Button type="info" @click="sousuo" >搜索</Button>
         <Modal
@@ -10,14 +10,14 @@
            title   = "修改信息"
            :loading  = "loading"
            @on-ok  = "asyncOK">
-            <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">               
+            <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
                  <FormItem label="姓名">
                     <Input v-model="formValidate.input" placeholder="请输入姓名"></Input>
-                </FormItem>              
-               
+                </FormItem>
+
                 <FormItem label="性别" prop="desc">
                     <Input v-model="formValidate.desc"  placeholder="请输入性别"></Input>
-                </FormItem> 
+                </FormItem>
                 <FormItem label="登录名">
                     <Input v-model="formValidate.input1" placeholder="请输入登录名"></Input>
                 </FormItem>
@@ -39,7 +39,7 @@
 						     <option value="1">管理员</option>
 					     </select>
                 </FormItem>
-               
+
 
                 <FormItem >
                     <Button type="primary" @click="handleSubmit('formValidate')" >提交</Button>
@@ -206,7 +206,7 @@ export default {
                              性别：${this.data[index].authorname}<br>
                              登录名：${
                                this.data[index].postingtime
-                             }<br>                            
+                             }<br>
                             密码：${this.data[index].content}<br>
                              联系方式：${this.data[index].Lastreviewer}<br>
                              所属角色：${
@@ -237,16 +237,14 @@ export default {
       this.data.splice(index, 1);
     },
     getData() {
-      this.axios({
-        method: "post",
-        url: "http://10.31.162.59:3000/forum/list",
-        data: {
-          page: this.page,
-          limit: this.list
-        }
+      console.log(this.page,this.list);
+      this.$axios({
+        method: "get",
+        url: `http://192.168.4.114:8080/user/findAll?page=${this.page}&size=${this.list}`,
       }).then(res => {
-        this.total = res.data.total;
-        this.data = res.data.docs;
+        console.log(res);
+        // this.total = res.data.total;
+        // this.data = res.data.docs;
       });
     },
     asyncOK() {
