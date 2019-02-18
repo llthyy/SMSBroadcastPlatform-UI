@@ -13,32 +13,6 @@
 export default {
   data() {
     return {
-      formValidate: {
-        input: "",
-        desc: "",
-        input1: "",
-        input2: "",
-        input3: "",
-      },
-      ruleValidate: {
-        date: [
-          {
-            required: true,
-            type: "date",
-            message: "Please select the date",
-            trigger: "change"
-          }
-        ],
-        desc: [
-          //{ required: true, message: 'Please enter a personal introduction', trigger: 'blur' },
-         /*  {
-            type: "string",
-            min: 20,
-            message: "Introduce no less than 20 words",
-            trigger: "blur"
-          } */
-        ]
-      },
 
       columns1: [
         {
@@ -83,26 +57,38 @@ export default {
       total: 0,
       page: 1,
       list: 10,
+      input2:'',
       modal1: false,
       loading: true,
       removesdata: []
     };
   },
   methods: {
+    onChangePage(page) {
+    this.page = page;
+    if (this.input2 != "") {
+      this.sousuo();
+    } else {
+      this.getData();
+    }
+  },
+  onPageSizeChange(list) {
+    console.log(list);
+    this.list = list;
+    if (this.input2 != "") {
+      this.sousuo();
+    } else {
+      this.getData();
+    }
+  },
     show(index) {
       this.$Modal.info({
         title: "",
-        content: `姓名：${this.data[index].articalname}<br>
-                             性别：${this.data[index].authorname}<br>
-                             登录名：${
-                               this.data[index].postingtime
-                             }<br>                            
-                            密码：${this.data[index].content}<br>
-                             联系方式：${this.data[index].Lastreviewer}<br>
-                             所属角色：${
-                               this.data[index].Lastreviewtime
-                             }<br>
-                             `
+        content: `用户名称：${this.data[index].articalname}<br>
+                  操作类型：${this.data[index].authorname}<br>
+                  操作对象：${this.data[index].postingtime}<br>                            
+                  发送对象：${this.data[index].content}<br>
+                  发送时间：${this.data[index].Lastreviewer}<br>`
       });
     },
     edit(id) {
@@ -255,23 +241,7 @@ export default {
       });
     }
   },
-  onChangePage(page) {
-    this.page = page;
-    if (this.input2 != "") {
-      this.sousuo();
-    } else {
-      this.getData();
-    }
-  },
-  onPageSizeChange(list) {
-    console.log(list);
-    this.list = list;
-    if (this.input2 != "") {
-      this.sousuo();
-    } else {
-      this.getData();
-    }
-  },
+  
   mounted() {
     this.getData();
   }

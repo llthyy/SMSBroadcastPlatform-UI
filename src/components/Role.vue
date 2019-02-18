@@ -16,7 +16,7 @@ h1 {
            :loading  = "loading"
            @on-ok  = "asyncOK">
             <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">               
-                 <FormItem label="角色名称">
+                 <FormItem label="角色名称" prop="input">
                     <Input v-model="formValidate.input" placeholder="请输入姓名"></Input>
                 </FormItem>              
                
@@ -160,12 +160,33 @@ export default {
       total: 0,
       page: 1,
       list: 10,
+      input2:'',
       modal1: false,
       loading: true,
       removesdata: []
     };
   },
   methods: {
+     onChangePage(page) {
+    this.page = page;
+    if (this.input2 != "") {
+      this.sousuo();
+    } else {
+      this.getData();
+    }
+  },
+  onPageSizeChange(list) {
+    console.log(list);
+    this.list = list;
+    if (this.input2 != "") {
+      this.sousuo();
+    } else {
+      this.getData();
+    }
+  },
+    handleReset(name) {
+      this.$refs[name].resetFields();
+    },
     show(index) {
       this.$Modal.info({
         title: "",
@@ -332,23 +353,7 @@ export default {
       });
     }
   },
-  onChangePage(page) {
-    this.page = page;
-    if (this.input2 != "") {
-      this.sousuo();
-    } else {
-      this.getData();
-    }
-  },
-  onPageSizeChange(list) {
-    console.log(list);
-    this.list = list;
-    if (this.input2 != "") {
-      this.sousuo();
-    } else {
-      this.getData();
-    }
-  },
+ 
   mounted() {
     this.getData();
   }

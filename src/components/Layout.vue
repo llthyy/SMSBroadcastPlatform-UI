@@ -13,10 +13,11 @@
                         <div class="line-h"></div>
                     </div>
                     <!-- 左边logo -->
-                    <div v-if="!isCollapsed" class="logo-saiqu">
-                        <img src="@/assets/logo1.png" alt="加载失败" title="图南电子股份有限公司" style="width:100px;height:40px;margin-left:10px;">
+                    <div v-if="!isCollapsed" class="logo-saiqu">    
+                        <Avatar icon="ios-person" size="large"/>    
+                        <span class="user-name">Admin</span>
                     </div>
-                    <img src="@/assets/logo1.png" alt="加载失败" title="图南电子股份有限公司" style="width:60px;height:30px;" v-else>
+                    <Avatar icon="ios-person" size="large" v-else/>
                 </div>
                 <Menu
                     ref="side_menu"
@@ -127,7 +128,7 @@
                                                 :color="tab.choosed? 'primary':'#e9eaec'"
                                                 :name="tab.name"
                                                 @click.native="clickTag(tab)"
-                                                @on-close="closeTag"
+                                                @on-close="closeTag" 
                                                 :key="tab.name">
                                                     {{tab.title}}
                                                 </Tag>
@@ -140,7 +141,7 @@
                                     </Button>
                                 </div>
                             </div>
-                        </div>
+                        </div>           
                         <Content class="content-wrapper">
                             <!-- <Spin size="large" fix v-if="spinShow">
                                 <Circle2 />
@@ -150,7 +151,7 @@
                                 <router-view/>
                             </keep-alive>
                         </Content>
-                    </Layout>
+                    </Layout>                    
                 </Content>
             </Layout>
         </Layout>
@@ -185,7 +186,7 @@ export default {
                     showInTags:true,
                     showInMenus:true,
                     choosed:true
-                },
+                },         
                 {
                     title:'短信管理',
                     name:'members',
@@ -208,7 +209,7 @@ export default {
                             showInTags:false,
                             showInMenus:true,
                             choosed:false
-                        },
+                        },                      
                     ]
                 },
                 {
@@ -226,8 +227,8 @@ export default {
                             choosed:false
                         },
                     ]
-
-                },
+                   
+                },  
                 {
                     title:'播放记录',
                     name:'Playback-record',
@@ -274,7 +275,7 @@ export default {
                             showInMenus:true,
                             choosed:false
                         },
-
+                        
                         {
                             title:'角色管理',
                             name:'Role-management',
@@ -419,7 +420,7 @@ export default {
               }else{
                  return false;
              }
-
+            
         },
         clickNotice(){
             this.choosedMenu('notice');

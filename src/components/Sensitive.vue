@@ -3,11 +3,11 @@
     <div style="margin:0 0 20px 10px;font-size:20px">敏感词管理</div>
     <Button type="success" @click="modal1= true" style="margin-right:5px">添加敏感词汇</Button>
     <Button type="error" @click="removes" style="margin-right:5px">删除多个</Button>
-    <Input search v-model="input2" placeholder="请输入关键词" :style="{width:200+'px'}" />
+    <Input search  v-model="input2" placeholder="请输入关键词" :style="{width:200+'px'}" />
     <Button type="info" @click="sousuo">搜索</Button>
     <Modal v-model="modal1" title="敏感词管理" :loading="loading" @on-ok="asyncOK">
       <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
-        <FormItem label="敏感词">
+        <FormItem label="敏感词" prop="input">
           <Input v-model="formValidate.input" placeholder="请输入敏感词"></Input>
         </FormItem>
         <FormItem>
@@ -56,28 +56,13 @@ export default {
           width: 60,
           align: "center"
         },
-
-        /*  {
-          title: "敏感词汇",
-          key: "name",
-          render: (h, params) => {
-            return h("div", [
-              h("Icon", {
-                props: {
-                  type: "person"
-                }
-              }),
-              h("strong", params.row.name)
-            ]);
-          }
-        }, */
         {
           title: "敏感词汇",
-          key: "agender"
+          key: "Sensitive"
         },
         {
           title: "添加时间",
-          key: "agender"
+          key: "Addtime"
         },
 
         {
@@ -113,22 +98,26 @@ export default {
       total: 0,
       page: 1,
       list: 10,
+      input2:'' ,
       modal1: false,
       loading: true,
       removesdata: []
     };
   },
   methods: {
+     handleReset(name) {
+      this.$refs[name].resetFields();
+    },
     show(index) {
       this.$Modal.info({
         title: "",
-        content: `敏感词汇：${this.data[index].articalname}<br>
-                  添加时间：${this.data[index].authorname}<br>`
+        content: `敏感词汇：${this.data[index].Sensitive}<br>
+                  添加时间：${this.data[index].Addtime}<br>`
       });
     },
     edit(id) {
       /* console.log('修改啊'); */
-      this.$axios({
+      this.axios({
         url: `http://10.31.162.59:3000/forum/${id}`,
         method: "get"
       }).then(res => {
@@ -143,9 +132,9 @@ export default {
       this.data.splice(index, 1);
     },
     getData() {
-      this.$axios({
+      this.axios({
         method: "post",
-        url: "http://10.31.162.59:3000/forum/list",
+        url: "http://192.168.4.165:8080/system/queryCharacter",
         data: {
           page: this.page,
           limit: this.list
@@ -171,13 +160,13 @@ export default {
     },
     sousuo() {
       console.log(this.input2);
-      this.$axios({
+      this.axios({
         method: "post",
-        url: "http://10.31.162.59:3000/forum/list",
+        url: "http://192.168.4.165:8080/system/queryCharacter",
         data: {
           page: this.page,
           limit: this.list,
-          articalname: this.input2
+          Sensitive: this.input2
         }
       }).then(res => {
         this.total = res.data.total;
@@ -228,7 +217,7 @@ export default {
     // 在此函数进行敏感词汇提交
     handleSubmit(name) {
       console.log(this.formValidate.input);
-      this.$axios({
+      this.axios({
         method: "post",
         url: "http://192.168.4.165:8080/system/saveCharacter",
         headers: {
@@ -242,42 +231,6 @@ export default {
       }).then(res => {
         console.log(res);
       });
-      // this.$refs[name].validate(valid => {
-      //   // var misstimel = new Date(this.formValidate.date);
-      //   // var misstimeleft = misstimel.toLocaleDateString();
-      //   // let misstime = misstimeleft + " " + this.formValidate.time;
-      //   if (this.formValidate._id) {
-      //     this.$axios({
-      //       url: `http://10.31.162.59:3000/forum/${this.formValidate._id}`,
-      //       method: "put",
-      //       data: {
-      //         articalname: this.formValidate.input,
-      //       }
-      //     }).then(res => {
-      //       this.modal1 = false;
-      //       this.$refs[name].resetFields();
-      //       this.getData();
-      //     });
-      //   } else {
-      // this.$axios({
-      //   method: "post",
-      //   url: "http://10.31.162.59:3000/forum",
-      //   data: {
-      //     articalname: this.formValidate.input,
-      //     authorname: this.formValidate.input1,
-      //     postingtime: this.formValidate.input3,
-      //     Lastreviewer: this.formValidate.input4,
-      //     Lastreviewtime: this.formValidate.input5,
-      //     Pointofpraise: this.formValidate.input6,
-      //     content: this.formValidate.desc
-      //   }
-      //     }).then(res => {
-      //       this.modal1 = false;
-      //       this.$refs[name].resetFields();
-      //       this.getData();
-      //     });
-      //   }
-      // });
     },
     onChangePage(page) {
       this.page = page;
@@ -295,7 +248,7 @@ export default {
       } else {
         this.getData();
       }
-    }
+    },
   },
 
   mounted() {

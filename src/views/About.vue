@@ -21,8 +21,8 @@ textarea {
 </style>
 <template>
  <div style="margin-top:30px;padding-left:10px">
-   <div style="margin:0 0 20px 10px;font-size:20px">短信编辑</div>
-        <Button type="success" @click="modal1= true" style="margin-right:5px">短信编辑</Button>
+   <div style="margin:0 0 20px 10px;font-size:20px">信息编辑</div>
+        <Button type="success" @click="modal1= true" style="margin-right:5px">添加信息</Button>
         <Button type="error" @click="removes" style="margin-right:5px">删除多个</Button>        
         <Input search  v-model="input2" placeholder="请输入姓名" :style="{width:200+'px'}" />
         <Button type="info" @click="sousuo" >搜索</Button>
@@ -32,7 +32,7 @@ textarea {
            :loading  = "loading"
            @on-ok  = "asyncOK">
             <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">               
-                 <FormItem label="标题">
+                 <FormItem label="标题" prop="input">
                     <Input v-model="formValidate.input" placeholder="请输入标题"></Input>
                 </FormItem>              
                
@@ -52,7 +52,7 @@ textarea {
          <Page :total="total" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer></Page>
     </div>
 </template>
-Vue.use(axios);
+
 <script>
 export default {
   data() {
@@ -70,8 +70,17 @@ export default {
             trigger: "change"
           }
         ],
+         input: [
+          { required: true, message: '请输入标题', trigger: 'blur' },
+         /*  {
+            type: "string",
+            min: 20,
+            message: "Introduce no less than 20 words",
+            trigger: "blur"
+          } */
+        ],
         desc: [
-          { required: true, message: 'Please enter a personal introduction', trigger: 'blur' },
+          { required: true, message: '请输入短信内容', trigger: 'blur' },
          /*  {
             type: "string",
             min: 20,
@@ -174,12 +183,33 @@ export default {
       total: 0,
       page: 1,
       list: 10,
+      input2:'',
       modal1: false,
       loading: true,
       removesdata: []
     };
   },
   methods: {
+    onChangePage(page) {
+    this.page = page;
+    if (this.input2 != "") {
+      this.sousuo();
+    } else {
+      this.getData();
+    }
+  },
+  onPageSizeChange(list) {
+    console.log(list);
+    this.list = list;
+    if (this.input2 != "") {
+      this.sousuo();
+    } else {
+      this.getData();
+    }
+  },
+    handleReset(name) {
+      this.$refs[name].resetFields();
+    },
     show(index) {
       this.$Modal.info({
         title: "",
@@ -322,23 +352,7 @@ export default {
       });
     }
   },
-  onChangePage(page) {
-    this.page = page;
-    if (this.input2 != "") {
-      this.sousuo();
-    } else {
-      this.getData();
-    }
-  },
-  onPageSizeChange(list) {
-    console.log(list);
-    this.list = list;
-    if (this.input2 != "") {
-      this.sousuo();
-    } else {
-      this.getData();
-    }
-  },
+  
   mounted() {
     this.getData();
   }
