@@ -14,12 +14,9 @@
                     </div>
                     <!-- 左边logo -->
                     <div v-if="!isCollapsed" class="logo-saiqu">
-                        <!-- <Avatar icon="ios-person" size="large"/>     -->
-                        <!-- <span class="user-name">Admin</span> -->
                         <img src="@/assets/logo1.png" alt="加载失败" title="图南电子股份有限公司" style="width:100px;height:40px;margin-left:10px;">
                     </div>
                     <img src="@/assets/logo1.png" alt="加载失败" title="图南电子股份有限公司" style="width:60px;height:30px;" v-else>
-                    <!-- <Avatar icon="ios-person" size="large" v-else/> -->
                 </div>
                 <Menu
                     ref="side_menu"
