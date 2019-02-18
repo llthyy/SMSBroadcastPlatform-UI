@@ -191,6 +191,7 @@ export default {
     handleSubmit(username) {
       this.$refs[username].validate(valid => {
         if (valid) {
+
           this.obj={
               id: -1,
               parent_id: this.pearentID,
