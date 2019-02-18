@@ -11,20 +11,20 @@
            :loading  = "loading"
            @on-ok  = "asyncOK">
             <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">               
-                 <FormItem label="姓名">
-                    <Input v-model="formValidate.input" placeholder="请输入姓名"></Input>
+                 <FormItem label="姓名" prop="input">
+                    <Input v-model="formValidate.input" placeholder="请输入姓名" ></Input>
                 </FormItem>              
                
                 <FormItem label="性别" prop="desc">
                     <Input v-model="formValidate.desc"  placeholder="请输入性别"></Input>
                 </FormItem> 
-                <FormItem label="登录名">
+                <FormItem label="登录名" prop="input1">
                     <Input v-model="formValidate.input1" placeholder="请输入登录名"></Input>
                 </FormItem>
-                <FormItem label="密码">
+                <FormItem label="密码" prop="input2">
                     <Input v-model="formValidate.input2" placeholder="请输入密码"></Input>
                 </FormItem>
-                <FormItem label="联系方式">
+                <FormItem label="联系方式" prop="input3">
                     <Input v-model="formValidate.input3" placeholder="请输入联系方式"></Input>
                 </FormItem>
                 <FormItem label="所属角色">
@@ -60,10 +60,10 @@ export default {
     return {
       formValidate: {
         input: "",
-        desc: "",
+        desc:"",
         input1: "",
         input2: "",
-        input3: "",
+        input3:"",
       },
       ruleValidate: {
         date: [
@@ -193,12 +193,33 @@ export default {
       total: 0,
       page: 1,
       list: 10,
+      input2:'',
       modal1: false,
       loading: true,
       removesdata: []
     };
   },
   methods: {
+    onChangePage(page) {
+    this.page = page;
+    if (this.input2 != "") {
+      this.sousuo();
+    } else {
+      this.getData();
+    }
+  },
+  onPageSizeChange(list) {
+    console.log(list);
+    this.list = list;
+    if (this.input2 != "") {
+      this.sousuo();
+    } else {
+      this.getData();
+    }
+  },
+     handleReset(name) {
+      this.$refs[name].resetFields();
+    },
     show(index) {
       this.$Modal.info({
         title: "",
@@ -365,23 +386,7 @@ export default {
       });
     }
   },
-  onChangePage(page) {
-    this.page = page;
-    if (this.input2 != "") {
-      this.sousuo();
-    } else {
-      this.getData();
-    }
-  },
-  onPageSizeChange(list) {
-    console.log(list);
-    this.list = list;
-    if (this.input2 != "") {
-      this.sousuo();
-    } else {
-      this.getData();
-    }
-  },
+
   mounted() {
     this.getData();
   }
