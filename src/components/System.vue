@@ -490,10 +490,6 @@ export default {
         url: `http://192.168.4.114:8080/device/getAll?page=${this.page -
           1}&size=${this.list}`
       }).then(res => {
-<<<<<<< HEAD
-        console.log(777,this.data);
-=======
->>>>>>> e92d8dad10609563ea636c7fdd4bb804fb971833
         this.total = res.data.body.totalElements;
         this.data = res.data.body.content;
       });
