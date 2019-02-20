@@ -2,6 +2,7 @@
   <div style="margin-top:30px;padding-left:30px">
     <div style="margin:0 0 20px 10px;font-size:20px">资源管理</div>
     <Tabs type="card" :animated=false>
+      <!----- 区域管理------>
       <TabPane label="区域管理">
         <div class="ctrl">
           <Button type="warning" @click="addRoot">添加区域</Button>
@@ -23,7 +24,7 @@
           <Page :total="total" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer transfer></Page>
         </div>
         <!--区域添加  -->
-        <Modal v-model="modalForm1" title="区域添加">
+        <Modal v-model="modalForm1" title="添加区域">
           <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
             <FormItem label="区域名称:" prop="name">
               <Input v-model="formValidate.name" placeholder="请输入区域名称" type="text"></Input>
@@ -138,20 +139,37 @@
           <div slot="footer"></div>
         </Modal>
       </TabPane>
+      <!----- 分组管理------>
       <TabPane type="card" label="分组管理">
         <div class="ctrl">
-          <Button type="warning" @click="addRoot">添加分组</Button>
-          <Button type="info" @click="changeTree">修改</Button>
-          <Button type="error" @click="confirm">删除</Button>
+          <Button type="warning" @click="addGroup">添加分组</Button>
+          <Button type="info" @click="changeGroup">修改</Button>
+          <Button type="error" @click="removeGroup">删除</Button>
         </div>
         <div style="width:20%;float:left;">
           <!-- <div style="margin-bottom:20px;">
           <Button type="warning" @click="addRoot">添加分组</Button>
           <Button type="info" @click="changeTree">修改</Button>
           <Button type="error" @click="confirm">删除</Button>
-        </div> -->
-          <Table border :columns="columns1" :data="data" @on-selection-change="onSelect"></Table>
+          </div> -->
+          <Table border :columns="columns1" :data="data1" @on-selection-change="onSelectGroup" @on-current-change="rowClassName" highlight-row></Table>
           <Page :total="total" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer transfer></Page>
+          <!--分组添加  -->
+        <Modal v-model="modalGroup1" title="添加分组">
+          <Form ref="formValidate2" :model="formValidate2" :rules="ruleValidate" :label-width="80">
+            <FormItem label="分组名称:" prop="groupName">
+              <Input v-model="formValidate2.groupName" placeholder="请输入分组名称" type="text"></Input>
+            </FormItem>
+            <FormItem label="备注:" prop="remarks">
+              <Input v-model="formValidate2.remarks" placeholder="请输入分组备注" type="text"></Input>
+            </FormItem>
+            <FormItem>
+              <Button type="primary" @click="handleSubmitGroup('formValidate2')">提交</Button>
+              <Button @click="handleReset('formValidate2')" style="margin-left: 8px">重置</Button>
+            </FormItem>
+          </Form>
+          <div slot="footer"></div>
+        </Modal>
         </div>
         <div style="width:75%;float:right;padding-right:60px;">
           <div class="devBtn">
@@ -236,6 +254,7 @@ export default {
       list: 10,
       input2: "",
       ids: [],
+      Group_ids:[],
       loading: true,
       formValidate1: {
         devCode: "",
@@ -344,6 +363,12 @@ export default {
           }
         }
       ],
+      data1:[],
+      modalGroup1:false,
+      formValidate2: {
+        groupName: "",
+        remarks: "",
+      },
       columns1: [
         {
           type: "selection",
@@ -351,14 +376,18 @@ export default {
           align: "center"
         },
         {
-          title: "设备别名",
-          key: "alias"
+          title: "分组管理",
+          key: "groupName"
+        },
+        {
+          title: "备注",
+          key: "remarks"
         }
       ]
     };
   },
   methods: {
-    /* ......   区域管理 .......  */
+    /* ......   区域管理 ................................  */
     //获取数据
     getDatas() {
       this.axios({
@@ -482,7 +511,7 @@ export default {
         this.data = res.data.body.content;
       });
     },
-    /* ......   终端设备管理 .......  */
+    /* ......   终端设备管理 .........................  */
     //获取设备数据
     getdeviceData() {
       this.axios({
@@ -573,6 +602,100 @@ export default {
         }
       });
     },
+    /* ......   分组管理 ...............................  */
+    //点击当前分组
+    rowClassName(row, index){
+      console.log(row.id);
+      this.groupID=row.id
+    },
+    //获取分组数据
+    getgroupData(){
+      this.axios({
+        method: "get",
+        url: `http://192.168.4.114:8080/device/findAllGroup?page=${this.page -
+          1}&size=${this.list}`
+      }).then(res => {
+        this.total = res.data.body.totalElements;
+        this.data1= res.data.body.content;
+      });
+    },
+    //添加分组
+    addGroup(){
+      this.modalGroup1=true
+    },
+    handleSubmitGroup(username) {
+      this.$refs[username].validate(valid => {
+        if (valid) {
+          this.axios({
+            url: "http://192.168.4.114:8080/device/saveGroup",
+            method: "post",
+            data: this.qs.stringify(this.formValidate2)
+          }).then(res => {
+            this.modalGroup1 = false;
+            this.getgroupData();
+          });
+        } else {
+          this.$Message.error("提交失败");
+        }
+      });
+    },
+    //修改分组
+    changeGroup() {
+      if (typeof this.groupID == "undefined") {
+        this.$Modal.confirm({
+          title: "温馨提示",
+          content: "<p>请先点击确认具体分组</p>"
+        });
+      } else {
+        this.axios({
+          url: `http://192.168.4.114:8080/device/findGroup?id=${this.groupID}`,
+          method: "get"
+        }).then(res => {
+          this.formValidate2 = res.data.body;
+          this.modalGroup1 = true;
+        });
+      }
+    },
+    handleSubmit1(username) {
+      this.$refs[username].validate(valid => {
+        if (valid) {
+          this.axios({
+            url: "http://192.168.4.114:8080/device/saveGroup",
+            method: "post",
+            data: this.qs.stringify(this.formValidate2)
+          }).then(res => {
+            this.modalGroup1 = false;
+            this.getDatas();
+          });
+        } else {
+          this.$Message.error("提交失败");
+        }
+      });
+    },
+    //删除分组
+    removeGroup() {
+      this.Group_ids.push(this.groupID);
+      console.log(this.Group_ids);
+      var params = new URLSearchParams();
+      params.append("ids", JSON.stringify(this.Group_ids));
+      this.$Modal.confirm({
+        title: "确认删除？",
+        content: "<p>数据删除后将不可恢复</p>",
+        onOk: () => {
+          this.axios({
+            method: "post",
+            url: "http://192.168.4.114:8080/device/delete",
+            data: params
+          }).then(res => {
+            this.getdeviceData(this.type);
+            this.$Message.info("删除成功");
+          });
+        },
+        onCancel: () => {
+          this.$Message.info("取消删除");
+        }
+      });
+    },
     //分页
     onChangePage(page) {
       this.page = page;
@@ -599,6 +722,14 @@ export default {
       }
       this.ids = ids;
     },
+    onSelectGroup(selections) {
+      /*  console.log(selections); */
+      var ids = [];
+      for (let i = 0; i < selections.length; i++) {
+        ids.push(selections[i].id);
+      }
+      this.Group_ids = ids;
+    },
     //搜索内容
     sousuo() {
       // this.axios({
@@ -618,6 +749,7 @@ export default {
   mounted() {
     this.getDatas();
     this.getdeviceData();
+    this.getgroupData()
   }
 };
 </script>
@@ -642,5 +774,12 @@ export default {
   font-size: 15px;
   font-weight: 100;
 }
+.ivu-table-row-highlight td{
+  background-color :#d3e3f3!important;
+}
+.ivu-table-row-hover td{
+  background-color :#d3e3f3!important;
+}
+
 </style>
 
