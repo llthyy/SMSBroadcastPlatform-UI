@@ -162,11 +162,14 @@ export default {
       console.log(this.input2);
       this.axios({
         method: "post",
-        url: "http://192.168.4.165:8080/system/queryCharacter",
+        url: "http://192.168.4.165:8080/system/saveCharacter",
         data: {
-          page: this.page,
-          limit: this.list,
-          Sensitive: this.input2
+          
+          newObj: {
+            page: this.page,
+            limit: this.list,
+            Sensitive: this.input2,
+          }
         }
       }).then(res => {
         this.total = res.data.total;
@@ -232,9 +235,6 @@ export default {
       this.axios({
         method: "post",
         url: "http://192.168.4.165:8080/system/saveCharacter",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
-        },
         data: {
           newObj: {
             charContent: this.formValidate.input,
