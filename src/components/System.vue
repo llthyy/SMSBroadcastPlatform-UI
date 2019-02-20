@@ -197,12 +197,8 @@ export default {
     };
     return {
       modalForm1: false,
-<<<<<<< HEAD
-      //baseData: [],
-=======
       modalForm2: false,
       baseData: [],
->>>>>>> 195f0dd63688bae5f24a63842c91d6d9e463b545
       formValidate: {
         name: "",
         longitude: "",
@@ -386,22 +382,9 @@ export default {
     handleSubmit(username) {
       this.$refs[username].validate(valid => {
         if (valid) {
-<<<<<<< HEAD
-          this.obj={
-              id: -1,
-              parent_id: this.pearentID,
-              areaWithResource: this.formValidate
-            }
-            console.log(qs.stringify(this.obj));
-          this.axios({
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
-            },
-=======
           this.formValidate.id = -1;
           this.formValidate.parentid = this.pearentID;
           this.axios({
->>>>>>> 195f0dd63688bae5f24a63842c91d6d9e463b545
             url: "http://192.168.4.114:8080/org/modifyArea",
             method: "post",
             data: this.qs.stringify(this.formValidate)
@@ -486,13 +469,6 @@ export default {
       this.areaID = data[0].id;
       this.pearentID = data[0].parentId;
     },
-<<<<<<< HEAD
-    // 请示数据，打开对话框，显示表单的数据，进行提交
-    changeTree() {
-      this.axios({
-        url: `http://192.168.4.114:8080/org/allArea?id=${this.areaID}`,
-        method: "get"
-=======
     /* ......   终端设备管理 .......  */
     //获取设备数据
     getdeviceData() {
@@ -500,7 +476,6 @@ export default {
         method: "get",
         url: `http://192.168.4.114:8080/device/getAll?page=${this.page -
           1}&size=${this.list}`
->>>>>>> 195f0dd63688bae5f24a63842c91d6d9e463b545
       }).then(res => {
         this.total = res.data.body.totalElements;
         this.data = res.data.body.content;
