@@ -12,10 +12,10 @@
         <div style="width:20%;background:#fff;float:left;">
           <Tree :data="baseData" @on-select-change="getID"></Tree>
         </div>
-        <div style="width:75%;float:right;margin-right:60px;">
+        <div style="width:75%;float:right;padding-right:60px;">
           <div class="devBtn">
             <Button type="success" @click="modal1= true">添加终端设备</Button>
-            <Button type="error" @click="removes">删除多个</Button>
+            <Button type="error" @click="remove">删除多个</Button>
             <Input search v-model="input2" placeholder="请输入..." :style="{width:200+'px'}" />
             <Button type="info" @click="sousuo">搜索</Button>
           </div>
@@ -25,16 +25,16 @@
         <!--区域添加  -->
         <Modal v-model="modalForm1" title="区域添加">
           <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
-            <FormItem label="区域名称" prop="name">
+            <FormItem label="区域名称:" prop="name">
               <Input v-model="formValidate.name" placeholder="请输入区域名称" type="text"></Input>
             </FormItem>
-            <FormItem label="区域编码" prop="orgCode">
+            <FormItem label="区域编码:" prop="orgCode">
               <Input v-model="formValidate.orgCode" placeholder="请输入区域编码" type="text"></Input>
             </FormItem>
-            <FormItem label="经度" prop="longitude">
+            <FormItem label="经度:" prop="longitude">
               <Input v-model="formValidate.longitude" placeholder="请输入区域经度" type="text"></Input>
             </FormItem>
-            <FormItem label="纬度" prop="latitude">
+            <FormItem label="纬度:" prop="latitude">
               <Input v-model="formValidate.latitude" placeholder="请输入区域纬度" type="text"></Input>
             </FormItem>
             <FormItem>
@@ -47,17 +47,17 @@
         <!--区域修改  -->
         <Modal v-model="modalForm2" title="修改区域">
           <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
-            <FormItem label="区域名称" prop="name">
+            <FormItem label="区域名称:" prop="name">
               <!-- <Input v-model="formValidate.name" ></Input> -->
               <Input v-model="formValidate.name" placeholder="请输入区域名称" type="text"></Input>
             </FormItem>
-            <FormItem label="区域编码" prop="orgCode">
+            <FormItem label="区域编码:" prop="orgCode">
               <Input v-model="formValidate.orgCode" placeholder="请输入区域编码" type="text"></Input>
             </FormItem>
-            <FormItem label="经度" prop="longitude">
+            <FormItem label="经度:" prop="longitude">
               <Input v-model="formValidate.longitude" placeholder="请输入区域经度" type="text"></Input>
             </FormItem>
-            <FormItem label="纬度" prop="latitude">
+            <FormItem label="纬度:" prop="latitude">
               <Input v-model="formValidate.latitude" placeholder="请输入区域纬度" type="text"></Input>
             </FormItem>
             <FormItem>
@@ -70,31 +70,31 @@
         <!--终端设备添加修改  -->
         <Modal v-model="modal1" title="终端设备">
           <Form ref="formValidate1" :model="formValidate1" :rules="ruleValidate" :label-width="80">
-            <FormItem label="物理编码" prop="devCode">
+            <FormItem label="物理编码:" prop="devCode">
               <Input v-model="formValidate1.devCode" placeholder="请输入区域物理编码" type="text"></Input>
             </FormItem>
-            <FormItem label="逻辑编码" prop="devLogic">
+            <FormItem label="逻辑编码:" prop="devLogic">
               <Input v-model="formValidate1.devLogic" placeholder="请输入区域逻辑编码" type="text"></Input>
             </FormItem>
-            <FormItem label="设备别名" prop="alias">
+            <FormItem label="设备别名:" prop="alias">
               <Input v-model="formValidate1.alias" placeholder="请输入设备别名" type="text"></Input>
             </FormItem>
-            <FormItem label="设备型号" prop="model">
+            <FormItem label="设备型号:" prop="model">
               <Input v-model="formValidate1.model" placeholder="请输入设备型号" type="text"></Input>
             </FormItem>
-            <FormItem label="设备厂家" prop="manufacturer">
+            <FormItem label="设备厂家:" prop="manufacturer">
               <Input v-model="formValidate1.manufacturer" placeholder="请输入区域设备厂家" type="text"></Input>
             </FormItem>
-            <FormItem label="硬件版本" prop="hardwareVersion">
+            <FormItem label="硬件版本:" prop="hardwareVersion">
               <Input v-model="formValidate1.hardwareVersion" placeholder="请输入区域硬件版本" type="text"></Input>
             </FormItem>
-            <FormItem label="固件版本" prop="softwareVersion">
+            <FormItem label="固件版本:" prop="softwareVersion">
               <Input v-model="formValidate1.softwareVersion" placeholder="请输入区域固件版本" type="text"></Input>
             </FormItem>
-            <FormItem label="联系人" prop="person">
+            <FormItem label="联系人:" prop="person">
               <Input v-model="formValidate1.person" placeholder="请输入区域联系人" type="text"></Input>
             </FormItem>
-            <FormItem label="联系电话" prop="phone">
+            <FormItem label="联系电话:" prop="phone">
               <Input v-model="formValidate1.phone" placeholder="请输入区域联系电话" type="text"></Input>
             </FormItem>
             <FormItem>
@@ -104,12 +104,64 @@
           </Form>
           <div slot="footer"></div>
         </Modal>
+        <!--终端设备查看详情  -->
+        <Modal v-model="modal2" title="终端设备" class="detail">
+          <Form ref="formValidate1" :model="formValidate1" :rules="ruleValidate" :label-width="80">
+            <p>物理编码:
+              <span>{{this.formValidate1.devCode}}</span>
+            </p>
+            <p>逻辑编码:
+              <span>{{this.formValidate1.devLogic}}</span>
+            </p>
+            <p>设备别名:
+              <span>{{this.formValidate1.alias}}</span>
+            </p>
+            <p>设备型号:
+              <span>{{this.formValidate1.model}}</span>
+            </p>
+            <p>设备厂家:
+              <span>{{this.formValidate1.manufacturer}}</span>
+            </p>
+            <p>硬件版本:
+              <span>{{this.formValidate1.hardwareVersion}}</span>
+            </p>
+            <p>固件版本:
+              <span>{{this.formValidate1.softwareVersion}}</span>
+            </p>
+            <p>联系人:
+              <span>{{this.formValidate1.person}}</span>
+            </p>
+            <p>联系电话:
+              <span>{{this.formValidate1.devCode}}</span>
+            </p>
+          </Form>
+          <div slot="footer"></div>
+        </Modal>
       </TabPane>
       <TabPane type="card" label="分组管理">
-        <div class="ctrl">
+        <!-- <div class="ctrl">
           <Button type="warning" @click="addRoot">添加分组</Button>
           <Button type="info" @click="changeTree">修改</Button>
           <Button type="error" @click="confirm">删除</Button>
+        </div> -->
+        <div style="width:20%;float:left;">
+          <div style="margin-bottom:20px;">
+          <Button type="warning" @click="addRoot">添加分组</Button>
+          <Button type="info" @click="changeTree">修改</Button>
+          <Button type="error" @click="confirm">删除</Button>
+        </div>
+          <Table border :columns="columns1" :data="data" @on-selection-change="onSelect"></Table>
+          <Page :total="total" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer transfer></Page>
+        </div>
+        <div style="width:75%;float:right;padding-right:60px;">
+          <div class="devBtn">
+            <Button type="success" @click="modal1= true">添加终端设备</Button>
+            <Button type="error" @click="remove">删除多个</Button>
+            <Input search v-model="input2" placeholder="请输入..." :style="{width:200+'px'}" />
+            <Button type="info" @click="sousuo">搜索</Button>
+          </div>
+          <Table border :columns="columns" :data="data" @on-selection-change="onSelect"></Table>
+          <Page :total="total" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer transfer></Page>
         </div>
       </TabPane>
     </Tabs>
@@ -177,11 +229,13 @@ export default {
         ]
       },
       modal1: false,
+      modal2: false,
       data: [],
       total: 0,
       page: 1,
       list: 10,
       input2: "",
+      ids: [],
       loading: true,
       formValidate1: {
         devCode: "",
@@ -247,7 +301,25 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.edit(params.row._id);
+                      this.detail(params.row.id);
+                    }
+                  }
+                },
+                "查看详情"
+              ),
+              h(
+                "Button",
+                {
+                  props: {
+                    type: "primary",
+                    size: "small"
+                  },
+                  style: {
+                    marginRight: "5px"
+                  },
+                  on: {
+                    click: () => {
+                      this.edit(params.row.id);
                     }
                   }
                 },
@@ -262,7 +334,7 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.remove(params.row._id);
+                      this.remove(params.row.id);
                     }
                   }
                 },
@@ -271,6 +343,17 @@ export default {
             ]);
           }
         }
+      ],
+      columns1: [
+        {
+          type: "selection",
+          width: 50,
+          align: "center"
+        },
+        {
+          title: "设备别名",
+          key: "alias"
+        },
       ]
     };
   },
@@ -283,7 +366,6 @@ export default {
         url: "http://192.168.4.114:8080/org/allArea"
       }).then(res => {
         this.baseData = res.data.body;
-        console.log(res.data.body);
       });
     },
     //添加数据
@@ -301,7 +383,7 @@ export default {
       this.$refs[username].validate(valid => {
         if (valid) {
           this.formValidate.id = -1;
-          this.formValidate.parent_id = this.pearentID;
+          this.formValidate.parentid = this.pearentID;
           this.axios({
             url: "http://192.168.4.114:8080/org/modifyArea",
             method: "post",
@@ -337,7 +419,7 @@ export default {
       this.$refs[username].validate(valid => {
         if (valid) {
           this.formValidate.id = this.areaID;
-          this.formValidate.parent_id = this.pearentID;
+          this.formValidate.parentid = this.pearentID;
           this.axios({
             url: "http://192.168.4.114:8080/org/modifyArea",
             method: "post",
@@ -395,39 +477,90 @@ export default {
         url: `http://192.168.4.114:8080/device/getAll?page=${this.page -
           1}&size=${this.list}`
       }).then(res => {
+<<<<<<< HEAD
         console.log(777,this.data);
+=======
+>>>>>>> e92d8dad10609563ea636c7fdd4bb804fb971833
         this.total = res.data.body.totalElements;
         this.data = res.data.body.content;
       });
     },
-    //添加设备数据
+    //查看详情
+    detail(id) {
+      // 请示数据，打开对话框，显示表单的数据，进行提交
+      this.axios({
+        url: `http://192.168.4.114:8080/device/getOne?ids=${id}`,
+        method: "get"
+      }).then(res => {
+        this.formValidate1 = res.data.body;
+        this.modal2 = true;
+      });
+    },
+    //添加修改设备数据
+    edit(id) {
+      // 请示数据，打开对话框，显示表单的数据，进行提交
+      this.axios({
+        url: `http://192.168.4.114:8080/device/getOne?ids=${id}`,
+        method: "get"
+      }).then(res => {
+        this.formValidate1 = res.data.body;
+        this.modal1 = true;
+      });
+    },
     handleSubmitDev(deviceName) {
+      var params = new URLSearchParams();
+      params.append("device", JSON.stringify(this.formValidate1));
+      if (!this.formValidate1.id) {
+        this.formValidate1.id = -1;
+      }
+      params.append("id", this.formValidate1.id);
       this.$refs[deviceName].validate(valid => {
         if (valid) {
-          if (this.formValidate._id) {
+          if (this.formValidate1.id) {
             this.axios({
-              url: `${this.baseUrl}/${this.module}/data/${
-                this.formValidate._id
-              }`,
-              method: "put",
-              data: this.formValidate
+              url: "http://192.168.4.114:8080/device/save",
+              method: "post",
+              data: params
             }).then(res => {
-              this.getData();
-              this.$data.formValidate = this.$options.data().formValidate;
-              this.modalForm = false;
+              this.getdeviceData();
+              this.modal1 = false;
+              this.$Message.info("修改成功");
             });
           } else {
             this.axios({
-              url: `${this.baseUrl}/${this.module}/data`,
+              url: "http://192.168.4.114:8080/device/save",
               method: "post",
-              data: this.formValidate
+              data: params
             }).then(res => {
-              this.modalForm = false;
-              this.getData();
+              this.modal1 = false;
+              this.getdeviceData();
             });
           }
         } else {
-          this.$Message.error("Fail!");
+          this.$Message.error("提交失败!");
+        }
+      });
+    },
+    //删除设备数据
+    remove(id) {
+      this.ids.push(id);
+      var params = new URLSearchParams();
+      params.append("ids", JSON.stringify(this.ids));
+      this.$Modal.confirm({
+        title: "确认删除？",
+        content: "<p>数据删除后将不可恢复</p>",
+        onOk: () => {
+          this.axios({
+            method: "post",
+            url: "http://192.168.4.114:8080/device/delete",
+            data: params
+          }).then(res => {
+            this.getdeviceData(this.type);
+            this.$Message.info("删除成功");
+          });
+        },
+        onCancel: () => {
+          this.$Message.info("取消删除");
         }
       });
     },
@@ -441,7 +574,6 @@ export default {
       }
     },
     onPageSizeChange(list) {
-      console.log(list);
       this.list = list;
       if (this.input2 != "") {
         // this.sousuo();
@@ -454,10 +586,24 @@ export default {
       /*  console.log(selections); */
       var ids = [];
       for (let i = 0; i < selections.length; i++) {
-        ids.push(selections[i]._id);
+        ids.push(selections[i].id);
       }
-      this.ids = ids.toString();
-      console.log(ids);
+      this.ids = ids;
+    },
+    //搜索内容
+    sousuo() {
+      // this.axios({
+      //   url: `http://localhost:3000/${this.module}/list`,
+      //   method: "post",
+      //   data: {
+      //     username: this.searchval,
+      //     page: 1,
+      //     rows: this.rows
+      //   }
+      // }).then(res => {
+      //   this.total = res.data.total;
+      //   this.data = res.data.rows;
+      // });
     }
   },
   mounted() {
@@ -477,6 +623,15 @@ export default {
 }
 .devBtn {
   margin-bottom: 20px;
+}
+.detail p {
+  font-size: 15px;
+  font-weight: bolder;
+  padding-bottom: 10px;
+}
+.detail p span {
+  font-size: 15px;
+  font-weight: 100;
 }
 </style>
 
