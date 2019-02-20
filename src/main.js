@@ -4,7 +4,7 @@ import router from './router'
 import axios from 'axios'
 import VueAxios from 'vue-axios';
 import VueRouter from 'vue-router'
-
+import qs from 'qs'
 
 Vue.config.productionTip = false
 
@@ -15,7 +15,7 @@ Vue.use(iView);
 Vue.use(VueAxios, axios);
 Vue.use(VueRouter);
 //Vue.prototype.$axios = axios;
-
+Vue.prototype.qs = qs
 new Vue({
   router,
   render: h => h(App)
