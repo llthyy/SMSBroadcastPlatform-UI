@@ -139,17 +139,17 @@
         </Modal>
       </TabPane>
       <TabPane type="card" label="分组管理">
-        <!-- <div class="ctrl">
-          <Button type="warning" @click="addRoot">添加分组</Button>
-          <Button type="info" @click="changeTree">修改</Button>
-          <Button type="error" @click="confirm">删除</Button>
-        </div> -->
-        <div style="width:20%;float:left;">
-          <div style="margin-bottom:20px;">
+        <div class="ctrl">
           <Button type="warning" @click="addRoot">添加分组</Button>
           <Button type="info" @click="changeTree">修改</Button>
           <Button type="error" @click="confirm">删除</Button>
         </div>
+        <div style="width:20%;float:left;">
+          <!-- <div style="margin-bottom:20px;">
+          <Button type="warning" @click="addRoot">添加分组</Button>
+          <Button type="info" @click="changeTree">修改</Button>
+          <Button type="error" @click="confirm">删除</Button>
+        </div> -->
           <Table border :columns="columns1" :data="data" @on-selection-change="onSelect"></Table>
           <Page :total="total" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer transfer></Page>
         </div>
@@ -353,7 +353,7 @@ export default {
         {
           title: "设备别名",
           key: "alias"
-        },
+        }
       ]
     };
   },
@@ -383,7 +383,7 @@ export default {
       this.$refs[username].validate(valid => {
         if (valid) {
           this.formValidate.id = -1;
-          this.formValidate.parentid = this.pearentID;
+          this.formValidate.parent_id = this.areaID;
           this.axios({
             url: "http://192.168.4.114:8080/org/modifyArea",
             method: "post",
@@ -468,6 +468,19 @@ export default {
     getID(data) {
       this.areaID = data[0].id;
       this.pearentID = data[0].parentId;
+      this.areaDevice();
+    },
+    //根据区域显示终端设备
+    areaDevice() {
+      this.axios({
+        method: "get",
+        url: `http://192.168.4.114:8080/device/getByOrg?ids=${
+          this.areaID
+        }&page=${this.page - 1}&size=${this.list}`
+      }).then(res => {
+        this.total = res.data.body.totalElements;
+        this.data = res.data.body.content;
+      });
     },
     /* ......   终端设备管理 .......  */
     //获取设备数据
