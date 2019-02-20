@@ -55,7 +55,7 @@ export default {
   data() {
     return {
       modalForm1: false,
-      baseData: [],
+      //baseData: [],
       formValidate: {
         name: "",
         longitude: "",
@@ -178,7 +178,7 @@ export default {
     //区域管理
     //获取数据
     getDatas() {
-      this.$axios({
+      this.axios({
         method: "get",
         url: "http://192.168.4.114:8080/org/allArea"
       }).then(res => {
@@ -197,7 +197,7 @@ export default {
               areaWithResource: this.formValidate
             }
             console.log(qs.stringify(this.obj));
-          this.$axios({
+          this.axios({
             headers: {
               "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
             },
@@ -224,7 +224,7 @@ export default {
     },
     // 请示数据，打开对话框，显示表单的数据，进行提交
     changeTree() {
-      this.$axios({
+      this.axios({
         url: `http://192.168.4.114:8080/org/allArea?id=${this.areaID}`,
         method: "get"
       }).then(res => {

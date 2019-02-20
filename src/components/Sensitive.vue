@@ -216,7 +216,19 @@ export default {
     },
     // 在此函数进行敏感词汇提交
     handleSubmit(name) {
-      console.log(this.formValidate.input);
+     /* console.log(this.formValidate.time);
+      console.log(new Date().toLocaleDateString());
+      console.log(new Date().getHours());
+      console.log(new Date().getMinutes()); */
+      var date = new Date(); //日期对象
+      var now = "";
+      now = date.getFullYear()+".";
+      now = now + (date.getMonth()+1)+"."; //取月的时候取的是当前月-1如果想取当前月+1就可以了
+      now = now + date.getDate()+" ";
+      now = now + date.getHours()+".";
+      now = now + date.getMinutes()+".";
+      now = now + date.getSeconds();  
+      console.log(now);
       this.axios({
         method: "post",
         url: "http://192.168.4.165:8080/system/saveCharacter",
@@ -225,7 +237,8 @@ export default {
         },
         data: {
           newObj: {
-            charContent: this.formValidate.input
+            charContent: this.formValidate.input,
+            timer:now,
           }
         }
       }).then(res => {
