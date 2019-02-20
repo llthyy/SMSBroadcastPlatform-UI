@@ -24,7 +24,7 @@ textarea {
    <div style="margin:0 0 20px 10px;font-size:20px">信息编辑</div>
         <Button type="success" @click="modal1= true" style="margin-right:5px">添加信息</Button>
         <Button type="error" @click="removes" style="margin-right:5px">删除多个</Button>        
-        <Input search  v-model="input2" placeholder="请输入姓名" :style="{width:200+'px'}" />
+        <Input search  v-model="input2" placeholder="请输入标题" :style="{width:200+'px'}" />
         <Button type="info" @click="sousuo" >搜索</Button>
         <Modal
            v-model = "modal1"
@@ -97,9 +97,9 @@ export default {
           align: "center"
         },
 
-        {
+        /* {
           title: "标题",
-          key: "title",
+          key: "msgName",
           width:200,
           render: (h, params) => {
             return h("div", [
@@ -111,11 +111,20 @@ export default {
               h("strong", params.row.title)
             ]);
           }
+        }, */
+
+        {
+          title: "标题",
+          key: "msgName"
         },
 
         {
           title: "内容",
-          key: "content"
+          key: "msgContent"
+        },
+        {
+          title: "添加时间",
+          key: "msgTime"
         },
         {
           title: "功能",
@@ -154,7 +163,7 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.edit(params.row._id);
+                      this.edit(params.index);
                     }
                   }
                 },
@@ -169,7 +178,7 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.remove(params.row._id);
+                      this.remove(params.row.id);
                     }
                   }
                 },
@@ -211,39 +220,43 @@ export default {
       this.$refs[name].resetFields();
     },
     show(index) {
+      console.log(this.data[index].id)
       this.$Modal.info({
         title: "",
-        content: `表题：${this.data[index].title}<br>
-                  内容：${this.data[index].content}<br>`
+        content: `表题：${this.data[index].msgName}<br>
+                  内容：${this.data[index].msgContent}<br>
+                  添加时间：${this.data[index].msgTime}<br>`
       });
     },
-    edit(id) {
+    edit(index) {
       /* console.log('修改啊'); */
       this.axios({
-        url: `http://10.31.162.59:3000/forum/${id}`,
-        method: "get"
+        url: `http://192.168.4.165:8080/msg/queryMsg?page=0&size=20`,
+        method: "post"
       }).then(res => {
-        console.log(res);
-        this.formValidate = res.data;
-        this.formValidate.input = res.data.title;
-        this.formValidate.desc = res.data.content;
+        //console.log(index);
+        this.formValidate = res.data.content[index];
+        this.formValidate.input = this.data[index].msgName;
+        this.formValidate.desc = this.data[index].msgContent;
         this.modal1 = true;
+        console.log(this.formValidate.id)
       });
     },
-    remove(index) {
+   /*  remove(index) {
       this.data.splice(index, 1);
-    },
+    }, */
     getData() {
       this.axios({
         method: "post",
-        url: "http://10.31.162.59:3000/forum/list",
+        url: "http://192.168.4.165:8080/msg/queryMsg?page=0&size=20",
         data: {
           page: this.page,
-          limit: this.list
+          size: this.list
         }
-      }).then(function(res){
-        this.total = res.data.total;
-        this.data = res.data.docs;
+      }).then(res=>{
+        //console.log(res.data.content);
+        //this.total = res.data.total;
+        this.data = res.data.content;
       });
     },
     asyncOK() {
@@ -252,37 +265,44 @@ export default {
       }, 500);
     },
     onSelect(selections) {
-      /*  console.log(selections); */
+      //console.log(selections);
+      //console.log(selections[0].id);
       var ids = [];
       for (let i = 0; i < selections.length; i++) {
-        ids.push(selections[i]._id);
+        ids.push(selections[i].id);
       }
-      this.ids = ids.toString();
+      //console.log(ids)
+     // this.ids = ids.toString();
+     this.ids = ids;
       console.log(ids);
     },
     sousuo() {
-      console.log(this.input);
+      console.log(this.input2);
       this.axios({
         method: "post",
         url: "http://10.31.162.59:3000/forum/list",
         data: {
           page: this.page,
-          limit: this.list,
-          title: this.input
+          size: this.list,
+          msgNmae: this.input2
         }
       }).then(res => {
         this.total = res.data.total;
-        this.data = res.data.docs;
+        this.data = res.data.content;
       });
     },
-    remove(id) {
+    remove(ids) {
+      console.log(ids)
       this.$Modal.confirm({
         title: "确认操作",
         content: "<p>你确认删除该记录吗?</p>",
         onOk: () => {
           this.axios({
-            url: `http://10.31.162.59:3000/forum/${id}`,
-            method: "delete"
+            url: `http://192.168.4.165:8080/msg/delMsg`,
+            method: "post",
+            data: {
+              id: ids
+            }
           }).then(res => {
             alert("你已经删除成功");
             this.getData();
@@ -294,15 +314,15 @@ export default {
       });
     },
     // 多选删除
-    removes() {
-      console.log(this.ids);
+    removes(ids) {
+      console.log(ids);
       this.$Modal.confirm({
         title: "确认操作",
         content: "<p>你确认删除该记录吗?</p>",
         onOk: () => {
           this.axios({
-            url: `http://10.31.162.59:3000/forum`,
-            method: "delete",
+            url: `http://192.168.4.165:8080/msg/delMulMsg`,
+            method: "post",
             data: {
               ids: this.ids
             }
@@ -319,16 +339,17 @@ export default {
     // 在此函数进行帖子提交
     handleSubmit(name) {
       this.$refs[name].validate(valid => {
-        var misstimel = new Date(this.formValidate.date);
-        var misstimeleft = misstimel.toLocaleDateString();
-        let misstime = misstimeleft + " " + this.formValidate.time;
-        if (this.formValidate._id) {
+        //console.log(this.formValidate.id)
+        if (this.formValidate.id) {
           this.axios({
-            url: `http://10.31.162.59:3000/forum/${this.formValidate._id}`,
+            url: `http://192.168.4.165:8080/msg/saveMsg`,
             method: "put",
             data: {
-              title: this.formValidate.input,
-              content: this.formValidate.desc
+              	newObj : {
+                      id:this.formValidate.id,
+	                  	msgName : this.formValidate.input,
+		                  msgContent  : this.formValidate.desc,
+	              }
             }
           }).then(res => {
             this.modal1 = false;
@@ -338,10 +359,12 @@ export default {
         } else {
           this.axios({
             method: "post",
-            url: "http://10.31.162.59:3000/forum",
+            url: "http://192.168.4.165:8080/msg/saveMsg",
             data: {
-              articalname: this.formValidate.input,
-              content: this.formValidate.desc
+              newObj : {
+	                  	msgName : this.formValidate.input,
+		                  msgContent  : this.formValidate.desc,
+	              }
             }
           }).then(res => {
             this.modal1 = false;
