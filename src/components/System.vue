@@ -176,11 +176,11 @@
         <div style="width:75%;float:right;padding-right:60px;">
           <div class="devBtn">
             <Button type="success" @click="modaladdGroupDev">添加分组终端设备</Button>
-            <Button type="error" @click="remove">删除多个</Button>
+            <Button type="error" @click="removeGroupDev">删除设备</Button>
             <Input search v-model="input2" placeholder="请输入..." :style="{width:200+'px'}" />
             <Button type="info" @click="sousuo">搜索</Button>
           </div>
-          <Table border :columns="columns2" :data="data2" @on-selection-change="onSelectGroup"></Table>
+          <Table border :columns="columns2" :data="data2" @on-selection-change="onSelectdelGroupDev"></Table>
           <Page :total="total" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer transfer></Page>
           <!--分组设备添加-->
            <Modal v-model="modalGroupDev1" title="添加分组设备" width="70%"  @on-ok="addGroupDevOk" :transition-names=[]>
@@ -190,7 +190,7 @@
                 <Tree :data="baseData" @on-select-change="getID"></Tree>
               </div>
               <div style="width:75%;float:right;padding-right:20px;">
-                <Table border :columns="columns" :data="data" @on-selection-change="onSelectGroupDev"></Table>
+                <Table border :columns="columns" :data="data" @on-selection-change="onSelectaddGroupDev"></Table>
                 <Page :total="total" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer transfer></Page>
               </div>
               </FormItem>
@@ -800,24 +800,66 @@ export default {
       this.modalGroupDev1=true;
     },
     addGroupDevOk(){
+      // var params = new URLSearchParams();
+      // params.append("groupId", "this.groupID");
+      // params.append("deviceIds", toString(this.GroupDev_ids) );
+      // params.append("update","0");
+      // console.log(params);
+      // this.axios({
+      //   headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      //   url: `${this.baseUrl}/device/updateDeviceGroup`,
+      //   method: "psot",
+      //   data:params
+      // }).then(res => {
+      //   this.modalGroup1 = false;
+      //   this.getGroupDevData();
+      // });
+       $.ajax({
+              url    : `${this.baseUrl}/device/updateDeviceGroup`,
+              type   : "post",
+              data   : {
+                          groupId:this.groupID,
+                          deviceIds: JSON.stringify(this.GroupDev_ids) ,
+                          update:0
+                        },
+              success: data=>{
+                  this.modalGroup1 = false;
+                  this.getGroupDevData();
+              },
+              dataType: "json",
+              async   : true
+                })
+    },
+    //删除分组终端设备
+    removeGroupDev(){
+      if (typeof this.groupID == "undefined") {
+        this.$Modal.confirm({
+          title: "温馨提示",
+          content: "<p>请先点击你要删除的分组设备</p>"
+        });
+      } else {
       var params = new URLSearchParams();
-      params.append("groupId", "this.groupID");
-      params.append("deviceIds", toString(this.GroupDev_ids) );
-      params.append("update","0");
-      console.log(params);
-      this.axios({
-        headers: { 'content-type': 'application/x-www-form-urlencoded' },
-        url: `${this.baseUrl}/device/updateDeviceGroup`,
-        method: "psot",
-        data:this.qs.stringify({
-        "groupId":"402884f2690def0601690e8180b40001",
-        "deviceIds": '["402884f268ff4c0a0168ff4c41910003", "402884f268ff4c0a0168ff4c44280004"]',
-        "update":"0"
-      })
-      }).then(res => {
-        this.modalGroup1 = false;
-        this.getgroupData();
+      params.append("groupId", this.groupID);
+      params.append("deviceIds", JSON.stringify(this.delGroupDev_ids) );
+      params.append("update",1);
+      this.$Modal.confirm({
+        title: "确认删除？",
+        content: "<p>数据删除后将不可恢复</p>",
+        onOk: () => {
+          this.axios({
+            method: "post",
+            url: `${this.baseUrl}/device/updateDeviceGroup`,
+            data: params
+          }).then(res => {
+            this.getGroupDevData();
+            this.$Message.info("删除成功");
+          });
+        },
+        onCancel: () => {
+          this.$Message.info("取消删除");
+        }
       });
+      }
     },
     //分页
     onChangePage(page) {
@@ -853,7 +895,7 @@ export default {
       }
       this.Group_ids = ids;
     },
-    onSelectGroupDev(selections) {
+    onSelectaddGroupDev(selections) {
       /*  console.log(selections); */
       var ids = [];
       for (let i = 0; i < selections.length; i++) {
@@ -861,6 +903,15 @@ export default {
       }
       this.GroupDev_ids = ids;
       console.log(this.GroupDev_ids);
+    },
+    onSelectdelGroupDev(selections) {
+      /*  console.log(selections); */
+      var ids = [];
+      for (let i = 0; i < selections.length; i++) {
+        ids.push(selections[i].id);
+      }
+      this.delGroupDev_ids = ids;
+      console.log(this.delGroupDev_ids);
     },
     //搜索内容
     sousuo() {
