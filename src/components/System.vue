@@ -107,7 +107,7 @@
         </Modal>
         <!--终端设备查看详情  -->
         <Modal v-model="modal2" title="终端设备" class="detail">
-          <Form ref="formValidate1" :model="formValidate1" :rules="ruleValidate" :label-width="80">
+          <Form>
             <p>物理编码:
               <span>{{this.formValidate1.devCode}}</span>
             </p>
@@ -152,34 +152,50 @@
           <Button type="info" @click="changeTree">修改</Button>
           <Button type="error" @click="confirm">删除</Button>
           </div> -->
-          <Table border :columns="columns1" :data="data1" @on-selection-change="onSelectGroup" @on-current-change="rowClassName" highlight-row></Table>
-          <Page :total="total" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer transfer></Page>
+          <div class="group-height">
+            <Table border :columns="columns1" :data="data1" @on-selection-change="onSelectGroup" @on-current-change="getGroupId" highlight-row></Table>
+            <Page :total="total" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer transfer></Page>
+          </div>
           <!--分组添加  -->
-        <Modal v-model="modalGroup1" title="添加分组">
-          <Form ref="formValidate2" :model="formValidate2" :rules="ruleValidate" :label-width="80">
-            <FormItem label="分组名称:" prop="groupName">
-              <Input v-model="formValidate2.groupName" placeholder="请输入分组名称" type="text"></Input>
-            </FormItem>
-            <FormItem label="备注:" prop="remarks">
-              <Input v-model="formValidate2.remarks" placeholder="请输入分组备注" type="text"></Input>
-            </FormItem>
-            <FormItem>
-              <Button type="primary" @click="handleSubmitGroup('formValidate2')">提交</Button>
-              <Button @click="handleReset('formValidate2')" style="margin-left: 8px">重置</Button>
-            </FormItem>
-          </Form>
-          <div slot="footer"></div>
-        </Modal>
+          <Modal v-model="modalGroup1" title="添加分组">
+            <Form ref="formValidate2" :model="formValidate2" :rules="ruleValidate" :label-width="80">
+              <FormItem label="分组名称:" prop="groupName">
+                <Input v-model="formValidate2.groupName" placeholder="请输入分组名称" type="text"></Input>
+              </FormItem>
+              <FormItem label="备注:" prop="remarks">
+                <Input v-model="formValidate2.remarks" placeholder="请输入分组备注" type="text"></Input>
+              </FormItem>
+              <FormItem>
+                <Button type="primary" @click="handleSubmitGroup('formValidate2')">提交</Button>
+                <Button @click="handleReset('formValidate2')" style="margin-left: 8px">重置</Button>
+              </FormItem>
+            </Form>
+            <div slot="footer"></div>
+          </Modal>
         </div>
         <div style="width:75%;float:right;padding-right:60px;">
           <div class="devBtn">
-            <Button type="success" @click="modal1= true">添加终端设备</Button>
+            <Button type="success" @click="modaladdGroupDev">添加分组终端设备</Button>
             <Button type="error" @click="remove">删除多个</Button>
             <Input search v-model="input2" placeholder="请输入..." :style="{width:200+'px'}" />
             <Button type="info" @click="sousuo">搜索</Button>
           </div>
-          <Table border :columns="columns" :data="data" @on-selection-change="onSelect"></Table>
+          <Table border :columns="columns2" :data="data2" @on-selection-change="onSelectGroup"></Table>
           <Page :total="total" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer transfer></Page>
+          <!--分组设备添加-->
+           <Modal v-model="modalGroupDev1" title="添加分组设备" width="70%"  @on-ok="addGroupDevOk" :transition-names=[]>
+            <Form >
+              <FormItem>
+              <div style="width:20%;background:#fff;float:left;">
+                <Tree :data="baseData" @on-select-change="getID"></Tree>
+              </div>
+              <div style="width:75%;float:right;padding-right:20px;">
+                <Table border :columns="columns" :data="data" @on-selection-change="onSelectGroupDev"></Table>
+                <Page :total="total" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer transfer></Page>
+              </div>
+              </FormItem>
+            </Form>
+          </Modal>
         </div>
       </TabPane>
     </Tabs>
@@ -254,7 +270,8 @@ export default {
       list: 10,
       input2: "",
       ids: [],
-      Group_ids:[],
+      Group_ids: [],
+      GroupDev_ids: [],
       loading: true,
       formValidate1: {
         devCode: "",
@@ -307,67 +324,90 @@ export default {
           width: 200,
           align: "center",
           render: (h, params) => {
-            return h("div", [
-              h(
-                "Button",
-                {
-                  props: {
-                    type: "primary",
-                    size: "small"
-                  },
-                  style: {
-                    marginRight: "5px"
-                  },
-                  on: {
-                    click: () => {
-                      this.detail(params.row.id);
+            if(!this.modalGroupDev1){
+                return h("div", [
+                h(
+                  "Button",
+                  {
+                    props: {
+                      type: "primary",
+                      size: "small"
+                    },
+                    style: {
+                      marginRight: "5px"
+                    },
+                    on: {
+                      click: () => {
+                        this.detail(params.row.id);
+                      }
                     }
-                  }
-                },
-                "查看详情"
-              ),
-              h(
-                "Button",
-                {
-                  props: {
-                    type: "primary",
-                    size: "small"
                   },
-                  style: {
-                    marginRight: "5px"
-                  },
-                  on: {
-                    click: () => {
-                      this.edit(params.row.id);
+                  "查看详情"
+                ),
+                h(
+                  "Button",
+                  {
+                    props: {
+                      type: "primary",
+                      size: "small"
+                    },
+                    style: {
+                      marginRight: "5px"
+                    },
+                    on: {
+                      click: () => {
+                        this.edit(params.row.id);
+                      }
                     }
-                  }
-                },
-                "修改"
-              ),
-              h(
-                "Button",
-                {
-                  props: {
-                    type: "error",
-                    size: "small"
                   },
-                  on: {
-                    click: () => {
-                      this.remove(params.row.id);
+                  "修改"
+                ),
+                h(
+                  "Button",
+                  {
+                    props: {
+                      type: "error",
+                      size: "small"
+                    },
+                    on: {
+                      click: () => {
+                        this.remove(params.row.id);
+                      }
                     }
-                  }
-                },
-                "删除"
-              )
-            ]);
+                  },
+                  "删除"
+                )
+              ]);
+            }else{
+                return h("div", [
+                h(
+                  "Button",
+                  {
+                    props: {
+                      type: "primary",
+                      size: "small"
+                    },
+                    style: {
+                      marginRight: "5px"
+                    },
+                    on: {
+                      click: () => {
+                        this.detail(params.row.id);
+                      }
+                    }
+                  },
+                  "查看详情"
+                ),
+              ]);
+            }
           }
         }
       ],
-      data1:[],
-      modalGroup1:false,
+      data1: [],
+      modalGroup1: false,
       formValidate2: {
         groupName: "",
-        remarks: "",
+        remarks: ""
       },
       columns1: [
         {
@@ -383,16 +423,53 @@ export default {
           title: "备注",
           key: "remarks"
         }
-      ]
+      ],
+      data2: [],
+      modalGroupDev1:false,
+      columns2: [
+        {
+          type: "selection",
+          width: 60,
+          align: "center"
+        },
+        {
+          title: "设备别名",
+          key: "alias"
+        },
+        {
+          title: "设备型号",
+          key: "model"
+        },
+        {
+          title: "设备厂家",
+          key: "manufacturer"
+        },
+        {
+          title: "硬件版本",
+          key: "hardwareVersion"
+        },
+        {
+          title: "固件版本",
+          key: "softwareVersion"
+        },
+        {
+          title: "联系人",
+          key: "person"
+        },
+        {
+          title: "联系电话",
+          key: "phone"
+        },
+      ],
     };
   },
   methods: {
-    /* ......   区域管理 ................................  */
+    /* ..........................   区域管理 ................................  */
     //获取数据
     getDatas() {
       this.axios({
         method: "get",
-        url: "http://192.168.4.114:8080/org/allArea"
+        url: `${this.baseUrl}/org/allArea`
       }).then(res => {
         this.baseData = res.data.body;
       });
@@ -414,7 +491,7 @@ export default {
           this.formValidate.id = -1;
           this.formValidate.parent_id = this.areaID;
           this.axios({
-            url: "http://192.168.4.114:8080/org/modifyArea",
+            url: `${this.baseUrl}/org/modifyArea`,
             method: "post",
             data: this.qs.stringify(this.formValidate)
           }).then(res => {
@@ -436,7 +513,7 @@ export default {
         });
       } else {
         this.axios({
-          url: `http://192.168.4.114:8080/org/getArea?id=${this.areaID}`,
+          url: `${this.baseUrl}/org/getArea?id=${this.areaID}`,
           method: "get"
         }).then(res => {
           this.formValidate = res.data.body;
@@ -450,7 +527,7 @@ export default {
           this.formValidate.id = this.areaID;
           this.formValidate.parentid = this.pearentID;
           this.axios({
-            url: "http://192.168.4.114:8080/org/modifyArea",
+            url: `${this.baseUrl}/org/modifyArea`,
             method: "post",
             data: this.qs.stringify(this.formValidate)
           }).then(res => {
@@ -476,7 +553,7 @@ export default {
           onOk: () => {
             this.axios({
               method: "post",
-              url: "http://192.168.4.114:8080/org/deleteArea",
+              url: `${this.baseUrl}/org/deleteArea`,
               data: this.qs.stringify({ id: this.areaID })
             }).then(res => {
               this.getDatas(this.type);
@@ -503,7 +580,7 @@ export default {
     areaDevice() {
       this.axios({
         method: "get",
-        url: `http://192.168.4.114:8080/device/getByOrg?ids=${
+        url: `${this.baseUrl}/device/getByOrg?ids=${
           this.areaID
         }&page=${this.page - 1}&size=${this.list}`
       }).then(res => {
@@ -511,12 +588,12 @@ export default {
         this.data = res.data.body.content;
       });
     },
-    /* ......   终端设备管理 .........................  */
+    /* .........................   终端设备管理 .........................  */
     //获取设备数据
     getdeviceData() {
       this.axios({
         method: "get",
-        url: `http://192.168.4.114:8080/device/getAll?page=${this.page -
+        url: `${this.baseUrl}/device/getAll?page=${this.page -
           1}&size=${this.list}`
       }).then(res => {
         this.total = res.data.body.totalElements;
@@ -527,7 +604,7 @@ export default {
     detail(id) {
       // 请示数据，打开对话框，显示表单的数据，进行提交
       this.axios({
-        url: `http://192.168.4.114:8080/device/getOne?ids=${id}`,
+        url: `${this.baseUrl}/device/getOne?ids=${id}`,
         method: "get"
       }).then(res => {
         this.formValidate1 = res.data.body;
@@ -538,25 +615,25 @@ export default {
     edit(id) {
       // 请示数据，打开对话框，显示表单的数据，进行提交
       this.axios({
-        url: `http://192.168.4.114:8080/device/getOne?ids=${id}`,
+        url: `${this.baseUrl}/device/getOne?ids=${id}`,
         method: "get"
       }).then(res => {
         this.formValidate1 = res.data.body;
         this.modal1 = true;
       });
     },
-    handleSubmitDev(deviceName) {
+    handleSubmitDev(username) {
       var params = new URLSearchParams();
       params.append("device", JSON.stringify(this.formValidate1));
       if (!this.formValidate1.id) {
         this.formValidate1.id = -1;
       }
       params.append("id", this.formValidate1.id);
-      this.$refs[deviceName].validate(valid => {
+      this.$refs[username].validate(valid => {
         if (valid) {
           if (this.formValidate1.id) {
             this.axios({
-              url: "http://192.168.4.114:8080/device/save",
+              url: `${this.baseUrl}/device/save`,
               method: "post",
               data: params
             }).then(res => {
@@ -566,7 +643,7 @@ export default {
             });
           } else {
             this.axios({
-              url: "http://192.168.4.114:8080/device/save",
+              url: `${this.baseUrl}/device/save`,
               method: "post",
               data: params
             }).then(res => {
@@ -590,7 +667,7 @@ export default {
         onOk: () => {
           this.axios({
             method: "post",
-            url: "http://192.168.4.114:8080/device/delete",
+            url: `${this.baseUrl}/device/delete`,
             data: params
           }).then(res => {
             this.getdeviceData(this.type);
@@ -602,32 +679,33 @@ export default {
         }
       });
     },
-    /* ......   分组管理 ...............................  */
+    /* ..............................   分组管理 ...............................  */
     //点击当前分组
-    rowClassName(row, index){
+    getGroupId(row, index) {
       console.log(row.id);
-      this.groupID=row.id
+      this.groupID = row.id;
+      this.getGroupDevData();
     },
     //获取分组数据
-    getgroupData(){
+    getgroupData() {
       this.axios({
         method: "get",
-        url: `http://192.168.4.114:8080/device/findAllGroup?page=${this.page -
+        url: `${this.baseUrl}/device/findAllGroup?page=${this.page -
           1}&size=${this.list}`
       }).then(res => {
         this.total = res.data.body.totalElements;
-        this.data1= res.data.body.content;
+        this.data1 = res.data.body.content;
       });
     },
     //添加分组
-    addGroup(){
-      this.modalGroup1=true
+    addGroup() {
+      this.modalGroup1 = true;
     },
     handleSubmitGroup(username) {
       this.$refs[username].validate(valid => {
         if (valid) {
           this.axios({
-            url: "http://192.168.4.114:8080/device/saveGroup",
+            url: `${this.baseUrl}/device/saveGroup`,
             method: "post",
             data: this.qs.stringify(this.formValidate2)
           }).then(res => {
@@ -648,7 +726,7 @@ export default {
         });
       } else {
         this.axios({
-          url: `http://192.168.4.114:8080/device/findGroup?id=${this.groupID}`,
+          url: `${this.baseUrl}/device/findGroup?id=${this.groupID}`,
           method: "get"
         }).then(res => {
           this.formValidate2 = res.data.body;
@@ -660,7 +738,7 @@ export default {
       this.$refs[username].validate(valid => {
         if (valid) {
           this.axios({
-            url: "http://192.168.4.114:8080/device/saveGroup",
+            url: `${this.baseUrl}/device/saveGroup`,
             method: "post",
             data: this.qs.stringify(this.formValidate2)
           }).then(res => {
@@ -674,17 +752,22 @@ export default {
     },
     //删除分组
     removeGroup() {
+      if (typeof this.groupID == "undefined") {
+        this.$Modal.confirm({
+          title: "温馨提示",
+          content: "<p>请先点击你要删除的分组</p>"
+        });
+      } else {
       this.Group_ids.push(this.groupID);
-      console.log(this.Group_ids);
       var params = new URLSearchParams();
-      params.append("ids", JSON.stringify(this.Group_ids));
+      params.append("groupId", JSON.stringify(this.Group_ids));
       this.$Modal.confirm({
         title: "确认删除？",
         content: "<p>数据删除后将不可恢复</p>",
         onOk: () => {
           this.axios({
             method: "post",
-            url: "http://192.168.4.114:8080/device/delete",
+            url: `${this.baseUrl}/device/deleteDeviceGroup`,
             data: params
           }).then(res => {
             this.getdeviceData(this.type);
@@ -694,6 +777,46 @@ export default {
         onCancel: () => {
           this.$Message.info("取消删除");
         }
+      });
+      }
+    },
+    //根据分组获取设备信息
+    getGroupDevData(){
+      var params = new URLSearchParams();
+      params.append("groupId", this.groupID);
+      params.append("page", this.page-1);
+      params.append("size",this.list);
+       this.axios({
+        method: "post",
+        url: `${this.baseUrl}/device/findDeviceByGroup`,
+        data:params
+      }).then(res => {
+        this.total = res.data.body.totalElements;
+        this.data2 = res.data.body.content;
+      });
+    },
+    //添加分组终端设备
+    modaladdGroupDev(){
+      this.modalGroupDev1=true;
+    },
+    addGroupDevOk(){
+      var params = new URLSearchParams();
+      params.append("groupId", "this.groupID");
+      params.append("deviceIds", toString(this.GroupDev_ids) );
+      params.append("update","0");
+      console.log(params);
+      this.axios({
+        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+        url: `${this.baseUrl}/device/updateDeviceGroup`,
+        method: "psot",
+        data:this.qs.stringify({
+        "groupId":"402884f2690def0601690e8180b40001",
+        "deviceIds": '["402884f268ff4c0a0168ff4c41910003", "402884f268ff4c0a0168ff4c44280004"]',
+        "update":"0"
+      })
+      }).then(res => {
+        this.modalGroup1 = false;
+        this.getgroupData();
       });
     },
     //分页
@@ -730,6 +853,15 @@ export default {
       }
       this.Group_ids = ids;
     },
+    onSelectGroupDev(selections) {
+      /*  console.log(selections); */
+      var ids = [];
+      for (let i = 0; i < selections.length; i++) {
+        ids.push(selections[i].id);
+      }
+      this.GroupDev_ids = ids;
+      console.log(this.GroupDev_ids);
+    },
     //搜索内容
     sousuo() {
       // this.axios({
@@ -744,12 +876,12 @@ export default {
       //   this.total = res.data.total;
       //   this.data = res.data.rows;
       // });
-    }
+    },
   },
   mounted() {
     this.getDatas();
     this.getdeviceData();
-    this.getgroupData()
+    this.getgroupData();
   }
 };
 </script>
@@ -774,12 +906,11 @@ export default {
   font-size: 15px;
   font-weight: 100;
 }
-.ivu-table-row-highlight td{
-  background-color :#d3e3f3!important;
+.group-height .ivu-table-row-highlight td {
+  background-color: #d3e3f3 !important;
 }
-.ivu-table-row-hover td{
-  background-color :#d3e3f3!important;
+.group-height .ivu-table-row-hover td {
+  background-color: #d3e3f3 !important;
 }
-
 </style>
 

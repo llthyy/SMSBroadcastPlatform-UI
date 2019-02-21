@@ -16,6 +16,7 @@ Vue.use(VueAxios, axios);
 Vue.use(VueRouter);
 //Vue.prototype.$axios = axios;
 Vue.prototype.qs = qs
+Vue.prototype.baseUrl = "http://192.168.4.114:8080";
 new Vue({
   router,
   render: h => h(App)
