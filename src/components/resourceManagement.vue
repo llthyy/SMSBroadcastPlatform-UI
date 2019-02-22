@@ -21,7 +21,7 @@
             <Button type="info" @click="sousuo">搜索</Button>
           </div>
           <Table border :columns="columns" :data="data" @on-selection-change="onSelect"></Table>
-          <Page :total="total" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer transfer></Page>
+          <Page :total="total" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer transfer show-total></Page>
         </div>
         <!--区域添加  -->
         <Modal v-model="modalForm1" title="添加区域">
@@ -154,7 +154,7 @@
           </div> -->
           <div class="group-height">
             <Table border :columns="columns1" :data="data1" @on-selection-change="onSelectGroup" @on-current-change="getGroupId" highlight-row></Table>
-            <Page :total="total" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer transfer></Page>
+            <Page :total="total1" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer transfer show-total></Page>
           </div>
           <!--分组添加  -->
           <Modal v-model="modalGroup1" title="添加分组">
@@ -181,7 +181,7 @@
             <Button type="info" @click="sousuo">搜索</Button>
           </div>
           <Table border :columns="columns2" :data="data2" @on-selection-change="onSelectdelGroupDev"></Table>
-          <Page :total="total" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer transfer></Page>
+          <Page :total="total2" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer transfer show-total></Page>
           <!--分组设备添加-->
            <Modal v-model="modalGroupDev1" title="添加分组设备" width="70%"  @on-ok="addGroupDevOk" :transition-names=[]>
             <Form >
@@ -191,7 +191,7 @@
               </div>
               <div style="width:75%;float:right;padding-right:20px;">
                 <Table border :columns="columns" :data="data" @on-selection-change="onSelectaddGroupDev"></Table>
-                <Page :total="total" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer transfer></Page>
+                <Page :total="total" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer transfer show-total></Page>
               </div>
               </FormItem>
             </Form>
@@ -409,6 +409,7 @@ export default {
         groupName: "",
         remarks: ""
       },
+      total1: 0,
       columns1: [
         {
           type: "selection",
@@ -425,6 +426,7 @@ export default {
         }
       ],
       data2: [],
+      total2: 0,
       modalGroupDev1:false,
       columns2: [
         {
@@ -693,7 +695,7 @@ export default {
         url: `${this.baseUrl}/device/findAllGroup?page=${this.page -
           1}&size=${this.list}`
       }).then(res => {
-        this.total = res.data.body.totalElements;
+        this.total1 = res.data.body.totalElements;
         this.data1 = res.data.body.content;
       });
     },
@@ -791,7 +793,7 @@ export default {
         url: `${this.baseUrl}/device/findDeviceByGroup`,
         data:params
       }).then(res => {
-        this.total = res.data.body.totalElements;
+        this.total2 = res.data.body.totalElements;
         this.data2 = res.data.body.content;
       });
     },
@@ -800,35 +802,14 @@ export default {
       this.modalGroupDev1=true;
     },
     addGroupDevOk(){
-      // var params = new URLSearchParams();
-      // params.append("groupId", "this.groupID");
-      // params.append("deviceIds", toString(this.GroupDev_ids) );
-      // params.append("update","0");
-      // console.log(params);
-      // this.axios({
-      //   headers: { 'content-type': 'application/x-www-form-urlencoded' },
-      //   url: `${this.baseUrl}/device/updateDeviceGroup`,
-      //   method: "psot",
-      //   data:params
-      // }).then(res => {
-      //   this.modalGroup1 = false;
-      //   this.getGroupDevData();
-      // });
-       $.ajax({
-              url    : `${this.baseUrl}/device/updateDeviceGroup`,
-              type   : "post",
-              data   : {
-                          groupId:this.groupID,
-                          deviceIds: JSON.stringify(this.GroupDev_ids) ,
-                          update:0
-                        },
-              success: data=>{
-                  this.modalGroup1 = false;
-                  this.getGroupDevData();
-              },
-              dataType: "json",
-              async   : true
-                })
+      this.axios({
+        url: `${this.baseUrl}/device/updateDeviceGroup`,
+        method: "post",
+        data:this.qs.stringify({groupId:this.groupID,deviceIds: JSON.stringify(this.GroupDev_ids) ,update:0})
+      }).then(res => {
+        this.modalGroup1 = false;
+        this.getGroupDevData();
+      });
     },
     //删除分组终端设备
     removeGroupDev(){
