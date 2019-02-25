@@ -134,7 +134,7 @@ export default {
         method: "post",
         url: "http://192.168.4.165:8080/system/saveCharacter",
         data: {
-          
+
           newObj: {
             page: this.page,
             limit: this.list,
@@ -207,7 +207,6 @@ export default {
         }
       })
     },
-    
     onChangePage(page) {
       this.page = page-1;
       if (this.input2 != "") {

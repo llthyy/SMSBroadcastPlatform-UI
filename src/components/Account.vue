@@ -1,57 +1,40 @@
 <template>
- <div style="margin-top:30px;padding-left:10px">
-   <div style="margin:0 0 20px 10px;font-size:20px">账号管理</div>
-        <Button type="success" @click="modal1= true" style="margin-right:5px">添加账号</Button>
-        <Button type="error" @click="removes" style="margin-right:5px">删除多个</Button>        
-        <Input search  v-model="input2" placeholder="请输入姓名" :style="{width:200+'px'}" />
-        <Button type="info" @click="sousuo" >搜索</Button>
-        <Modal
-           v-model = "modal1"
-           title   = "修改信息"
-           :loading  = "loading"
-           @on-ok  = "asyncOK">
-            <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">               
-                 <FormItem label="姓名" prop="input">
-                    <Input v-model="formValidate.input" placeholder="请输入姓名" ></Input>
-                </FormItem>              
-               
-                <FormItem label="性别" prop="desc">
-                    <Input v-model="formValidate.desc"  placeholder="请输入性别"></Input>
-                </FormItem> 
-                <FormItem label="登录名" prop="input1">
-                    <Input v-model="formValidate.input1" placeholder="请输入登录名"></Input>
-                </FormItem>
-                <FormItem label="密码" prop="input2">
-                    <Input v-model="formValidate.input2" placeholder="请输入密码"></Input>
-                </FormItem>
-                <FormItem label="联系方式" prop="input3">
-                    <Input v-model="formValidate.input3" placeholder="请输入联系方式"></Input>
-                </FormItem>
-                <FormItem label="所属角色">
-                   <!--  <Input v-model="formValidate.input5" placeholder="请选择角色">
-                         <select>
-						     <option value="0">游客</option>
-						     <option value="1">管理员</option>
-					     </select>
-                    </Input> -->
-                    <select style="height:30px">
-						     <option value="0">游客</option>
-						     <option value="1">管理员</option>
-					     </select>
-                </FormItem>
-               
-
-                <FormItem >
-                    <Button type="primary" @click="handleSubmit('formValidate')" >提交</Button>
-                    <Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
-                </FormItem>
-            </Form>
-             <div slot="footer">
-            </div>
-            </Modal>
-        <Table border ref="selection" :columns="columns1" :data="data" @on-selection-change="onSelect"></Table>
-         <Page :total="total" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer></Page>
-    </div>
+  <div style="margin-top:30px;padding-left:10px">
+    <div style="margin:0 0 20px 10px;font-size:20px">账号管理</div>
+    <Button type="success" @click="addUser" style="margin-right:5px">添加账号</Button>
+    <Button type="error" @click="remove" style="margin-right:5px">删除多个</Button>
+    <Input search v-model="input2" placeholder="请输入姓名" :style="{width:200+'px'}" />
+    <Button type="info" @click="sousuo">搜索</Button>
+    <Modal v-model="modal1" title="修改信息" :loading="loading" >
+      <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
+        <FormItem label="姓名" prop="userName">
+          <Input v-model="formValidate.userName" placeholder="请输入姓名"></Input>
+        </FormItem>
+        <FormItem label="登录账号" prop="loggerName">
+          <Input v-model="formValidate.loggerName" placeholder="请输入登录名"></Input>
+        </FormItem>
+        <FormItem label="登录密码" prop="loggerPassworld">
+          <Input v-model="formValidate.loggerPassworld" placeholder="请输入密码"></Input>
+        </FormItem>
+        <FormItem label="联系方式" prop="userPhone">
+          <Input v-model="formValidate.userPhone" placeholder="请输入联系方式"></Input>
+        </FormItem>
+        <FormItem label="所属角色" prop="userRole">
+          <Select v-model="formValidate.userRole"  placeholder="请选择角色" @on-open-change="getRoleData" filterable clearable style="width:160px">
+              <Option v-for="item in userRoleData" :value="item.roleName" :key="item.roleName" >{{item.roleName}}</Option>
+          </Select>
+        </FormItem>
+        <FormItem>
+          <Button type="primary" @click="handleSubmit('formValidate')">提交</Button>
+          <Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
+        </FormItem>
+      </Form>
+      <div slot="footer">
+      </div>
+    </Modal>
+    <Table border ref="selection" :columns="columns1" :data="data" @on-selection-change="onSelect"></Table>
+    <Page :total="total" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer></Page>
+  </div>
 </template>
 
 <script>
@@ -66,6 +49,7 @@ export default {
         input3:"",
       },
       ruleValidate: {
+<<<<<<< HEAD
         date: [
           {
             required: true,
@@ -73,6 +57,24 @@ export default {
             message: "Please select the date",
             trigger: "change"
           }
+=======
+        userName: [
+          {required: true,message: "姓名不能为空",trigger: "change"}
+        ],
+        loggerName: [
+          {required: true,message: "登录账户不能为空",trigger: "change"}
+        ],
+        loggerPassworld: [
+          {required: true,message: "登录密码不能为空",trigger: "change"}
+        ],
+        userPhone: [
+          {required: true,message: "联系方式不能为空",trigger: "change"},
+          {pattern:/^[0-9]{11}$/,message: "必须为11位数字值",trigger: "change"}
+          // {len:11,message: "必须为11位数字值",trigger: "change"}
+        ],
+        userRole: [
+          {required: true,message: "所属角色不能为空",trigger: "change"}
+>>>>>>> b4caf29e51fe00cf6a78c692431b0b87be66c01d
         ],
         desc: [
           //{ required: true, message: 'Please enter a personal introduction', trigger: 'blur' },
@@ -189,6 +191,7 @@ export default {
           }
         }
       ],
+      ids:[],
       data: [],
       total: 0,
       page: 1,
@@ -200,6 +203,7 @@ export default {
     };
   },
   methods: {
+<<<<<<< HEAD
     onChangePage(page) {
     this.page = page;
     if (this.input2 != "") {
@@ -219,6 +223,23 @@ export default {
   },
      handleReset(name) {
       this.$refs[name].resetFields();
+=======
+    //获取数据
+    getData() {
+      this.axios({
+        method: "post",
+        url: `${this.baseUrl}/user/findAll?page=${this.page -
+          1}&size=${this.list}`,
+      }).then(res => {
+        console.log(999,res.data.body.content);
+        this.total = res.data.body.totalElements;
+        this.data = res.data.body.content;
+      });
+    },
+    //添加修改数据
+    addUser(){
+      this.modal1 = true;
+>>>>>>> b4caf29e51fe00cf6a78c692431b0b87be66c01d
     },
     show(index) {
       this.$Modal.info({

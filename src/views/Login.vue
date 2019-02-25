@@ -77,9 +77,29 @@ export default {
         }
     },
     methods:{
-        btn_login(){
-            this.$router.push('/')
-        }
+        btn_login(name) {
+            this.$refs[name].validate(valid => {
+                if (valid) {
+                this.axios({
+                    method: 'post',
+                    url   : `${this.baseUrl}/login/user`,
+                    data  : this.qs.stringify({
+                    userName: this.userForm.username,
+                    pwd: this.userForm.password
+                    })
+                }).then(res => {
+                    if(res.data.status=="200"){
+                        this.$router.push('/home')
+                        this.$Message.success('登录成功!');
+                    } else {
+                        this.$Message.error(res.data.msg);
+                    }
+                });
+                } else {
+                this.$Message.error('用户名或密码错误!');
+                }
+            });
+    },
     }
 }
 </script>
