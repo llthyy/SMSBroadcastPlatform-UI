@@ -20,7 +20,7 @@
           <Input v-model="formValidate.userPhone" placeholder="请输入联系方式"></Input>
         </FormItem>
         <FormItem label="所属角色" prop="userRole">
-          <Select v-model="formValidate.userRole"  placeholder="请选择角色" filterable clearable style="width:160px">
+          <Select v-model="formValidate.userRole"  placeholder="请选择角色" @on-open-change="getRoleData" filterable clearable style="width:160px">
               <Option v-for="item in userRoleData" :value="item.roleName" :key="item.roleName" >{{item.roleName}}</Option>
           </Select>
         </FormItem>
@@ -60,7 +60,8 @@ export default {
         ],
         userPhone: [
           {required: true,message: "联系方式不能为空",trigger: "change"},
-          {required: true,min:11,max:11,message: "必须为11位数字值",trigger: "change"}
+          {pattern:/^[0-9]{11}$/,message: "必须为11位数字值",trigger: "change"}
+          // {len:11,message: "必须为11位数字值",trigger: "change"}
         ],
         userRole: [
           {required: true,message: "所属角色不能为空",trigger: "change"}
@@ -157,6 +158,7 @@ export default {
           }
         }
       ],
+      ids:[],
       data: [],
       total: 0,
       page: 1,
@@ -183,7 +185,6 @@ export default {
     //添加修改数据
     addUser(){
       this.modal1 = true;
-      this.getRoleData();
     },
     //获取下拉框数据
     getRoleData() {

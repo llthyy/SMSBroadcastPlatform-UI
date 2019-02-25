@@ -205,7 +205,7 @@
 export default {
   data() {
     const validateorgCode = (rule, value, callback) => {
-      if (!/\d{12}$/.test(value)) {
+      if (!/(\d){12}$/.test(value)) {
         return callback(new Error("请输入12位数字值"));
       } else {
         callback();
@@ -253,7 +253,7 @@ export default {
             message: "区域编码不能为空",
             trigger: "blur"
           },
-          { validator: validateorgCode, trigger: "blur" }
+          {pattern:/^[0-9]{12}$/,message: "必须为11位数字值",trigger: "change"}
         ],
         longitude: [
           { required: true, validator: validatelongitude, trigger: "blur" }
@@ -627,9 +627,7 @@ export default {
     handleSubmitDev(username) {
       var params = new URLSearchParams();
       params.append("device", JSON.stringify(this.formValidate1));
-      if (!this.formValidate1.id) {
-        this.formValidate1.id = -1;
-      }
+      params.append("broRegionId", this.areaID);
       params.append("id", this.formValidate1.id);
       this.$refs[username].validate(valid => {
         if (valid) {
@@ -639,18 +637,20 @@ export default {
               method: "post",
               data: params
             }).then(res => {
-              this.getdeviceData();
+              this.areaDevice();
               this.modal1 = false;
               this.$Message.info("修改成功");
             });
           } else {
+            this.formValidate1.id = -1;
+            params.append("id", this.formValidate1.id);
             this.axios({
               url: `${this.baseUrl}/device/save`,
               method: "post",
               data: params
             }).then(res => {
               this.modal1 = false;
-              this.getdeviceData();
+              this.areaDevice();
             });
           }
         } else {

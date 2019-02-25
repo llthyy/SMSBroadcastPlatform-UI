@@ -89,7 +89,7 @@ export default {
                     })
                 }).then(res => {
                     if(res.data.status=="200"){
-                        this.$router.push('/')
+                        this.$router.push('/home')
                         this.$Message.success('登录成功!');
                     } else {
                         this.$Message.error(res.data.msg);
