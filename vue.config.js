@@ -1,4 +1,3 @@
 module.exports = {
-    // baseUrl: '',
-    publicPath:''
+    baseUrl: ''
 }

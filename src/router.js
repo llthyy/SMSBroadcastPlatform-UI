@@ -25,7 +25,7 @@ export default new Router({
         {
           path: '/about',
           name: '短信编辑',
-          component: () => import('@/components/About')
+          component: () => import('@/views/About')
         },
         {
           path: '/levels',
@@ -33,9 +33,9 @@ export default new Router({
           component: () => import('@/components/Levels')
         },
         {
-          path: '/resourceManagement',
+          path: '/system',
           name: '资源管理',
-          component: () => import('@/components/resourceManagement')
+          component: () => import('@/components/System')
         },
         {
           path: '/record',

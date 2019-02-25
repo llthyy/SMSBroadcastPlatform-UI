@@ -31,22 +31,8 @@ export default {
         input: ""
       },
       ruleValidate: {
-        date: [
-          {
-            required: true,
-            type: "date",
-            message: "Please select the date",
-            trigger: "change"
-          }
-        ],
-        desc: [
-          //{ required: true, message: 'Please enter a personal introduction', trigger: 'blur' },
-          /*  {
-            type: "string",
-            min: 20,
-            message: "Introduce no less than 20 words",
-            trigger: "blur"
-          } */
+       input:[
+         { required: true, message: 'Please enter a personal introduction', trigger: 'blur' },
         ]
       },
 
@@ -58,11 +44,11 @@ export default {
         },
         {
           title: "敏感词汇",
-          key: "Sensitive"
+          key: "charContent"
         },
         {
           title: "添加时间",
-          key: "Addtime"
+          key: "createTime"
         },
 
         {
@@ -76,19 +62,16 @@ export default {
                 "Button",
                 {
                   props: {
-                    type: "warning",
+                    type: "error",
                     size: "small"
-                  },
-                  style: {
-                    marginRight: "5px"
                   },
                   on: {
                     click: () => {
-                      this.edit(params.row._id);
+                      this.remove(params.row.id);
                     }
                   }
                 },
-                "修改"
+                "删除"
               )
             ]);
           }
@@ -96,7 +79,7 @@ export default {
       ],
       data: [],
       total: 0,
-      page: 1,
+      page: 0,
       list: 10,
       input2:'' ,
       modal1: false,
@@ -115,19 +98,6 @@ export default {
                   添加时间：${this.data[index].Addtime}<br>`
       });
     },
-    edit(id) {
-      /* console.log('修改啊'); */
-      this.axios({
-        url: `http://10.31.162.59:3000/forum/${id}`,
-        method: "get"
-      }).then(res => {
-        console.log(res);
-        this.formValidate = res.data;
-        this.formValidate.input = res.data.articalname;
-        this.formValidate.desc = res.data.content;
-        this.modal1 = true;
-      });
-    },
     remove(index) {
       this.data.splice(index, 1);
     },
@@ -140,11 +110,11 @@ export default {
           limit: this.list
         }
       }).then(res => {
-        this.total = res.data.total;
-        this.data = res.data.docs;
+        this.total = res.data.body.totalElement;
+        this.data = res.data.body.content;
       });
     },
-    asyncOK() {
+   asyncOK() {
       setTimeout(() => {
         this.modal1 = false;
       }, 500);
@@ -219,34 +189,27 @@ export default {
     },
     // 在此函数进行敏感词汇提交
     handleSubmit(name) {
-     /* console.log(this.formValidate.time);
-      console.log(new Date().toLocaleDateString());
-      console.log(new Date().getHours());
-      console.log(new Date().getMinutes()); */
-      var date = new Date(); //日期对象
-      var now = "";
-      now = date.getFullYear()+".";
-      now = now + (date.getMonth()+1)+"."; //取月的时候取的是当前月-1如果想取当前月+1就可以了
-      now = now + date.getDate()+" ";
-      now = now + date.getHours()+".";
-      now = now + date.getMinutes()+".";
-      now = now + date.getSeconds();  
-      console.log(now);
-      this.axios({
-        method: "post",
-        url: "http://192.168.4.165:8080/system/saveCharacter",
-        data: {
-          newObj: {
-            charContent: this.formValidate.input,
-            timer:now,
-          }
+      this.$refs[name].validate(valid => {
+        if(valid){
+          this.axios({
+            method: "post",
+            url: "http://192.168.4.165:8080/msg/saveMsg",
+            data: {
+              newObj : {
+                charContent: this.formValidate.input,
+              }
+            }
+          }).then(res => {
+            this.modal1 = false;
+            this.$refs[name].resetFields();
+            this.getData();
+          })
         }
-      }).then(res => {
-        console.log(res);
-      });
+      })
     },
+    
     onChangePage(page) {
-      this.page = page;
+      this.page = page-1;
       if (this.input2 != "") {
         this.sousuo();
       } else {
