@@ -216,13 +216,13 @@ export default {
                 },
                 {
                     title:'资源管理',
-                    name:'system-manage',
+                    name:'resourceManagement-manage',
                     icon:'ios-cog',
                     children:[
                         {
                             title:'资源管理',
-                            name:'System',
-                            href:'/system',
+                            name:'resourceManagement',
+                            href:'/resourceManagement',
                             closable:true,
                             showInTags:false,
                             showInMenus:true,
