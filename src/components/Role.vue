@@ -1,40 +1,36 @@
 <style scoped>
 h1 {
- color: red;
+  color: red;
 }
 </style>
 <template>
- <div style="margin-top:30px;padding-left:10px">
-   <div style="margin:0 0 20px 10px;font-size:20px">角色管理</div>
-        <Button type="success" @click="modal1= true" style="margin-right:5px">添加角色</Button>
-        <Button type="error" @click="removes" style="margin-right:5px">删除多个</Button>        
-        <Input search  v-model="input2" placeholder="请输入姓名" :style="{width:200+'px'}" />
-        <Button type="info" @click="sousuo" >搜索</Button>
-        <Modal
-           v-model = "modal1"
-           title   = "修改信息"
-           :loading  = "loading"
-           @on-ok  = "asyncOK">
-            <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">               
-                 <FormItem label="角色名称" prop="input">
-                    <Input v-model="formValidate.input" placeholder="请输入姓名"></Input>
-                </FormItem>              
-               
-                <FormItem label="角色说明" prop="desc">
-                    <Input v-model="formValidate.desc"  placeholder="请输入性别"></Input>
-                </FormItem> 
-               
-                <FormItem >
-                    <Button type="primary" @click="handleSubmit('formValidate')" >提交</Button>
-                    <Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
-                </FormItem>
-            </Form>
-             <div slot="footer">
-            </div>
-            </Modal>
-        <Table border ref="selection" :columns="columns1" :data="data" @on-selection-change="onSelect"></Table>
-         <Page :total="total" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer></Page>
-    </div>
+  <div style="margin-top:30px;padding-left:10px">
+    <div style="margin:0 0 20px 10px;font-size:20px">角色管理</div>
+    <Button type="success" @click="modal1= true" style="margin-right:5px">添加角色</Button>
+    <Button type="error" @click="removes" style="margin-right:5px">删除多个</Button>
+    <Input search v-model="input2" placeholder="请输入姓名" :style="{width:200+'px'}" />
+    <Button type="info" @click="sousuo">搜索</Button>
+    <Modal v-model="modal1" title="修改信息" :loading="loading" @on-ok="asyncOK">
+      <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
+        <FormItem label="角色名称" prop="input">
+          <Input v-model="formValidate.input" placeholder="请输入姓名"></Input>
+        </FormItem>
+
+        <FormItem label="角色说明" prop="desc">
+          <Input v-model="formValidate.desc" placeholder="请输入性别"></Input>
+        </FormItem>
+
+        <FormItem>
+          <Button type="primary" @click="handleSubmit('formValidate')">提交</Button>
+          <Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
+        </FormItem>
+      </Form>
+      <div slot="footer">
+      </div>
+    </Modal>
+    <Table border ref="selection" :columns="columns1" :data="data" @on-selection-change="onSelect"></Table>
+    <Page :total="total" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer></Page>
+  </div>
 </template>
 
 <script>
@@ -46,7 +42,7 @@ export default {
         desc: "",
         input1: "",
         input2: "",
-        input3: "",
+        input3: ""
       },
       ruleValidate: {
         date: [
@@ -59,7 +55,7 @@ export default {
         ],
         desc: [
           //{ required: true, message: 'Please enter a personal introduction', trigger: 'blur' },
-         /*  {
+          /*  {
             type: "string",
             min: 20,
             message: "Introduce no less than 20 words",
@@ -67,32 +63,19 @@ export default {
           } */
         ]
       },
-
       columns1: [
         {
           type: "selection",
           width: 60,
           align: "center"
         },
-
         {
           title: "角色名称",
-          key: "name",
-          render: (h, params) => {
-            return h("div", [
-              h("Icon", {
-                props: {
-                  type: "person"
-                }
-              }),
-              h("strong", params.row.name)
-            ]);
-          }
+          key: "roleName",
         },
-
         {
           title: "角色说明",
-          key: "agender"
+          key: "roleDetails"
         },
         {
           title: "相关操作",
@@ -160,32 +143,46 @@ export default {
       total: 0,
       page: 1,
       list: 10,
-      input2:'',
+      input2: "",
       modal1: false,
       loading: true,
       removesdata: []
     };
   },
   methods: {
-     onChangePage(page) {
-    this.page = page;
-    if (this.input2 != "") {
-      this.sousuo();
-    } else {
-      this.getData();
-    }
-  },
-  onPageSizeChange(list) {
-    console.log(list);
-    this.list = list;
-    if (this.input2 != "") {
-      this.sousuo();
-    } else {
-      this.getData();
-    }
-  },
+    //分页
+    onChangePage(page) {
+      this.page = page;
+      if (this.input2 != "") {
+        this.sousuo();
+      } else {
+        this.getData();
+      }
+    },
+    onPageSizeChange(list) {
+      console.log(list);
+      this.list = list;
+      if (this.input2 != "") {
+        this.sousuo();
+      } else {
+        this.getData();
+      }
+    },
+    //重置数据
     handleReset(name) {
       this.$refs[name].resetFields();
+    },
+    //获取数据
+    getData() {
+      this.axios({
+        method: "get",
+        url: `${this.baseUrl}/role/findAll?page=${this.page -
+          1}&size=${this.list}`,
+      }).then(res => {
+        console.log(res);
+        this.total = res.data.body.totalElements;
+        this.data = res.data.body.content;
+      });
     },
     show(index) {
       this.$Modal.info({
@@ -194,12 +191,10 @@ export default {
                              性别：${this.data[index].authorname}<br>
                              登录名：${
                                this.data[index].postingtime
-                             }<br>                            
+                             }<br>
                             密码：${this.data[index].content}<br>
                              联系方式：${this.data[index].Lastreviewer}<br>
-                             所属角色：${
-                               this.data[index].Lastreviewtime
-                             }<br>
+                             所属角色：${this.data[index].Lastreviewtime}<br>
                              `
       });
     },
@@ -223,19 +218,6 @@ export default {
     },
     remove(index) {
       this.data.splice(index, 1);
-    },
-    getData() {
-      this.axios({
-        method: "post",
-        url: "http://10.31.162.59:3000/forum/list",
-        data: {
-          page: this.page,
-          limit: this.list
-        }
-      }).then(res => {
-        this.total = res.data.total;
-        this.data = res.data.docs;
-      });
     },
     asyncOK() {
       setTimeout(() => {
@@ -353,7 +335,6 @@ export default {
       });
     }
   },
- 
   mounted() {
     this.getData();
   }
