@@ -2,6 +2,10 @@
 h1 {
  color: red;
 }
+mark {
+  background: red;
+  font-weight: bold;
+}
 textarea {
     display: inline-block;
     width: 100%;
@@ -23,7 +27,7 @@ textarea {
  <div style="margin-top:30px;padding-left:10px">
    <div style="margin:0 0 20px 10px;font-size:20px">信息编辑</div>
         <Button type="success" @click="getDatas"  style="margin-right:5px">添加信息</Button>
-        <Button type="error" @click="removes" style="margin-right:5px">删除多个</Button>
+        <Button type="error" @click="removes" style="margin-right:5px">删除多个</Button>        
         <Input search  v-model="input2" placeholder="请输入标题" :style="{width:200+'px'}" />
         <Button type="info" @click="sousuo" >搜索</Button>
         <Modal
@@ -31,20 +35,20 @@ textarea {
            title   = "添加信息"
            :loading  = "loading"
            @on-ok  = "asyncOK">
-            <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
+            <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">               
                  <FormItem label="标题" prop="input">
                     <Input v-model="formValidate.input" placeholder="请输入标题"></Input>
-                </FormItem>
-
+                </FormItem>              
+               
                 <FormItem label="内容" prop="desc">
                   <Input type="textarea" v-model="formValidate.desc"  placeholder="请输入短信内容"></Input>
                 </FormItem>
                <FormItem label="发布区域" prop="input3">
-                  <i-select :value="formValidate.input3" multiple placeholder="请选择" >
+                  <i-select :value="formValidate.input3" placeholder="请选择" >
                     <i-option v-for="item of treelist" :value="item.id" :key="item.id" style="display: none;">
                       {{ item.title }}
                     </i-option>
-                    <Tree :data="baseData" @on-check-change="handleCheckChange" show-checkbox></Tree>
+                    <Tree :data="baseData" @on-select-change="handleCheckChange"></Tree>
                   </i-select>
                </FormItem>
 
@@ -54,13 +58,13 @@ textarea {
                              <Date-picker type="date" placeholder="选择日期" v-model="formValidate.date"></Date-picker>
                         </i-col>
                         <Col span="2" style="text-align: center">-</Col>
-
+                        
                         <Col span="11">
                         <FormItem prop="time">
                             <TimePicker type="time" placeholder="选择时间" v-model="formValidate.time"></TimePicker>
                         </FormItem>
                         </Col>
-
+                        
                     </Row>
                 </FormItem>
 
@@ -212,7 +216,7 @@ export default {
         }
       ],
       data: [],
-      total: 110,
+      total: 0,
       page: 0,
       list: 5,
       input2:'',
@@ -223,6 +227,8 @@ export default {
     };
   },
 methods: {
+
+     /*  发送区域 */
      handleCheckChange (data) {
       let id = ''
       let title = ''
@@ -233,11 +239,9 @@ methods: {
         let id = item.id
         let title = item.title
         if (this.formValidate.input3.indexOf(item.id) == -1 && item.orgClass === '村级'  ) {
-          this.formValidate.input3.push(item.id)
-          if(this.idd.indexOf(item.id) == -1){
-            this.idd.push(id)
-            }
-          //console.log(id)
+          this.formValidate.input3.push(item.id)          
+            this.idd=item.id
+           //console.log(item.id)
         }
         this.treelist.push({
           id,
@@ -249,15 +253,16 @@ methods: {
     },
 
     getDatas() {
+      console.log(this.baseUrl)
       this.modal1=true;
        this.axios({
          method: "get",
-         url: `${this.baseUrl}/org/allArea`
+         url: " http://192.168.4.114:8080/org/allArea"
       }).then(res => {
-         this.baseData = res.data.body;
+         this.baseData = res.data.body;        
        });
     },
-
+    
   onChangePage(page) {
     this.page = page-1;
     if (this.input2 != "") {
@@ -290,17 +295,19 @@ methods: {
                   播放次数：${this.data[index].playCount}<br>
                   `
       });
-    },
+    }, 
     edit(index) {
       /* console.log('修改啊'); */
+      console.log(this.data[index])
+
       var timer1=this.data[index].timingSend.slice(0,10).replace("-","/").replace("-","/")
       var timer2=this.data[index].timingSend.slice(11)
       this.axios({
-        url: `${this.baseUrl1}/msg/queryMsg`,
+        url: `http://192.168.4.165:9090/msg/queryMsg`,
         method: "post"
       }).then(res => {
         //console.log(index);
-        this.formValidate = res.data.content[index];
+        this.formValidate = this.data[index];
         this.formValidate.input = this.data[index].msgName;
         this.formValidate.desc = this.data[index].msgContent;
         this.formValidate.input3 = this.data[index].sendArea;
@@ -310,19 +317,19 @@ methods: {
         this.modal1 = true;
       });
     },
-
-
+    
+    
     getData() {
        this.axios({
          method: "post",
-         url: `${this.baseUrl1}/msg/queryMsg`,
+         url: "http://192.168.4.165:9090/msg/queryMsg",
          data: {
           page: this.page,
            size: this.list
          }
-       }).then(res=>{
+       }).then(res=>{      
          this.data = res.data.body.content;
-         this.total=res.data.body.totalElements;
+         this.total=res.data.body.totalElements;         
        });
     },
     asyncOK() {
@@ -358,16 +365,16 @@ methods: {
       });
     },
     remove(ids) {
-      //console.log(ids)
+     console.log(ids)
       this.$Modal.confirm({
         title: "确认操作",
         content: "<p>你确认删除该记录吗?</p>",
         onOk: () => {
           this.axios({
-            url: `${this.baseUrl1}/msg/delMsg`,
+            url: `http://192.168.4.165:9090/msg/delMsg`,
             method: "post",
             data: {
-              id: ids
+              ids: ids
             }
           }).then(res => {
             alert("你已经删除成功");
@@ -381,13 +388,12 @@ methods: {
     },
     // 多选删除
     removes(ids) {
-      console.log(ids);
       this.$Modal.confirm({
         title: "确认操作",
         content: "<p>你确认删除该记录吗?</p>",
         onOk: () => {
           this.axios({
-            url: `${this.baseUrl1}/msg/delMulMsg`,
+            url: `http://192.168.4.165:9090/msg/delMulMsg`,
             method: "post",
             data: {
               ids: this.ids
@@ -412,17 +418,17 @@ methods: {
         let misstime     = misstimeleft+" "+this.formValidate.time;
         if (this.formValidate.id) {
           this.axios({
-            url: `${this.baseUrl1}/msg/saveMsg`,
+            url: `http://192.168.4.165:9090/msg/saveMsg`,
             method: "put",
             data: {
               	newObj : {
                       id:this.formValidate.id,
 	                  	msgName : this.formValidate.input,
 		                  msgContent  : this.formValidate.desc,
-                      sendArea  : {id : Number(idd)},
+                      sendArea  : {id : Number(this.idd)},
                       timingSend  : misstime ,
                       playCount  : Number(this.formValidate.input5),
-
+                      
 	              }
             }
           }).then(res => {
@@ -434,7 +440,7 @@ methods: {
         if(valid){
           this.axios({
             method: "post",
-            url: `${this.baseUrl1}/msg/saveMsg`,
+            url: "http://192.168.4.165:9090/msg/saveMsg",
             data: {
               newObj : {
 	                  	msgName : this.formValidate.input,
@@ -453,7 +459,7 @@ methods: {
       });
     }
   },
-
+  
   mounted() {
     this.getData();
   }
