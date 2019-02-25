@@ -101,13 +101,19 @@ export default {
         {
           title: "审核状态",
           key: "msgAudit",
-         /*  render: function(h,params){
-                   return h('div', [h('span', 
-                      //params.row.userRole.roleName
-                      console.log(params)
+          render: function(h,params){
+            if(params.row.msgAudit==0){
+              params.row.msgAudit= '未审核'
+            }else if(params.row.msgAudit==1){
+              params.row.msgAudit= '审核已通过'
+            }else if(params.row.msgAudit==2){
+              params.row.msgAudit= '审核未通过'
+            }
+                   return h('div', [h('span',                    
+                     params.row.msgAudit
                       )]);
                     }
- */
+
         },
         {
           title: "功能",
@@ -191,7 +197,6 @@ export default {
     }
   },
   onPageSizeChange(list) {
-    console.log(list);
     this.list = list;
     if (this.input2 != "") {
       this.sousuo();
