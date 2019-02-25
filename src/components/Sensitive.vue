@@ -207,7 +207,6 @@ export default {
         }
       })
     },
-
     onChangePage(page) {
       this.page = page-1;
       if (this.input2 != "") {

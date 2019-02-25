@@ -35,7 +35,7 @@
                 <Icon type="log-in"></Icon>
                 欢迎登录
             </p>
-            <Form ref="userForm" :model="userForm" :rules="ruleInline">
+            <Form ref="userForm" :model="userForm" :rules="ruleCustom">
                 <FormItem prop="username">
                     <Input v-model.trim="userForm.username" placeholder="请输入" size="large">
                         <Icon type="ios-person-outline" slot="prepend" class="icon-cls"></Icon>
@@ -47,7 +47,7 @@
                     </Input>
                 </FormItem>
                 <FormItem>
-                    <Button type="primary" @click="btn_login('userForm')" long :loading="login_loading">登录</Button>
+                    <Button type="primary" @click="btn_login(userForm)" long :loading="login_loading">登录</Button>
                 </FormItem>
             </Form>
         </Card>
@@ -66,7 +66,7 @@ export default {
                 username:'',
                 password:''
             },
-            ruleInline: {
+            ruleCustom: {
                 username: [
                     { required: true, message: '用户名不能为空', trigger: 'blur' }
                 ],

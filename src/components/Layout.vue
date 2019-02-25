@@ -216,13 +216,13 @@ export default {
                 },
                 {
                     title:'资源管理',
-                    name:'resource-manage',
+                    name:'system-manage',
                     icon:'ios-cog',
                     children:[
                         {
                             title:'资源管理',
-                            name:'resourceManagement',
-                            href:'/resourceManagement',
+                            name:'System',
+                            href:'/system',
                             closable:true,
                             showInTags:false,
                             showInMenus:true,
@@ -417,16 +417,12 @@ export default {
         /* 右边导航栏 */
         quit(){
             if(window.confirm('你确定要退出吗？')){
-                this.axios({
-                    method: 'post',
-                    url   : `${this.baseUrl}/logout/user`,
-                }).then(res => {
-                        this.$router.push('/login')
-                        this.$Message.success('退出成功!');
-                });
+                 this.$router.push('/login')
+                 //return true;
               }else{
                  return false;
              }
+
         },
         clickNotice(){
             this.choosedMenu('notice');
