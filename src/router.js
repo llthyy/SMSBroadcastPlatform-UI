@@ -61,6 +61,11 @@ export default new Router({
           path: '/sensitive',
           name:'敏感词管理',
           component: () => import('@/components/Sensitive')
+        },
+        {
+          path: '/personalSet',
+          name:'个人设置',
+          component: () => import('@/components/personalSet')
         }
       ]
     },

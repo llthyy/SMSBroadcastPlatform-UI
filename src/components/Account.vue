@@ -20,7 +20,7 @@
           <Input v-model="formValidate.userPhone" placeholder="请输入联系方式"></Input>
         </FormItem>
         <FormItem label="所属角色" prop="userRole">
-          <Select v-model="formValidate.userRole"  placeholder="请选择角色" @on-open-change="getRoleData" filterable clearable style="width:160px">
+          <Select v-model="formValidate.userRole"  placeholder="请选择角色"   style="width:160px">
               <Option v-for="item in userRoleData" :value="item.roleName" :key="item.roleName" >{{item.roleName}}</Option>
           </Select>
         </FormItem>
@@ -50,21 +50,21 @@ export default {
       },
       ruleValidate: {
         userName: [
-          {required: true,message: "姓名不能为空",trigger: "change"}
+          {required: true,message: "姓名不能为空",trigger: "blur"}
         ],
         loggerName: [
-          {required: true,message: "登录账户不能为空",trigger: "change"}
+          {required: true,message: "登录账户不能为空",trigger: "blur"}
         ],
         loggerPassworld: [
-          {required: true,message: "登录密码不能为空",trigger: "change"}
+          {required: true,message: "登录密码不能为空",trigger: "blur"}
         ],
         userPhone: [
-          {required: true,message: "联系方式不能为空",trigger: "change"},
-          {pattern:/^[0-9]{11}$/,message: "必须为11位数字值",trigger: "change"}
-          // {len:11,message: "必须为11位数字值",trigger: "change"}
+          {required: true,message: "联系方式不能为空",trigger: "blur"},
+          {pattern:/^[0-9]{11}$/,message: "必须为11位数字值",trigger: "blur"}
+          // {len:11,message: "必须为11位数字值",trigger: "blur"}
         ],
         userRole: [
-          {required: true,message: "所属角色不能为空",trigger: "change"}
+          {required: true,message: "所属角色不能为空",trigger: "blur"}
         ],
       },
       columns1: [
@@ -177,7 +177,6 @@ export default {
         url: `${this.baseUrl}/user/findAll?page=${this.page -
           1}&size=${this.list}`,
       }).then(res => {
-        console.log(999,res.data.body.content);
         this.total = res.data.body.totalElements;
         this.data = res.data.body.content;
       });
@@ -185,6 +184,7 @@ export default {
     //添加修改数据
     addUser(){
       this.modal1 = true;
+      this.getRoleData();
     },
     //获取下拉框数据
     getRoleData() {
@@ -203,6 +203,8 @@ export default {
         method: "get"
       }).then(res => {
         this.formValidate = res.data.body;
+        this.formValidate.userRole= res.data.body.userRole.roleName;
+        this.getRoleData();
         this.modal1 = true;
       });
     },
@@ -216,6 +218,7 @@ export default {
                             data: this.qs.stringify(this.formValidate)
                         }).then(res => {
                             this.$Message.info("修改成功");
+                            this.formValidate={};
                             this.getData();
                             this.modal1 = false;
                         });
@@ -249,7 +252,7 @@ export default {
             url: `${this.baseUrl}/user/delete`,
             data: params
           }).then(res => {
-            this.getdeviceData(this.type);
+            this.getData();
             this.$Message.info("删除成功");
           });
         },
@@ -283,22 +286,20 @@ export default {
     //查看详情
     show(index) {
       this.$Modal.info({
-        title: "",
+        title: "账号详情：",
         content: `姓名：${this.data[index].userName}<br>
                   登录账号：${this.data[index].loggerName}<br>
                   登录密码：${this.data[index].loggerPassworld}<br>
                   联系方式：${this.data[index].userPhone}<br>
-                  所属角色：${this.data[index].userRole}<br>`
+                  所属角色：${this.data[index].userRole.roleName}<br>`
       });
     },
     onSelect(selections) {
-      /*  console.log(selections); */
       var ids = [];
       for (let i = 0; i < selections.length; i++) {
-        ids.push(selections[i]._id);
+        ids.push(selections[i].id);
       }
-      this.ids = ids.toString();
-      console.log(ids);
+      this.ids = ids;
     },
     sousuo() {
       console.log(this.input2);

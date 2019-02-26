@@ -179,6 +179,8 @@ export default {
             contextMenuTop: 0,
             visible: false,
 
+            pers:{choosed: false,name:'personalSet',href: "/personalSet",closable: true,showInTags: false,choosed:false,title:"个人设置"},
+
             menus:[
                 {
                     title:'首页',
@@ -320,8 +322,9 @@ export default {
                     })
                 }
             });
-            // console.log('tags=>',tags)
-
+            if(this.pers.showInTags){
+                        tags.push(this.pers)
+                }
             //标签数组排序，从小到到
             tags.sort((a,b)=>{
                 return (a.num - b.num)
@@ -348,7 +351,6 @@ export default {
             // 通过 `vm` 访问组件实例
             let activeMenuName = localStorage.activeMenuName;
             vm.activeMenuName = activeMenuName;
-
             let tags_last_num = vm.tags[vm.tags.length - 1].num;
 
             if(activeMenuName && activeMenuName.length != 0){
@@ -367,6 +369,11 @@ export default {
                                 vm.openMenuName = [_menu.name];
                             }
                         })
+                    }else if(activeMenuName==vm.pers.name){
+                        vm.pers.choosed = true;
+                        vm.pers.showInTags = true;
+                        vm.pers.num = tags_last_num + 1;
+                        _menu.choosed = false;
                     }
                     else{
                         // 排除首页
@@ -388,6 +395,13 @@ export default {
     },
     // ------------------------------  菜单操作结束  --------------------------------
     methods: {
+        personalSet(){
+            // this.tags.push(this.pers)
+            this.choosedMenu(this.pers.name)
+            this.clickTag(this.pers)
+            this.pers.showInTags=true;
+            this.$router.push('/personalSet')
+        },
         /*tags 滚动事件 */
         handlescroll (e) {
             var type = e.type
@@ -454,6 +468,9 @@ export default {
                             child.showInTags = false;
                         }
                     })
+                }else if(name=="personalSet"){
+                    is_choosed = this.pers.choosed;
+                    this.pers.showInTags = false;
                 }
             })
             // 关闭标签并选中tags中最后一个标签高亮
@@ -469,10 +486,18 @@ export default {
             this.tags.forEach(_tag=>{
                 if(_tag.name == tag.name){
                     _tag.choosed=true;
+                    this.pers.choosed=false;
                 }else{
                     _tag.choosed= false;
+                    this.pers.choosed=false;
                 }
             })
+            if(this.pers.name==tag.name){
+                this.pers.choosed=true
+            }else{
+                this.pers.choosed=false
+            }
+
             // 设置菜单选中name
             this.activeMenuName = tag.name;
             localStorage.activeMenuName = this.activeMenuName;
@@ -491,7 +516,6 @@ export default {
             // 设置选中菜单name
             this.activeMenuName = name;
             localStorage.activeMenuName = this.activeMenuName;
-
             //根据name查找对应的菜单对象
             let menu = null;
             this.menus.forEach(_menu=>{
@@ -503,6 +527,7 @@ export default {
                     menu = _menu;
                     _menu.showInTags = true;
                     _menu.choosed = true;
+                    this.pers.choosed=false;
 
                 }
                 else if(_menu.children){
@@ -515,7 +540,7 @@ export default {
                             menu = child;
                             child.showInTags = true;
                             child.choosed = true;
-
+                            this.pers.choosed=false;
                         }else{
                             child.choosed = false;
                         }
@@ -525,7 +550,17 @@ export default {
                     _menu.choosed = false;
                 }
             })
-            this.$router.push(`${menu.href}`);
+            // if(this.pers.name=name){
+            //     if(!this.pers.showInTags){
+            //             this.pers.num = tags_last_num + 1;
+            //         }
+            //         this.pers.showInTags = true;
+            // }
+            if(menu==null){
+                this.$router.push(`${this.pers.href}`);
+            }else{
+                this.$router.push(`${menu.href}`);
+            }
         },
         dropdownClick(name){
             this.choosedMenu(name);

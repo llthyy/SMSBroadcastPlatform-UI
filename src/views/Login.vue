@@ -47,7 +47,7 @@
                     </Input>
                 </FormItem>
                 <FormItem>
-                    <Button type="primary" @click="btn_login(userForm)" long :loading="login_loading">登录</Button>
+                    <Button type="primary" @click="btn_login('userForm')" long :loading="login_loading">登录</Button>
                 </FormItem>
             </Form>
         </Card>
@@ -78,6 +78,7 @@ export default {
     },
     methods:{
         btn_login(name) {
+            console.log(name);
             this.$refs[name].validate(valid => {
                 if (valid) {
                 this.axios({
