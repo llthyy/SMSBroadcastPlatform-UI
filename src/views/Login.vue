@@ -78,7 +78,6 @@ export default {
     },
     methods:{
         btn_login(name) {
-            console.log(name);
             this.$refs[name].validate(valid => {
                 if (valid) {
                 this.axios({
@@ -90,6 +89,7 @@ export default {
                     })
                 }).then(res => {
                     if(res.data.status=="200"){
+                        this.$cookie.set('test', res.data.body);
                         this.$router.push('/home')
                         this.$Message.success('登录成功!');
                     } else {

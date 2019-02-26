@@ -184,6 +184,7 @@ export default {
     //添加修改数据
     addUser(){
       this.modal1 = true;
+      this.formValidate={};
       this.getRoleData();
     },
     //获取下拉框数据
@@ -218,7 +219,6 @@ export default {
                             data: this.qs.stringify(this.formValidate)
                         }).then(res => {
                             this.$Message.info("修改成功");
-                            this.formValidate={};
                             this.getData();
                             this.modal1 = false;
                         });
