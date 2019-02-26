@@ -438,6 +438,7 @@ export default {
         quit(){
             if(window.confirm('你确定要退出吗？')){
                  this.$router.push('/login')
+                 this.$cookie.delete('test');
                  //return true;
               }else{
                  return false;
