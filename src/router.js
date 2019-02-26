@@ -1,15 +1,19 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
+import VueCookie  from 'vue-cookie'
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   // mode: 'history',
   routes: [
     {
       path: '',
       name: '导航栏',
+      meta: {
+            requireAuth: true,
+        },
       component: () => import('@/components/Layout'),
       children:[
         {
@@ -77,5 +81,24 @@ export default new Router({
       },
       component: () => import('@/views/Login')
     },
-  ]
+
+  ],
+
 })
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(r => r.meta.requireAuth)) {
+      if (VueCookie.get('test')) {
+          next();
+      }
+      else {
+          next({
+              path: '/login',
+              query: {redirect: to.fullPath}
+          })
+      }
+  }
+  else {
+      next();
+  }
+})
+export default router;

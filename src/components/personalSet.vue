@@ -32,7 +32,6 @@ form {
     </Form>
 </div>
 </template>
- 
 <script>
     export default {
         data () {
@@ -51,7 +50,6 @@ form {
                 callback();
             }
         };
-            
             return {
                 formCustom1: {
                    username: '',

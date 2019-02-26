@@ -2,9 +2,11 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import App from './App.vue'
 import router from './router'
-import axios from 'axios'
+// import axios from 'axios'
 import VueAxios from 'vue-axios';
 import qs from 'qs'
+import axios from './http'
+import VueCookie  from 'vue-cookie'
 
 Vue.use(Vuex);
 
@@ -17,9 +19,11 @@ import 'iview/dist/styles/iview.css';
 
 
 Vue.use(iView);
-axios.defaults.withCredentials=true;//让ajax携带cookie
 Vue.use(VueAxios, axios);
+Vue.use(VueRouter);
+Vue.use(VueCookie)
 // Vue.prototype.axios = axios;
+
 
 Vue.prototype.qs = qs
 Vue.prototype.baseUrl = "http://192.168.4.114:8080";
