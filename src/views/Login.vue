@@ -76,32 +76,45 @@ export default {
             }
         }
     },
+    
     methods:{
-        btn_login(name) {
-            console.log(name);
-            this.$refs[name].validate(valid => {
-                if (valid) {
-                this.axios({
+    btn_login(userForm){
+     this.$refs[userForm].validate((valid) => {
+          if (valid) {
+            // 调用登录请求接口
+            this.axios({
                     method: 'post',
                     url   : `${this.baseUrl}/login/user`,
                     data  : this.qs.stringify({
                     userName: this.userForm.username,
                     pwd: this.userForm.password
                     })
-                }).then(res => {
-                    if(res.data.status=="200"){
-                        this.$router.push('/home')
-                        this.$Message.success('登录成功!');
-                    } else {
-                        this.$Message.error(res.data.msg);
-                    }
-                });
-                } else {
-                this.$Message.error('用户名或密码错误!');
-                }
-            });
-    },
+                }).then(res=>{
+              // 登录成功,提示成功信息，然后跳转到首页，同时将token保存到localstorage中, 将登录名使用vuex传递到Home页面
+              if(res.data.status === 200){
+               this.$Message.success('登录成功!');
+                var that = this;
+                // 跳转到首页
+                /* setTimeout(function(){
+                    that.$router.push('/home')
+                },1000) */
+
+                //localStorage.setItem('token',res.data.token)
+                // 将登录名使用vuex传递到Home页面
+                this.$store.commit('handleUserName',res.data.body.userName);
+
+                console.log(this.$store)
+              }else{
+                this.$Message.error(res.data.msg);
+              }
+            })
+          } else {            
+            this.$Message.error('用户名或密码错误!');
+          }
+        });
     }
+  },
+  
 }
 </script>
 

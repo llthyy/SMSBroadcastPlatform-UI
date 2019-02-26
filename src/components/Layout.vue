@@ -94,7 +94,9 @@
                             <Icon @click.native="collapsedSider" :class="rotateIcon" type="md-menu" size="28"></Icon>
                             <span class="header-title">短信应急广播平台</span>
                         </div>
+                        <p style="margin-right:10px">您好！{{username}}</p>
                         <div class="header-right" style="margin-right:20px">
+                            
                             <Avatar icon="ios-person" size="large" style="margin-right:10px;"/>   
                             <span class="user-name">Admin</span> 
                             <Button type="text" icon="person" size="large" @click="personal" name="personal">个人中心</Button>
@@ -162,7 +164,9 @@
     </div>
   </section>
 </template>
+
 <script>
+
 export default {
     data(){
         return{
@@ -307,6 +311,11 @@ export default {
         }
     },
     computed: {
+        username(){
+             return this.$store.getters.userName;
+             console.log(this.$store.getters.userName)
+         },
+        
         // 筛选menus中选中的menu
         tags(){
             let tags = [];
