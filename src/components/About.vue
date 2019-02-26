@@ -253,11 +253,10 @@ methods: {
     },
 
     getDatas() {
-      console.log(this.baseUrl)
       this.modal1=true;
        this.axios({
          method: "get",
-         url: " http://192.168.4.114:8080/org/allArea"
+         url: `${this.baseUrl}/org/allArea`
       }).then(res => {
          this.baseData = res.data.body;        
        });
@@ -303,7 +302,7 @@ methods: {
       var timer1=this.data[index].timingSend.slice(0,10).replace("-","/").replace("-","/")
       var timer2=this.data[index].timingSend.slice(11)
       this.axios({
-        url: `http://192.168.4.165:9090/msg/queryMsg`,
+        url: `${this.baseUrl1}/msg/queryMsg`,
         method: "post"
       }).then(res => {
         //console.log(index);
@@ -322,7 +321,7 @@ methods: {
     getData() {
        this.axios({
          method: "post",
-         url: "http://192.168.4.165:9090/msg/queryMsg",
+         url: `${this.baseUrl1}/msg/queryMsg`,
          data: {
           page: this.page,
            size: this.list
@@ -350,7 +349,7 @@ methods: {
       //console.log(ids);
     },
     sousuo() {
-      console.log(this.input2);
+      //console.log(this.input2);
       this.axios({
         method: "post",
         url: "",
@@ -365,13 +364,13 @@ methods: {
       });
     },
     remove(ids) {
-     console.log(ids)
+     //console.log(ids)
       this.$Modal.confirm({
         title: "确认操作",
         content: "<p>你确认删除该记录吗?</p>",
         onOk: () => {
           this.axios({
-            url: `http://192.168.4.165:9090/msg/delMsg`,
+            url: `${this.baseUrl1}/msg/delMsg`,
             method: "post",
             data: {
               ids: ids
@@ -393,7 +392,7 @@ methods: {
         content: "<p>你确认删除该记录吗?</p>",
         onOk: () => {
           this.axios({
-            url: `http://192.168.4.165:9090/msg/delMulMsg`,
+            url: `${this.baseUrl1}/msg/delMulMsg`,
             method: "post",
             data: {
               ids: this.ids
@@ -418,7 +417,7 @@ methods: {
         let misstime     = misstimeleft+" "+this.formValidate.time;
         if (this.formValidate.id) {
           this.axios({
-            url: `http://192.168.4.165:9090/msg/saveMsg`,
+            url: `${this.baseUrl1}/msg/saveMsg`,
             method: "put",
             data: {
               	newObj : {
@@ -440,7 +439,7 @@ methods: {
         if(valid){
           this.axios({
             method: "post",
-            url: "http://192.168.4.165:9090/msg/saveMsg",
+            url: `${this.baseUrl1}/msg/saveMsg`,
             data: {
               newObj : {
 	                  	msgName : this.formValidate.input,

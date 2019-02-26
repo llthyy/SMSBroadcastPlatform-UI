@@ -22,7 +22,7 @@ Vue.use(VueCookie)
 
 Vue.prototype.qs = qs
 Vue.prototype.baseUrl = "http://192.168.4.114:8080";
-Vue.prototype.baseUrl1 = "http://192.168.4.165:9090";
+Vue.prototype.baseUrl1 = "http://192.168.4.165:8080";
 
 // Vue.prototype.baseUrl = "http://192.168.4.100:9090";
 // Vue.prototype.baseUrl1 = "http://192.168.4.100:9090";
