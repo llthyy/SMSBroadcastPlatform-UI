@@ -76,7 +76,7 @@ export default {
             }
         }
     },
-    
+
     methods:{
     btn_login(userForm){
      this.$refs[userForm].validate((valid) => {
@@ -108,13 +108,13 @@ export default {
                 this.$Message.error(res.data.msg);
               }
             })
-          } else {            
+          } else {
             this.$Message.error('用户名或密码错误!');
           }
         });
     }
   },
-  
+
 }
 </script>
 

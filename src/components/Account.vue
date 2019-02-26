@@ -81,10 +81,10 @@ export default {
           title: "登录账号",
           key: "loggerName"
         },
-        {
-          title: "登录密码",
-          key: "loggerPassworld"
-        },
+        // {
+        //   title: "登录密码",
+        //   key: "loggerPassworld"
+        // },
         {
           title: "联系方式",
           key: "userPhone"
@@ -289,7 +289,6 @@ export default {
         title: "账号详情：",
         content: `姓名：${this.data[index].userName}<br>
                   登录账号：${this.data[index].loggerName}<br>
-                  登录密码：${this.data[index].loggerPassworld}<br>
                   联系方式：${this.data[index].userPhone}<br>
                   所属角色：${this.data[index].userRole.roleName}<br>`
       });

@@ -94,14 +94,12 @@
                             <Icon @click.native="collapsedSider" :class="rotateIcon" type="md-menu" size="28"></Icon>
                             <span class="header-title">短信应急广播平台</span>
                         </div>
-                        <p style="margin-right:10px">您好！{{username}}</p>
                         <div class="header-right" style="margin-right:20px">
-                            
-                            <Avatar icon="ios-person" size="large" style="margin-right:10px;"/>   
-                            <span class="user-name">Admin</span> 
-                            <Button type="text" icon="person" size="large" @click="personal" name="personal">个人中心</Button>
-                           <!--  <Button type="text" icon="android-notifications" size="large" @click="clickNotice">消息通知</Button> -->
-                            <!-- <Dropdown style="margin-left:10px">
+                            <Avatar icon="ios-person" size="large" style="margin-right:10px;"/>
+                            <span class="user-name">{{username}}</span>
+                            <Button type="text" class="btn-blue" icon="person" size="large" @click="personalSet">个人设置</Button>
+                            <!-- <Button type="text" icon="android-notifications" size="large" @click="clickNotice">消息通知</Button>
+                            <Dropdown style="margin-left:10px">
                                 <a href="javascript:void(0)">
                                     下拉菜单
                                     <Icon type="ios-arrow-down"></Icon>
@@ -164,9 +162,7 @@
     </div>
   </section>
 </template>
-
 <script>
-
 export default {
     data(){
         return{
@@ -303,7 +299,7 @@ export default {
                             showInTags:false,
                             showInMenus:true,
                             choosed:false
-                        },
+                        }
                     ]
                 },
             ]
@@ -315,7 +311,6 @@ export default {
              return this.$store.getters.userName;
              console.log(this.$store.getters.userName)
          },
-        
         // 筛选menus中选中的menu
         tags(){
             let tags = [];
@@ -449,11 +444,6 @@ export default {
              }
 
         },
-          /* 个人中心 */
-        personal(){
-          this.$router.push('/personal')
-        },
-
         clickNotice(){
             this.choosedMenu('notice');
         },

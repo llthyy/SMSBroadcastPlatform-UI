@@ -289,51 +289,7 @@ export default {
         }
       });
     },
-    // 在此函数进行帖子提交
-    handleSubmit(name) {
-      this.$refs[name].validate(valid => {
-        var misstimel = new Date(this.formValidate.date);
-        var misstimeleft = misstimel.toLocaleDateString();
-        let misstime = misstimeleft + " " + this.formValidate.time;
-        if (this.formValidate._id) {
-          this.axios({
-            url: `http://10.31.162.59:3000/forum/${this.formValidate._id}`,
-            method: "put",
-            data: {
-              articalname: this.formValidate.input,
-              authorname: this.formValidate.input1,
-              postingtime: this.formValidate.input3,
-              Lastreviewer: this.formValidate.input4,
-              Lastreviewtime: this.formValidate.input5,
-              Pointofpraise: this.formValidate.input6,
-              content: this.formValidate.desc
-            }
-          }).then(res => {
-            this.modal1 = false;
-            this.$refs[name].resetFields();
-            this.getData();
-          });
-        } else {
-          this.axios({
-            method: "post",
-            url: "http://10.31.162.59:3000/forum",
-            data: {
-              articalname: this.formValidate.input,
-              authorname: this.formValidate.input1,
-              postingtime: this.formValidate.input3,
-              Lastreviewer: this.formValidate.input4,
-              Lastreviewtime: this.formValidate.input5,
-              Pointofpraise: this.formValidate.input6,
-              content: this.formValidate.desc
-            }
-          }).then(res => {
-            this.modal1 = false;
-            this.$refs[name].resetFields();
-            this.getData();
-          });
-        }
-      });
-    }
+
   },
   mounted() {
     this.getData();
