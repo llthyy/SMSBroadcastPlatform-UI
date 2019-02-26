@@ -95,9 +95,11 @@
                             <span class="header-title">短信应急广播平台</span>
                         </div>
                         <div class="header-right" style="margin-right:20px">
-                            <Button type="text" icon="person" size="large">个人中心</Button>
-                            <Button type="text" icon="android-notifications" size="large" @click="clickNotice">消息通知</Button>
-                            <Dropdown style="margin-left:10px">
+                            <Avatar icon="ios-person" size="large" style="margin-right:10px;"/>   
+                            <span class="user-name">Admin</span> 
+                            <Button type="text" icon="person" size="large" @click="personal" name="personal">个人中心</Button>
+                           <!--  <Button type="text" icon="android-notifications" size="large" @click="clickNotice">消息通知</Button> -->
+                            <!-- <Dropdown style="margin-left:10px">
                                 <a href="javascript:void(0)">
                                     下拉菜单
                                     <Icon type="ios-arrow-down"></Icon>
@@ -106,7 +108,7 @@
                                     <DropdownItem>个人设置</DropdownItem>
                                     <DropdownItem>退出登录</DropdownItem>
                                 </DropdownMenu>
-                            </Dropdown>
+                            </Dropdown> -->
                             <Button type="text" icon="md-exit" class="btn-blue" size="large" @click="quit">退出系统</Button>
                         </div>
                     </div>
@@ -295,7 +297,7 @@ export default {
                             showInTags:false,
                             showInMenus:true,
                             choosed:false
-                        }
+                        },
                     ]
                 },
             ]
@@ -424,6 +426,11 @@ export default {
              }
 
         },
+          /* 个人中心 */
+        personal(){
+          this.$router.push('/personal')
+        },
+
         clickNotice(){
             this.choosedMenu('notice');
         },

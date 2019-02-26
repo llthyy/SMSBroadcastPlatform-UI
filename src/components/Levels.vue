@@ -219,7 +219,7 @@ export default {
     edit(index) {
       /* 审核通过 */
       this.axios({
-        url: `http://192.168.4.165:8080/msg/auditPass`,
+        url: `${this.baseUrl1}/msg/auditPass`,
         method: "post",
         data: {
           ids: [this.data[index].id]
@@ -237,7 +237,7 @@ export default {
         content: "<p>你确认记录审核通过吗?</p>",
         onOk: () => {
           this.axios({
-            url: `http://192.168.4.165:8080/msg/auditPass`,
+            url: `${this.baseUrl1}/msg/auditPass`,
             method: "post",
             data: {
               ids: this.ids
@@ -256,7 +256,7 @@ export default {
     getData() {
       this.axios({
         method: "post",
-        url: "http://192.168.4.165:9090/msg/queryMsg",
+        url:`${this.baseUrl1}/msg/queryMsg`,
         data: {
           page: this.page,
           size: this.list
@@ -288,7 +288,7 @@ export default {
       console.log(this.input2);
       this.axios({
         method: "post",
-        url: "http://10.31.162.59:3000/forum/list",
+        url: `${this.baseUrl1}/msg/queryMsg`, 
         data: {
           page: this.page,
           size: this.list,
@@ -305,7 +305,7 @@ export default {
         content: "<p>你确认该记录审核不通过吗?</p>",
         onOk: () => {
           this.axios({
-            url: `http://192.168.4.165:8080/msg/auditUnPass`,
+            url: `${this.baseUrl1}/msg/auditUnPass`,
             method: "post",
             data: {
               ids: [ids]
@@ -328,7 +328,7 @@ export default {
         content: "<p>你确认该记录审核不通过吗?</p>",
         onOk: () => {
           this.axios({
-            url: `http://192.168.4.165:8080/msg/auditUnPass`,
+            url: `${this.baseUrl1}/msg/auditUnPass`,
             method: "post",
             data: {
               ids: this.ids
@@ -349,7 +349,7 @@ export default {
         //console.log(this.formValidate.id)
         if (this.formValidate.id) {
           this.axios({
-            url: `http://192.168.4.165:8080/msg/saveMsg`,
+            url: `${this.baseUrl1}/msg/saveMsg`,
             method: "put",
             data: {
               	newObj : {
@@ -366,7 +366,7 @@ export default {
         } else {
           this.axios({
             method: "post",
-            url: "http://192.168.4.165:8080/msg/saveMsg",
+            url: `${this.baseUrl1}/msg/saveMsg`,
             data: {
               newObj : {
 	                  	msgName : this.formValidate.input,
