@@ -76,7 +76,7 @@ export default {
             }
         }
     },
-    
+
     methods:{
     btn_login(userForm){
      this.$refs[userForm].validate((valid) => {
@@ -93,28 +93,22 @@ export default {
               // 登录成功,提示成功信息，然后跳转到首页，同时将token保存到localstorage中, 将登录名使用vuex传递到Home页面
               if(res.data.status === 200){
                this.$Message.success('登录成功!');
-                var that = this;
                 // 跳转到首页
-                /* setTimeout(function(){
-                    that.$router.push('/home')
-                },1000) */
-
+                    this.$router.push('/home')
                 //localStorage.setItem('token',res.data.token)
                 // 将登录名使用vuex传递到Home页面
                 this.$store.commit('handleUserName',res.data.body.userName);
-
-                console.log(this.$store)
               }else{
                 this.$Message.error(res.data.msg);
               }
             })
-          } else {            
+          } else {
             this.$Message.error('用户名或密码错误!');
           }
         });
     }
   },
-  
+
 }
 </script>
 

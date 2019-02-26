@@ -20,7 +20,7 @@ import 'iview/dist/styles/iview.css';
 
 Vue.use(iView);
 Vue.use(VueAxios, axios);
-Vue.use(VueRouter);
+
 Vue.use(VueCookie)
 // Vue.prototype.axios = axios;
 
