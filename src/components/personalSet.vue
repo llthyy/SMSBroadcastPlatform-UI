@@ -84,14 +84,27 @@ form {
         },
 
         methods: {
-            handleSubmit (name) {
-                this.$refs[name].validate((valid) => {
+            handleSubmit (formCustom) {
+                var id=this.$store.getters.userName.id;
+                var oldPassword=this.$store.getters.userName.loggerPassworld;
+                this.$refs[formCustom].validate((valid) => {
                     if (valid) {
-                       
-                        this.$Message.success('提交成功!');
+                       this.axios({
+                           method: "post",
+                           url: `${this.baseUrl}/user/updatePaw`,
+                           data:
+                           this.qs.stringify({
+                               id: id,
+                               oldPassword: oldPassword,
+                               newPassword: this.formCustom.passwd
+                           })
+                       }).then(res=>{
+                           this.$Message.success('提交成功!');
+                       })
+                        
                     } else {
                          
-                        this.$Message.error('表单验证失败!');
+                        this.$Message.error('请正确输入密码!');
                        
                     }
                 })

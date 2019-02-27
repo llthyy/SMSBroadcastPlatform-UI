@@ -12,7 +12,7 @@ const mutations = {
     }
 }
 const state = {
-    information: {} || localStorage.getItem(information),
+    information: '' || JSON.parse(localStorage.getItem('information')),
 }
 
 const getters = {

@@ -102,10 +102,10 @@ export default {
                 //localStorage.setItem('token',res.data.token)
                 // 将登录名使用vuex传递到Home页面
                 let information={
-                         username:res.data.body.userName,
-                         id:res.data.body.id,
-                         loggerName:res.data.body.loggerName,
-                         loggerPassworld:res.data.body.loggerName
+                         "username":res.data.body.userName,
+                         "id":res.data.body.id,
+                         "loggerName":res.data.body.loggerName,
+                         "loggerPassworld":res.data.body.loggerPassworld
                     }
                 this.$store.commit('handleUserName',information);
                 console.log(res.data.body)
