@@ -162,7 +162,7 @@
                 <Tree :data="baseData" @on-select-change="getID"></Tree>
               </div>
               <div style="width:75%;float:right;padding-right:20px;">
-                <Table border :columns="columns3" :data="data3" @on-selection-change="onSelectaddGroupDev"></Table>
+                <Table border :columns="columns3" :data="data" @on-selection-change="onSelectaddGroupDev"></Table>
                 <Page :total="total" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer transfer show-total></Page>
               </div>
               </FormItem>
@@ -356,7 +356,8 @@ export default {
         {
           type: "selection",
           width: 60,
-          align: "center"
+          align: "center",
+          _checked: true
         },
         {
           title: "设备别名",
@@ -812,6 +813,20 @@ export default {
     //添加分组终端设备
     modaladdGroupDev(){
       this.modalGroupDev1=true;
+      var params = new URLSearchParams();
+      params.append("groupId", this.groupID);
+      params.append("page", this.page-1);
+      params.append("size",this.list);
+       this.axios({
+        method: "post",
+        url: `${this.baseUrl}/device/findDeviceByGroup`,
+        data:params
+      }).then(res => {
+        console.log(res.data.body.content);
+        this.checkData=res.data.body.content
+        // this.total2 = res.data.body.totalElements;
+        // this.data2 = res.data.body.content;
+      });
     },
     addGroupDevOk(){
       this.axios({

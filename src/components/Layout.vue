@@ -406,6 +406,7 @@ export default {
     methods: {
         //权限设置
          permission(){
+             console.log(JSON.parse(this.$cookie.get('test')));
             var perm=JSON.parse(this.$cookie.get('test'));
             if(perm.userRole.admin){
                 this.menus[1].children[1].showInMenus=true;
