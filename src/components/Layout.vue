@@ -36,10 +36,13 @@
                                 <Icon :size="20" :type="menu.icon"></Icon>
                                 <span>{{menu.title}}</span>
                             </template>
-                            <MenuItem :name="child.name" v-for="(child ,child_index) in menu.children" :key="child_index">
-                                <Icon :size="20" :type="child.icon"></Icon>
-                                <span>{{child.title}}</span>
+                            <div v-for="(child ,child_index) in menu.children" :key="child_index">
+                                <MenuItem  :name="child.name"  v-if=" child.showInMenus" >
+                                    <Icon :size="20" :type="child.icon"></Icon>
+                                    <span>{{child.title}}</span>
                             </MenuItem>
+                            </div>
+
                         </Submenu>
                         <MenuItem :name="menu.name" v-if="!menu.children && menu.showInMenus" :key="menu_index">
                             <Icon :size="20" :type="menu.icon" :key="menu_index"></Icon>
@@ -213,7 +216,7 @@ export default {
                             href:'/levels',
                             closable:true,
                             showInTags:false,
-                            showInMenus:true,
+                            showInMenus:false,
                             choosed:false
                         },
                     ]
@@ -309,10 +312,12 @@ export default {
     computed: {
         username(){
              return this.$store.getters.userName;
-             console.log(this.$store.getters.userName)
          },
+
         // 筛选menus中选中的menu
         tags(){
+            // console.log(JSON.parse(this.$cookie.get('test')) );
+            // if(this.$cookie.get('test'))
             let tags = [];
             // 将menus中showInTags=true的标签放到tags数组中
             this.menus.forEach(menu=>{
@@ -399,6 +404,13 @@ export default {
     },
     // ------------------------------  菜单操作结束  --------------------------------
     methods: {
+        //权限设置
+         permission(){
+            var perm=JSON.parse(this.$cookie.get('test'));
+            if(perm.userRole.admin){
+                this.menus[1].children[1].showInMenus=true;
+            }
+         },
         personalSet(){
             // this.tags.push(this.pers)
             this.choosedMenu(this.pers.name)
@@ -566,6 +578,9 @@ export default {
             this.choosedMenu(name);
         }
         // ------------------------------  菜单操作结束  --------------------------------
-    }
+    },
+    mounted() {
+        this.permission()
+    },
 }
 </script>

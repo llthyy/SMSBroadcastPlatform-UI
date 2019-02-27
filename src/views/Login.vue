@@ -93,7 +93,7 @@ export default {
               // 登录成功,提示成功信息，然后跳转到首页，同时将token保存到localstorage中, 将登录名使用vuex传递到Home页面
               if(res.data.status === 200){
                this.$Message.success('登录成功!');
-                this.$cookie.set('test', res.data.body);
+                this.$cookie.set('test', JSON.stringify(res.data.body) );
                 // 跳转到首页
                     this.$router.push('/home')
                 //localStorage.setItem('token',res.data.token)
