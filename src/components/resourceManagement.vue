@@ -20,7 +20,7 @@
             <Input search v-model="input2" placeholder="请输入..." :style="{width:200+'px'}" />
             <Button type="info" @click="sousuo">搜索</Button>
           </div>
-          <Table border :columns="columns" :data="data" @on-selection-change="onSelect"></Table>
+          <Table border :columns="columns" :data="data" @on-selection-change="onSelect" @on-row-dblclick="detail" ></Table>
           <Page :total="total" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer transfer show-total></Page>
         </div>
         <!--区域添加  -->
@@ -107,35 +107,7 @@
         </Modal>
         <!--终端设备查看详情  -->
         <Modal v-model="modal2" title="终端设备" class="detail">
-          <Form>
-            <p>物理编码:
-              <span>{{this.formValidate1.devCode}}</span>
-            </p>
-            <p>逻辑编码:
-              <span>{{this.formValidate1.devLogic}}</span>
-            </p>
-            <p>设备别名:
-              <span>{{this.formValidate1.alias}}</span>
-            </p>
-            <p>设备型号:
-              <span>{{this.formValidate1.model}}</span>
-            </p>
-            <p>设备厂家:
-              <span>{{this.formValidate1.manufacturer}}</span>
-            </p>
-            <p>硬件版本:
-              <span>{{this.formValidate1.hardwareVersion}}</span>
-            </p>
-            <p>固件版本:
-              <span>{{this.formValidate1.softwareVersion}}</span>
-            </p>
-            <p>联系人:
-              <span>{{this.formValidate1.person}}</span>
-            </p>
-            <p>联系电话:
-              <span>{{this.formValidate1.devCode}}</span>
-            </p>
-          </Form>
+          <Table border :columns="columns4" :data="data3" :show-header="false"></Table>
           <div slot="footer"></div>
         </Modal>
       </TabPane>
@@ -190,7 +162,7 @@
                 <Tree :data="baseData" @on-select-change="getID"></Tree>
               </div>
               <div style="width:75%;float:right;padding-right:20px;">
-                <Table border :columns="columns" :data="data" @on-selection-change="onSelectaddGroupDev"></Table>
+                <Table border :columns="columns3" :data="data3" @on-selection-change="onSelectaddGroupDev"></Table>
                 <Page :total="total" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer transfer show-total></Page>
               </div>
               </FormItem>
@@ -324,7 +296,6 @@ export default {
           width: 200,
           align: "center",
           render: (h, params) => {
-            if(!this.modalGroupDev1){
                 return h("div", [
                 h(
                   "Button",
@@ -342,7 +313,7 @@ export default {
                       }
                     }
                   },
-                  "查看详情"
+                  "设置"
                 ),
                 h(
                   "Button",
@@ -378,30 +349,64 @@ export default {
                   "删除"
                 )
               ]);
-            }else{
-                return h("div", [
-                h(
-                  "Button",
-                  {
-                    props: {
-                      type: "primary",
-                      size: "small"
-                    },
-                    style: {
-                      marginRight: "5px"
-                    },
-                    on: {
-                      click: () => {
-                        this.detail(params.row.id);
-                      }
-                    }
-                  },
-                  "查看详情"
-                ),
-              ]);
-            }
           }
         }
+      ],
+      columns3: [
+        {
+          type: "selection",
+          width: 60,
+          align: "center"
+        },
+        {
+          title: "设备别名",
+          key: "alias"
+        },
+        {
+          title: "设备型号",
+          key: "model"
+        },
+        {
+          title: "设备厂家",
+          key: "manufacturer"
+        },
+        {
+          title: "硬件版本",
+          key: "hardwareVersion"
+        },
+        {
+          title: "固件版本",
+          key: "softwareVersion"
+        },
+        {
+          title: "联系人",
+          key: "person"
+        },
+        {
+          title: "联系电话",
+          key: "phone"
+        },
+      ],
+      data3:[],
+      columns4: [
+        {
+          title: "标题",
+          key: "title1",
+          width:100,
+        },
+        {
+          title: "内容",
+          key: "content1",
+        },
+        {
+          title: "标题",
+          width:100,
+          key: "title2",
+        },
+        {
+          title: "内容",
+          key: "content2",
+        },
       ],
       data1: [],
       modalGroup1: false,
@@ -603,13 +608,20 @@ export default {
       });
     },
     //查看详情
-    detail(id) {
+    detail(row) {
       // 请示数据，打开对话框，显示表单的数据，进行提交
       this.axios({
-        url: `${this.baseUrl}/device/getOne?ids=${id}`,
+        url: `${this.baseUrl}/device/getOne?ids=${row.id}`,
         method: "get"
       }).then(res => {
-        this.formValidate1 = res.data.body;
+        var data=res.data.body
+        var arr=[];
+        arr.push({title1:"物理编码:",content1:data.devCode,title2:"逻辑编码:",content2:data.devLogic});
+        arr.push({title1:"设备别名:",content1:data.alias,title2:"设备型号:",content2:data.model});
+        arr.push({title1:"设备厂家:",content1:data.manufacturer,title2:"硬件版本:",content2:data.hardwareVersion});
+        arr.push({title1:"固件版本:",content1:data.softwareVersion,title2:"联系人:",content2:data.person});
+        arr.push({title1:"联系电话:",content1:data.phone});
+        this.data3=arr;
         this.modal2 = true;
       });
     },
