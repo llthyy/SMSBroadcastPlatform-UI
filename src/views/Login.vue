@@ -96,13 +96,19 @@ export default {
                 // var that = this;
                 // 跳转到首页
                 
-                    this.$router.push('/home')
-              
-
+                   this.$router.push('/home')
+                     this.$cookie.set('test', res.data.body);
+                 
                 //localStorage.setItem('token',res.data.token)
                 // 将登录名使用vuex传递到Home页面
-                this.$store.commit('handleUserName',res.data.body.userName);
-
+                let information={
+                         username:res.data.body.userName,
+                         id:res.data.body.id,
+                         loggerName:res.data.body.loggerName,
+                         loggerPassworld:res.data.body.loggerName
+                    }
+                this.$store.commit('handleUserName',information);
+                console.log(res.data.body)
                // console.log(this.$store)
               }else{
                 this.$Message.error(res.data.msg);

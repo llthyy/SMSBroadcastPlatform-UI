@@ -5,18 +5,18 @@ Vue.use(Vuex)
 
 const actions = {}
 const mutations = {
-    handleUserName: (state, user_name) => {
-        state.user_name = user_name
+    handleUserName: (state, information) => {
+        state.information = information
             // 把登录的用户的名保存到localStorage中，防止页面刷新，导致vuex重新启动，用户名就成为初始值（初始值为空）的情况
-        localStorage.setItem('user_name', user_name)
+        localStorage.setItem('information',JSON.stringify(information))
     }
 }
 const state = {
-    user_name: '' || localStorage.getItem('user_name')
+    information: {} || localStorage.getItem(JSON.parse(information)),
 }
 
 const getters = {
-    userName: (state) => state.user_name
+    userName: (state) => state.information,
 }
 
 const store = new Vuex.Store({

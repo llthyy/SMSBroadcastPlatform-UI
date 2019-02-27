@@ -308,8 +308,8 @@ export default {
     },
     computed: {
         username(){
-             return this.$store.getters.userName;
-             console.log(this.$store.getters.userName)
+            console.log(this.$store.getters)
+             return this.$store.getters.userName.username;
          },
         // 筛选menus中选中的menu
         tags(){

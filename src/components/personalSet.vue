@@ -12,18 +12,18 @@ form {
 <div>
     <Form ref="formCustom1" :model="formCustom1" :label-width="100">
         <FormItem label="用户名" prop="username">
-            <Input type="username" v-model="formCustom1.username" disabled></Input>
+            <Input  v-model="username1"  disabled></Input>
         </FormItem>
         <FormItem label="原密码" prop="passwd">
-            <Input type="passward" v-model="formCustom1.passwd" disabled></Input>
+            <Input  v-model="passwd1"  disabled></Input>
         </FormItem>
     </Form>
     <Form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="100">
         <FormItem label="新密码" prop="passwd">
-            <Input type="passward" v-model="formCustom.passwd"></Input>
+            <Input  v-model="formCustom.passwd"></Input>
         </FormItem>
         <FormItem label="确认新密码" prop="pwdCheck">
-            <Input type="passward" v-model="formCustom.pwdCheck"></Input>
+            <Input  v-model="formCustom.pwdCheck"></Input>
         </FormItem>
         <FormItem>
             <Button type="primary" @click="handleSubmit('formCustom')">提交</Button>
@@ -52,8 +52,8 @@ form {
         };
             return {
                 formCustom1: {
-                   username: '',
-                    passwd: '',
+                   username1: '',
+                    passwd1: '',
                 },
                 formCustom: {
                     passwd: '',
@@ -69,15 +69,31 @@ form {
                 }
             }
         },
+        
+        computed: {
+            username1:{
+                get(){
+                    return this.$store.getters.userName.username;
+                },
+            },
+            passwd1:{
+                get(){
+                    return this.$store.getters.userName.loggerPassworld;
+                },
+            }
+        },
+
         methods: {
             handleSubmit (name) {
                 this.$refs[name].validate((valid) => {
                     if (valid) {
+                       
                         this.$Message.success('提交成功!');
                     } else {
+                         
                         this.$Message.error('表单验证失败!');
+                       
                     }
-                    console.log(this.$refs[name])
                 })
             },
             handleReset (name) {
