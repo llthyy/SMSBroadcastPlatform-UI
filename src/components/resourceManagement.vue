@@ -114,6 +114,7 @@
         <!-- 权限设置 -->
         <Modal v-model="modalForm3" title="终端参数设置" class="set">
            <Tabs value="name1">
+<<<<<<< HEAD
             <TabPane label="回传服务器" name="name1">
               <Form ref="formValidate5" :model="formValidate5" :rules="ruleValidate5" :label-width="80">
                   <FormItem label="回传地址:" prop="address">
@@ -128,9 +129,27 @@
                   </FormItem>            
               </Form>
             </TabPane>
+=======
+             <TabPane label="回传服务器" name="name1">
+                <Form ref="formValidate2" :model="formValidate2" :rules="ruleValidate2" :label-width="80">
+            <FormItem label="回传地址:" prop="address">
+              <Input v-model="formValidate2.address" placeholder="请输入回传地址" type="text"></Input>
+            </FormItem>
+            <FormItem label="回传端口:" prop="port">
+              <Input v-model="formValidate2.port" placeholder="请输入回传端口" type="text"></Input>
+            </FormItem>
+            <FormItem class="fuck">
+              <div style="float: right;">
+                <Button type="primary" @click="handleSubmit2('formValidate2')" style="margin-bottom:0px">提交</Button>
+                <Button type="error" style="margin-left:8px" @click="handleReset('formValidate2')" >重置</Button>
+              </div>
+            </FormItem>            
+          </Form>
+             </TabPane>
+>>>>>>> f4916930a70501725fb1f1ec6cd15a6d181f3543
 
              <TabPane label="在线升级" name="name2">
-                 <Form ref="formValidate3" :model="formValidate3" :rules="ruleValidate3" :label-width="100">
+                 <Form style="padding-bottom: 40px;" ref="formValidate3" :model="formValidate3" :rules="ruleValidate3" :label-width="100">
             <FormItem label="FTP服务器地址:" prop="address">
               <Input v-model="formValidate3.address" placeholder="请输入FTP服务器地址" type="text"></Input>
             </FormItem>
@@ -146,9 +165,11 @@
             <FormItem label="升级文件名:" prop="filename">
               <Input v-model="formValidate3.filename" placeholder="请输入升级文件名" type="text"></Input>
             </FormItem>
-            <FormItem >
-              <Button type="primary" @click="handleSubmit3('formValidate3')">提交</Button>
-              <Button  type="error" style="margin-left:8px" @click="handleReset('formValidate3')">重置</Button>
+            <FormItem class="fuck">
+              <div style="float: right;">
+                <Button type="primary"  style="margin-bottom:0px" @click="handleSubmit3('formValidate3')">提交</Button>
+                <Button  type="error" style="margin-left:8px" @click="handleReset('formValidate3')">重置</Button>
+              </div>
             </FormItem>            
           </Form>
              </TabPane>
@@ -165,9 +186,11 @@
             <FormItem label="频率（Mhz）:" prop="freq">
               <Input v-model="formValidate4.freq" placeholder="" type="text"></Input>
             </FormItem> 
-            <FormItem>
-              <Button type="primary" @click="handleSubmit4('formValidate4')">提交</Button>
-              <Button type="error" style="margin-left: 8px" @click="handleReset('formValidate4')">重置</Button>
+            <FormItem class="fuck">
+              <div style="float: right;">
+                <Button type="primary" style="margin-bottom:0px" @click="handleSubmit4('formValidate4')">提交</Button>
+                <Button type="error" style="margin-left: 8px" @click="handleReset('formValidate4')">重置</Button>
+              </div>
             </FormItem>           
           </Form>
              </TabPane>
@@ -1181,6 +1204,12 @@ export default {
 .devcheck  td{
   height:40px;
   font-size:14px
+}
+.fuck {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  margin-bottom: 0;
 }
 </style>
 
