@@ -70,7 +70,12 @@ const router = new Router({
           path: '/personalSet',
           name:'个人设置',
           component: () => import('@/components/personalSet')
-        }
+        },
+        {
+          path: '/whiteList',
+          name:'白名单管理',
+          component: () => import('@/components/whiteList')
+        },
       ]
     },
     {

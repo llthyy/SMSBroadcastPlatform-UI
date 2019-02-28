@@ -95,10 +95,7 @@ export default {
                this.$Message.success('登录成功!');
                 this.$cookie.set('test', JSON.stringify(res.data.body) );
                 // 跳转到首页
-                
                    this.$router.push('/home')
-                     this.$cookie.set('test', res.data.body);
-                 
                 //localStorage.setItem('token',res.data.token)
                 // 将登录名使用vuex传递到Home页面
                 let information={

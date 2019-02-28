@@ -107,7 +107,7 @@
         </Modal>
         <!--终端设备查看详情  -->
         <Modal v-model="modal2" title="终端设备" class="detail">
-          <Table border :columns="columns4" :data="data3" :show-header="false"></Table>
+          <Table class="devcheck" border :columns="columns4" :data="data3" :show-header="false"></Table>
           <div slot="footer"></div>
         </Modal>
       </TabPane>
@@ -641,10 +641,10 @@ export default {
       var params = new URLSearchParams();
       params.append("device", JSON.stringify(this.formValidate1));
       params.append("broRegionId", this.areaID);
-      params.append("id", this.formValidate1.id);
       this.$refs[username].validate(valid => {
         if (valid) {
           if (this.formValidate1.id) {
+            params.append("id", this.formValidate1.id);
             this.axios({
               url: `${this.baseUrl}/device/save`,
               method: "post",
@@ -749,7 +749,7 @@ export default {
         });
       }
     },
-    handleSubmit1(username) {
+    handleSubmit2(username) {
       this.$refs[username].validate(valid => {
         if (valid) {
           this.axios({
@@ -970,6 +970,10 @@ export default {
 }
 .group-height .ivu-table-row-hover td {
   background-color: #d3e3f3 !important;
+}
+.devcheck  td{
+  height:40px;
+  font-size:14px
 }
 </style>
 
