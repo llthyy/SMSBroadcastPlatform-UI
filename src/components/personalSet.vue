@@ -100,6 +100,7 @@ form {
                            })
                        }).then(res=>{
                            this.$Message.success('提交成功!');
+                           this.$router.push('/login')
                        })
                         
                     } else {

@@ -79,6 +79,7 @@ export default {
 
     methods:{
     btn_login(userForm){
+        this.$router.push('/home')
      this.$refs[userForm].validate((valid) => {
           if (valid) {
             // 调用登录请求接口
@@ -97,7 +98,6 @@ export default {
                 // 跳转到首页
                 
                    this.$router.push('/home')
-                     this.$cookie.set('test', res.data.body);
                  
                 //localStorage.setItem('token',res.data.token)
                 // 将登录名使用vuex传递到Home页面
@@ -108,7 +108,6 @@ export default {
                          "loggerPassworld":res.data.body.loggerPassworld
                     }
                 this.$store.commit('handleUserName',information);
-                console.log(res.data.body)
                // console.log(this.$store)
               }else{
                 this.$Message.error(res.data.msg);
