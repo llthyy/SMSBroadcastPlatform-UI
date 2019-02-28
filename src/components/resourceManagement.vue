@@ -114,7 +114,6 @@
         <!-- 权限设置 -->
         <Modal v-model="modalForm3" title="终端参数设置" class="set">
            <Tabs value="name1">
-<<<<<<< HEAD
             <TabPane label="回传服务器" name="name1">
               <Form ref="formValidate5" :model="formValidate5" :rules="ruleValidate5" :label-width="80">
                   <FormItem label="回传地址:" prop="address">
@@ -126,27 +125,9 @@
                   <FormItem >
                     <Button type="primary" @click="handleSubmit5('formValidate5')">提交</Button>
                     <Button type="error" style="margin-left:8px" @click="handleReset('formValidate5')" >重置</Button>
-                  </FormItem>            
+                  </FormItem>
               </Form>
             </TabPane>
-=======
-             <TabPane label="回传服务器" name="name1">
-                <Form ref="formValidate2" :model="formValidate2" :rules="ruleValidate2" :label-width="80">
-            <FormItem label="回传地址:" prop="address">
-              <Input v-model="formValidate2.address" placeholder="请输入回传地址" type="text"></Input>
-            </FormItem>
-            <FormItem label="回传端口:" prop="port">
-              <Input v-model="formValidate2.port" placeholder="请输入回传端口" type="text"></Input>
-            </FormItem>
-            <FormItem class="fuck">
-              <div style="float: right;">
-                <Button type="primary" @click="handleSubmit2('formValidate2')" style="margin-bottom:0px">提交</Button>
-                <Button type="error" style="margin-left:8px" @click="handleReset('formValidate2')" >重置</Button>
-              </div>
-            </FormItem>            
-          </Form>
-             </TabPane>
->>>>>>> f4916930a70501725fb1f1ec6cd15a6d181f3543
 
              <TabPane label="在线升级" name="name2">
                  <Form style="padding-bottom: 40px;" ref="formValidate3" :model="formValidate3" :rules="ruleValidate3" :label-width="100">
@@ -170,28 +151,28 @@
                 <Button type="primary"  style="margin-bottom:0px" @click="handleSubmit3('formValidate3')">提交</Button>
                 <Button  type="error" style="margin-left:8px" @click="handleReset('formValidate3')">重置</Button>
               </div>
-            </FormItem>            
+            </FormItem>
           </Form>
              </TabPane>
 
              <TabPane label="调频频率" name="name3">
                  <Form ref="formValidate4" :model="formValidate4" :rules="ruleValidate4" :label-width="100">
-            <FormItem label="频率级别:" prop="level">              
+            <FormItem label="频率级别:" prop="level">
                 <Select v-model="formValidate4.level">
                   <Option value="1">1</Option>
                   <Option value="2">2</Option>
                   <Option value="3">3</Option>
-                </Select>              
+                </Select>
             </FormItem>
             <FormItem label="频率（Mhz）:" prop="freq">
               <Input v-model="formValidate4.freq" placeholder="" type="text"></Input>
-            </FormItem> 
+            </FormItem>
             <FormItem class="fuck">
               <div style="float: right;">
                 <Button type="primary" style="margin-bottom:0px" @click="handleSubmit4('formValidate4')">提交</Button>
                 <Button type="error" style="margin-left: 8px" @click="handleReset('formValidate4')">重置</Button>
               </div>
-            </FormItem>           
+            </FormItem>
           </Form>
              </TabPane>
           </Tabs>
@@ -374,7 +355,7 @@ export default {
           title: "设备别名",
           key: "alias"
         },
-        
+
         {
           title: "设备型号",
           key: "model"
@@ -670,7 +651,7 @@ export default {
 
    /* 权限提交 */
      /*  1.回传服务器 */
-    handleSubmit5(formValidate5) {      
+    handleSubmit5(formValidate5) {
       this.$refs[formValidate5].validate(valid => {
         if (valid) {
           this.axios({
@@ -741,7 +722,7 @@ export default {
         }
       });
     },
-      
+
       /* 多个设备权限设置 */
     modalForm3click(){
       if(this.ids.length>1){
