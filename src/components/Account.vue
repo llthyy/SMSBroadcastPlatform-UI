@@ -26,7 +26,7 @@
         </FormItem>
         <FormItem>
           <Button type="primary" @click="handleSubmit('formValidate')">提交</Button>
-          <Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
+          <Button type="error" @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
         </FormItem>
       </Form>
       <div slot="footer">

@@ -15,6 +15,7 @@
         </div>
         <div style="width:75%;float:right;padding-right:60px;">
           <div class="devBtn">
+            <Button type="success" @click="modalForm3click">多个设备权限设置</Button>
             <Button type="success" @click="modal1= true">添加终端设备</Button>
             <Button type="error" @click="remove">删除多个</Button>
             <Input search v-model="input2" placeholder="请输入..." :style="{width:200+'px'}" />
@@ -108,6 +109,75 @@
         <!--终端设备查看详情  -->
         <Modal v-model="modal2" title="终端设备" class="detail">
           <Table class="devcheck" border :columns="columns4" :data="data3" :show-header="false"></Table>
+          <div slot="footer"></div>
+        </Modal>
+        <!-- 权限设置 -->
+        <Modal v-model="modalForm3" title="权限设置" class="set">
+           <Tabs value="name1">
+             <TabPane label="回传服务器" name="name1">
+                <Form ref="formValidate2" :model="formValidate2" :rules="ruleValidate2" :label-width="80">
+            <FormItem label="回传地址:" prop="address">
+              <Input v-model="formValidate2.address" placeholder="请输入回传地址" type="text"></Input>
+            </FormItem>
+            <FormItem label="回传端口:" prop="port">
+              <Input v-model="formValidate2.port" placeholder="请输入回传端口" type="text"></Input>
+            </FormItem>
+            <FormItem class="fuck">
+              <div style="float: right;">
+                <Button type="primary" @click="handleSubmit2('formValidate2')" style="margin-bottom:0px">提交</Button>
+                <Button type="error" style="margin-left:8px" @click="handleReset('formValidate2')" >重置</Button>
+              </div>
+            </FormItem>            
+          </Form>
+             </TabPane>
+
+             <TabPane label="在线升级" name="name2">
+                 <Form style="padding-bottom: 40px;" ref="formValidate3" :model="formValidate3" :rules="ruleValidate3" :label-width="100">
+            <FormItem label="FTP服务器地址:" prop="address">
+              <Input v-model="formValidate3.address" placeholder="请输入FTP服务器地址" type="text"></Input>
+            </FormItem>
+            <FormItem label="FTP服务器端口:" prop="port">
+              <Input v-model="formValidate3.port" placeholder="请输入FTP服务器端口" type="text"></Input>
+            </FormItem>
+            <FormItem label="FTP用户名:" prop="username">
+              <Input v-model="formValidate3.username" placeholder="请输入FTP用户名" type="text"></Input>
+            </FormItem>
+            <FormItem label="FTP登入密码:" prop="pwd">
+              <Input v-model="formValidate3.pwd" placeholder="请输入FTP登入密码" type="text"></Input>
+            </FormItem>
+            <FormItem label="升级文件名:" prop="filename">
+              <Input v-model="formValidate3.filename" placeholder="请输入升级文件名" type="text"></Input>
+            </FormItem>
+            <FormItem class="fuck">
+              <div style="float: right;">
+                <Button type="primary"  style="margin-bottom:0px" @click="handleSubmit3('formValidate3')">提交</Button>
+                <Button  type="error" style="margin-left:8px" @click="handleReset('formValidate3')">重置</Button>
+              </div>
+            </FormItem>            
+          </Form>
+             </TabPane>
+
+             <TabPane label="调频频率" name="name3">
+                 <Form ref="formValidate4" :model="formValidate4" :rules="ruleValidate4" :label-width="100">
+            <FormItem label="频率级别:" prop="level">              
+                <Select v-model="formValidate4.level">
+                  <Option value="1">1</Option>
+                  <Option value="2">2</Option>
+                  <Option value="3">3</Option>
+                </Select>              
+            </FormItem>
+            <FormItem label="频率（Mhz）:" prop="freq">
+              <Input v-model="formValidate4.freq" placeholder="" type="text"></Input>
+            </FormItem> 
+            <FormItem class="fuck">
+              <div style="float: right;">
+                <Button type="primary" style="margin-bottom:0px" @click="handleSubmit4('formValidate4')">提交</Button>
+                <Button type="error" style="margin-left: 8px" @click="handleReset('formValidate4')">重置</Button>
+              </div>
+            </FormItem>           
+          </Form>
+             </TabPane>
+          </Tabs>
           <div slot="footer"></div>
         </Modal>
       </TabPane>
@@ -205,6 +275,8 @@ export default {
       checkData:'',
       modalForm1: false,
       modalForm2: false,
+      modalForm3: false,
+      formValidate2:false,
       baseData: [],
       formValidate: {
         name: "",
@@ -212,6 +284,22 @@ export default {
         latitude: "",
         orgCode: ""
       },
+      formValidate2: {
+        name: "",
+        longitude: "",
+        orgCode: ""
+      },
+      formValidate3: {
+        name: "",
+        orgCode: ""
+      },
+      formValidate4: {
+        name: "",
+        orgCode: ""
+      },
+      ruleValidate2: {},
+      ruleValidate3: {},
+      ruleValidate4: {},
       ruleValidate: {
         name: [
           {
@@ -237,12 +325,14 @@ export default {
       },
       modal1: false,
       modal2: false,
+      model4: '',
       data: [],
       total: 0,
       page: 1,
       list: 10,
       input2: "",
       ids: [],
+      id:'',
       Group_ids: [],
       GroupDev_ids: [],
       loading: true,
@@ -260,15 +350,20 @@ export default {
       columns: [
         {
           type: "selection",
-          width: 60,
+          width: 40,
           align: "center"
         },
         {
           title: "设备别名",
           key: "alias"
         },
+        
         {
           title: "设备型号",
+          key: "model"
+        },
+        {
+          title: "在线状态",
           key: "model"
         },
         {
@@ -294,11 +389,11 @@ export default {
         {
           title: "相关操作",
           key: "action",
-          width: 200,
+          width: 220,
           align: "center",
           render: (h, params) => {
                 return h("div", [
-                h(
+                   h(
                   "Button",
                   {
                     props: {
@@ -310,11 +405,11 @@ export default {
                     },
                     on: {
                       click: () => {
-                        this.detail(params.row.id);
+                        this.set(params.row.id);
                       }
                     }
                   },
-                  "设置"
+                  "权限设置"
                 ),
                 h(
                   "Button",
@@ -475,6 +570,7 @@ export default {
     };
   },
   methods: {
+
     /* ..........................   区域管理 ................................  */
     //获取数据
     getDatas() {
@@ -549,6 +645,90 @@ export default {
           this.$Message.error("提交失败");
         }
       });
+    },
+
+   /* 权限提交 */
+     /*  1.回传服务器 */
+    handleSubmit2(formValidate2) {      
+      this.$refs[formValidate2].validate(valid => {
+        if (valid) {
+          console.log(this.ids)
+          this.axios({
+            url: `${this.baseUrl1}/msg/setMsgTerminal`,
+            method: "post",
+            data: {
+                 ids: this.ids,
+                 type:"reback",
+                 address : this.formValidate2.address,
+                 port: this.formValidate2.port
+            }
+          }).then(res => {
+            this.modalForm3 = false;
+            this.getDatas();
+            this.ids=[];
+          });
+        } else {
+          this.$Message.error("提交失败");
+        }
+      });
+    },
+    /*2. 在线升级提交 */
+     handleSubmit3(formValidate3) {
+      this.$refs[formValidate3].validate(valid => {
+        if (valid) {
+          this.axios({
+            url: `${this.baseUrl1}/msg/setMsgTerminal`,
+            method: "post",
+            data: {
+                 ids: this.ids,
+                 type:"upgrade",
+                 address : this.formValidate3.address,
+                 port: this.formValidate3.port,
+                 username: this.formValidate3.username,
+                 pwd : this.formValidate3.pwd,
+                 filename : this.formValidate3.filename,
+            }
+          }).then(res => {
+            this.modalForm3 = false;
+            this.getDatas();
+          });
+        } else {
+          this.$Message.error("提交失败");
+        }
+      });
+    },
+    /*3. 调频频率提交 */
+     handleSubmit4(formValidate4) {
+      this.$refs[formValidate4].validate(valid => {
+        if (valid) {
+          this.axios({
+            url: `${this.baseUrl1}/msg/setMsgTerminal`,
+            method: "post",
+            data: {
+                 ids: this.ids,
+                 type:"setfreq",
+                freqArray:[
+                  {level: this.formValidate4.level ,
+                  freq: this.formValidate4.freq}
+                ]
+            }
+          }).then(res => {
+            this.modalForm3 = false;
+            this.getDatas();
+          });
+        } else {
+          this.$Message.error("提交失败");
+        }
+      });
+    },
+      
+      /* 多个设备权限设置 */
+    modalForm3click(){
+      if(this.ids.length>1){
+          this.modalForm3=true
+      }else{
+         this.$Message.info('请选择多个设备')
+      }
     },
     //删除数据
     confirm() {
@@ -632,6 +812,12 @@ export default {
         this.data3=arr;
         this.modal2 = true;
       });
+    },
+    /* 权限设置 */
+    set(id){
+      // 打开对话框，
+      this.ids.push(id);
+      this.modalForm3=true;
     },
     //添加修改设备数据
     edit(id) {
@@ -1007,6 +1193,12 @@ export default {
 .devcheck  td{
   height:40px;
   font-size:14px
+}
+.fuck {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  margin-bottom: 0;
 }
 </style>
 

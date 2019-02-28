@@ -79,6 +79,7 @@ export default {
 
     methods:{
     btn_login(userForm){
+        this.$router.push('/home')
      this.$refs[userForm].validate((valid) => {
           if (valid) {
             // 调用登录请求接口
@@ -105,7 +106,6 @@ export default {
                          "loggerPassworld":res.data.body.loggerPassworld
                     }
                 this.$store.commit('handleUserName',information);
-                console.log(res.data.body)
                // console.log(this.$store)
               }else{
                 this.$Message.error(res.data.msg);
