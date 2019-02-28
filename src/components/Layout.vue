@@ -302,6 +302,15 @@ export default {
                             showInTags:false,
                             showInMenus:true,
                             choosed:false
+                        },
+                        {
+                            title:'白名单管理',
+                            name:'whiteList-Management',
+                            href:'/whiteList',
+                            closable:true,
+                            showInTags:false,
+                            showInMenus:true,
+                            choosed:false
                         }
                     ]
                 },
@@ -311,14 +320,12 @@ export default {
     },
     computed: {
         username(){
-            console.log(this.$store.getters)
+            // console.log(this.$store.getters)
              return this.$store.getters.userName.username;
          },
 
         // 筛选menus中选中的menu
         tags(){
-            // console.log(JSON.parse(this.$cookie.get('test')) );
-            // if(this.$cookie.get('test'))
             let tags = [];
             // 将menus中showInTags=true的标签放到tags数组中
             this.menus.forEach(menu=>{

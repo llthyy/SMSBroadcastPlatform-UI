@@ -108,7 +108,7 @@
         </Modal>
         <!--终端设备查看详情  -->
         <Modal v-model="modal2" title="终端设备" class="detail">
-          <Table border :columns="columns4" :data="data3" :show-header="false"></Table>
+          <Table class="devcheck" border :columns="columns4" :data="data3" :show-header="false"></Table>
           <div slot="footer"></div>
         </Modal>
         <!-- 权限设置 -->
@@ -223,10 +223,10 @@
             <Form >
               <FormItem>
               <div style="width:20%;background:#fff;float:left;">
-                <Tree :data="baseData" @on-select-change="getID"></Tree>
+                <Tree :data="baseData" @on-select-change="getID1"></Tree>
               </div>
               <div style="width:75%;float:right;padding-right:20px;">
-                <Table border :columns="columns3" :data="data3" @on-selection-change="onSelectaddGroupDev"></Table>
+                <Table border :columns="columns3" :data="data4" @on-selection-change="onSelectaddGroupDev"></Table>
                 <Page :total="total" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer transfer show-total></Page>
               </div>
               </FormItem>
@@ -266,6 +266,7 @@ export default {
       }
     };
     return {
+      checkData:'',
       modalForm1: false,
       modalForm2: false,
       modalForm3: false,
@@ -445,7 +446,8 @@ export default {
         {
           type: "selection",
           width: 60,
-          align: "center"
+          align: "center",
+          _checked: true
         },
         {
           title: "设备别名",
@@ -557,6 +559,7 @@ export default {
           key: "phone"
         },
       ],
+      data4:[]
     };
   },
   methods: {
@@ -820,10 +823,10 @@ export default {
       var params = new URLSearchParams();
       params.append("device", JSON.stringify(this.formValidate1));
       params.append("broRegionId", this.areaID);
-      params.append("id", this.formValidate1.id);
       this.$refs[username].validate(valid => {
         if (valid) {
           if (this.formValidate1.id) {
+            params.append("id", this.formValidate1.id);
             this.axios({
               url: `${this.baseUrl}/device/save`,
               method: "post",
@@ -928,7 +931,7 @@ export default {
         });
       }
     },
-    handleSubmit1(username) {
+    handleSubmit2(username) {
       this.$refs[username].validate(valid => {
         if (valid) {
           this.axios({
@@ -990,8 +993,44 @@ export default {
       });
     },
     //添加分组终端设备
+    check(){
+      for(var i=0;i<this.data.length;i++){
+          for(var j=0;j<this.checkData.length;j++){
+            if(JSON.stringify(this.data[i]) ==JSON.stringify(this.checkData[j])){
+              this.data[i]._checked=true;
+            }
+          }
+        }
+        this.data4=this.data
+    },
+    getID1(data){
+      this.areaID = data[0].id;
+      this.pearentID = data[0].parentId;
+      this.axios({
+        method: "get",
+        url: `${this.baseUrl}/device/getByOrg?ids=${
+          this.areaID
+        }&page=${this.page - 1}&size=${this.list}`
+      }).then(res => {
+        this.data=res.data.body.content
+        this.check();
+      });
+    },
     modaladdGroupDev(){
       this.modalGroupDev1=true;
+      var params = new URLSearchParams();
+      params.append("groupId", this.groupID);
+      params.append("page", this.page-1);
+      params.append("size",this.list);
+       this.axios({
+        method: "post",
+        url: `${this.baseUrl}/device/findDeviceByGroup`,
+        data:params
+      }).then(res => {
+        this.getdeviceData()
+        this.checkData=res.data.body.content
+        this.check()
+      });
     },
     addGroupDevOk(){
       this.axios({
@@ -1135,6 +1174,10 @@ export default {
 }
 .group-height .ivu-table-row-hover td {
   background-color: #d3e3f3 !important;
+}
+.devcheck  td{
+  height:40px;
+  font-size:14px
 }
 </style>
 
