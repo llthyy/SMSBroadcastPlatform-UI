@@ -81,10 +81,6 @@ export default {
           title: "登录账号",
           key: "loggerName"
         },
-        // {
-        //   title: "登录密码",
-        //   key: "loggerPassworld"
-        // },
         {
           title: "联系方式",
           key: "userPhone"

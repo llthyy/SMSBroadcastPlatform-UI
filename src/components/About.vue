@@ -143,7 +143,13 @@ export default {
         },
         {
           title: "发布区域",
-          key: "sendArea"
+          key: "sendArea",
+          render: 
+                  function(h,params){
+                    return h('div', [h('span',                    
+                             params.row.sendArea.name
+                          )]);
+                  }
         },
         {
           title: "发布时间",
@@ -265,10 +271,10 @@ methods: {
   onChangePage(page) {
     this.page = page-1;
     if (this.input2 != "") {
-      this.sousuo();
-    } else {
-      this.getData();
-    }
+        this.sousuo();
+       } else {
+         this.getData();
+     }
   },
   onPageSizeChange(list) {
     this.list = list;
@@ -289,7 +295,7 @@ methods: {
         content: `标题：${this.data[index].msgName}<br>
                   内容：${this.data[index].msgContent}<br>
                   添加时间：${this.data[index].msgTime}<br>
-                  发布区域：${this.data[index].sendArea}<br>
+                  发布区域：${this.data[index].sendArea.name}<br>
                   发布时间：${this.data[index].timingSend}<br>
                   播放次数：${this.data[index].playCount}<br>
                   `
@@ -297,8 +303,7 @@ methods: {
     }, 
     edit(index) {
       /* console.log('修改啊'); */
-      console.log(this.data[index])
-
+     this.getDatas();
       var timer1=this.data[index].timingSend.slice(0,10).replace("-","/").replace("-","/")
       var timer2=this.data[index].timingSend.slice(11)
       this.axios({
@@ -309,7 +314,7 @@ methods: {
         this.formValidate = this.data[index];
         this.formValidate.input = this.data[index].msgName;
         this.formValidate.desc = this.data[index].msgContent;
-        this.formValidate.input3 = this.data[index].sendArea;
+        this.formValidate.input3 = this.data[index].sendArea.name;
         this.formValidate.date = timer1;
         this.formValidate.time = timer2;
         this.formValidate.input5 = this.data[index].playCount;
@@ -349,14 +354,15 @@ methods: {
       //console.log(ids);
     },
     sousuo() {
-      //console.log(this.input2);
       this.axios({
         method: "post",
-        url: "",
+        url: `${this.baseUrl1}/msg/queryMsg`,
         data: {
           page: this.page,
           size: this.list,
-          msgNmae: this.input2
+          keyword: {
+            msgName: this.input2
+            }
         }
       }).then(res => {
         this.total = res.data.body.totalElements;
@@ -373,7 +379,7 @@ methods: {
             url: `${this.baseUrl1}/msg/delMsg`,
             method: "post",
             data: {
-              ids: ids
+              id: ids
             }
           }).then(res => {
             alert("你已经删除成功");
@@ -426,8 +432,7 @@ methods: {
 		                  msgContent  : this.formValidate.desc,
                       sendArea  : {id : Number(this.idd)},
                       timingSend  : misstime ,
-                      playCount  : Number(this.formValidate.input5),
-                      
+                      playCount  : Number(this.formValidate.input5),                      
 	              }
             }
           }).then(res => {

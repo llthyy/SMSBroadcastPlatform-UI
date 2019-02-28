@@ -179,23 +179,17 @@ export default {
         url: `${this.baseUrl}/role/findAll?page=${this.page -
           1}&size=${this.list}`,
       }).then(res => {
-        console.log(res);
         this.total = res.data.body.totalElements;
         this.data = res.data.body.content;
       });
     },
     show(index) {
+      console.log(this.data)
       this.$Modal.info({
         title: "",
-        content: `姓名：${this.data[index].articalname}<br>
-                             性别：${this.data[index].authorname}<br>
-                             登录名：${
-                               this.data[index].postingtime
-                             }<br>
-                            密码：${this.data[index].content}<br>
-                             联系方式：${this.data[index].Lastreviewer}<br>
-                             所属角色：${this.data[index].Lastreviewtime}<br>
-                             `
+        content: 
+               `角色名称：${this.data[index].roleName}<br>
+                角色说明：${this.data[index].roleDetails}<br>`
       });
     },
     edit(id) {
@@ -204,15 +198,9 @@ export default {
         url: `http://10.31.162.59:3000/forum/${id}`,
         method: "get"
       }).then(res => {
-        console.log(res);
         this.formValidate = res.data;
         this.formValidate.input = res.data.articalname;
         this.formValidate.desc = res.data.content;
-        this.formValidate.input1 = res.data.authorname;
-        this.formValidate.input3 = res.data.postingtime;
-        this.formValidate.input4 = res.data.Lastreviewer;
-        this.formValidate.input5 = res.data.Lastreviewtime;
-        this.formValidate.input6 = res.data.Pointofpraise;
         this.modal1 = true;
       });
     },

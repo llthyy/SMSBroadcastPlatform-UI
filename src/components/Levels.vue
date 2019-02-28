@@ -273,16 +273,11 @@ export default {
       }, 500);
     },
     onSelect(selections) {
-      //console.log(selections);
-      //console.log(selections[0].id);
       var ids = [];
       for (let i = 0; i < selections.length; i++) {
         ids.push(selections[i].id);
       }
-      //console.log(ids)
-     // this.ids = ids.toString();
      this.ids = ids;
-      console.log(ids);
     },
     sousuo() {
       console.log(this.input2);
@@ -292,11 +287,14 @@ export default {
         data: {
           page: this.page,
           size: this.list,
-          msgNmae: this.input2
+          keyword : {
+	           	msgName : this.input2,
+	        },
+          listType: "audit",
         }
       }).then(res => {
-        this.total = res.data.total;
-        this.data = res.data.content;
+        this.total = res.data.body.total;
+        this.data = res.data.body.content;
       });
     },
     remove(ids) {

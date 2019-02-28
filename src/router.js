@@ -76,6 +76,11 @@ const router = new Router({
           name:'白名单管理',
           component: () => import('@/components/whiteList')
         },
+        {
+          path: '/Smessage',
+          name:'短信网关配置',
+          component: () => import('@/components/Smessage')
+        },
       ]
     },
     {

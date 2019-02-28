@@ -98,19 +98,16 @@ export default {
                   添加时间：${this.data[index].Addtime}<br>`
       });
     },
-    remove(index) {
-      this.data.splice(index, 1);
-    },
     getData() {
       this.axios({
         method: "post",
-        url: "http://192.168.4.165:8080/system/queryCharacter",
+        url: `${this.baseUrl1}/system/queryCharacter`,
         data: {
           page: this.page,
-          limit: this.list
+          size: this.list
         }
       }).then(res => {
-        this.total = res.data.body.totalElement;
+        this.total = res.data.body.totalElements;
         this.data = res.data.body.content;
       });
     },
@@ -119,31 +116,29 @@ export default {
         this.modal1 = false;
       }, 500);
     },
-    onSelect(selections) {
-      /*  console.log(selections); */
+     onSelect(selections) {
       var ids = [];
       for (let i = 0; i < selections.length; i++) {
-        ids.push(selections[i]._id);
+        ids.push(selections[i].id);
       }
-      this.ids = ids.toString();
-      console.log(ids);
+     this.ids = ids;
     },
     sousuo() {
-      console.log(this.input2);
       this.axios({
         method: "post",
-        url: "http://192.168.4.165:8080/system/saveCharacter",
+        url: `${this.baseUrl1}/system/queryCharacter`,
         data: {
-
           newObj: {
             page: this.page,
-            limit: this.list,
-            Sensitive: this.input2,
+            size: this.list,
+            keyword : {
+		            charContent: this.input2,
+	          },
           }
         }
       }).then(res => {
-        this.total = res.data.total;
-        this.data = res.data.docs;
+        this.total = res.data.body.totalElements;
+        this.data = res.data.body.content;
       });
     },
     remove(id) {
@@ -152,8 +147,11 @@ export default {
         content: "<p>你确认删除该记录吗?</p>",
         onOk: () => {
           this.axios({
-            url: `http://10.31.162.59:3000/forum/${id}`,
-            method: "delete"
+            method: "post" ,
+            url: `${this.baseUrl1}/system/queryCharacter`,
+            data: {
+              ids : id
+            }
           }).then(res => {
             alert("你已经删除成功");
             this.getData();
@@ -165,15 +163,14 @@ export default {
       });
     },
     // 多选删除
-    removes() {
-      console.log(this.ids);
+    removes(ids) {
       this.$Modal.confirm({
         title: "确认操作",
         content: "<p>你确认删除该记录吗?</p>",
         onOk: () => {
           this.axios({
-            url: `http://10.31.162.59:3000/forum`,
-            method: "delete",
+            method: 'post',
+            url: `${this.baseUrl1}/system/queryCharacter`,
             data: {
               ids: this.ids
             }
@@ -193,7 +190,7 @@ export default {
         if(valid){
           this.axios({
             method: "post",
-            url: "http://192.168.4.165:8080/msg/saveMsg",
+            url: `${this.baseUrl1}/system/saveCharacter`,
             data: {
               newObj : {
                 charContent: this.formValidate.input,
@@ -216,7 +213,6 @@ export default {
       }
     },
     onPageSizeChange(list) {
-      console.log(list);
       this.list = list;
       if (this.input2 != "") {
         this.sousuo();
