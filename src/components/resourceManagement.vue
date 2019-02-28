@@ -847,6 +847,7 @@ export default {
         url: `${this.baseUrl}/device/findDeviceByGroup`,
         data:params
       }).then(res => {
+        this.getdeviceData()
         this.checkData=res.data.body.content
         this.check()
       });
