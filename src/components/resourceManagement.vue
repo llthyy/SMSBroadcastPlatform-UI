@@ -470,7 +470,8 @@ export default {
           key: "phone"
         },
       ],
-      data4:[]
+      data4:[],
+      areaIDarr:[]
     };
   },
   methods: {
@@ -584,15 +585,19 @@ export default {
     getID(data) {
       this.areaID = data[0].id;
       this.pearentID = data[0].parentId;
+      var arr=[]
+      for(var i=0;i<data.length;i++){
+        arr.push(data[i].id)
+      }
+      this.areaIDarr=arr;
       this.areaDevice();
     },
     //根据区域显示终端设备
     areaDevice() {
       this.axios({
-        method: "get",
-        url: `${this.baseUrl}/device/getByOrg?ids=${
-          this.areaID
-        }&page=${this.page - 1}&size=${this.list}`
+        method: "post",
+        url: `${this.baseUrl}/device/getByOrg`,
+        data:this.qs.stringify({ids:JSON.stringify(this.areaIDarr) ,page:this.page-1,size:this.list})
       }).then(res => {
         this.total = res.data.body.totalElements;
         this.data = res.data.body.content;
@@ -826,11 +831,15 @@ export default {
     getID1(data){
       this.areaID = data[0].id;
       this.pearentID = data[0].parentId;
+      var arr=[]
+      for(var i=0;i<data.length;i++){
+        arr.push(data[i].id)
+      }
+      this.areaIDarr=arr;
       this.axios({
-        method: "get",
-        url: `${this.baseUrl}/device/getByOrg?ids=${
-          this.areaID
-        }&page=${this.page - 1}&size=${this.list}`
+        method: "post",
+        url: `${this.baseUrl}/device/getByOrg`,
+        data:this.qs.stringify({ids:JSON.stringify(this.areaIDarr) ,page:this.page-1,size:this.list})
       }).then(res => {
         this.data=res.data.body.content
         this.check();
