@@ -159,10 +159,10 @@
             <Form >
               <FormItem>
               <div style="width:20%;background:#fff;float:left;">
-                <Tree :data="baseData" @on-select-change="getID"></Tree>
+                <Tree :data="baseData" @on-select-change="getID1"></Tree>
               </div>
               <div style="width:75%;float:right;padding-right:20px;">
-                <Table border :columns="columns3" :data="data" @on-selection-change="onSelectaddGroupDev"></Table>
+                <Table border :columns="columns3" :data="data4" @on-selection-change="onSelectaddGroupDev"></Table>
                 <Page :total="total" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer transfer show-total></Page>
               </div>
               </FormItem>
@@ -202,6 +202,7 @@ export default {
       }
     };
     return {
+      checkData:'',
       modalForm1: false,
       modalForm2: false,
       baseData: [],
@@ -469,6 +470,7 @@ export default {
           key: "phone"
         },
       ],
+      data4:[]
     };
   },
   methods: {
@@ -811,6 +813,29 @@ export default {
       });
     },
     //添加分组终端设备
+    check(){
+      for(var i=0;i<this.data.length;i++){
+          for(var j=0;j<this.checkData.length;j++){
+            if(JSON.stringify(this.data[i]) ==JSON.stringify(this.checkData[j])){
+              this.data[i]._checked=true;
+            }
+          }
+        }
+        this.data4=this.data
+    },
+    getID1(data){
+      this.areaID = data[0].id;
+      this.pearentID = data[0].parentId;
+      this.axios({
+        method: "get",
+        url: `${this.baseUrl}/device/getByOrg?ids=${
+          this.areaID
+        }&page=${this.page - 1}&size=${this.list}`
+      }).then(res => {
+        this.data=res.data.body.content
+        this.check();
+      });
+    },
     modaladdGroupDev(){
       this.modalGroupDev1=true;
       var params = new URLSearchParams();
@@ -822,10 +847,8 @@ export default {
         url: `${this.baseUrl}/device/findDeviceByGroup`,
         data:params
       }).then(res => {
-        console.log(res.data.body.content);
         this.checkData=res.data.body.content
-        // this.total2 = res.data.body.totalElements;
-        // this.data2 = res.data.body.content;
+        this.check()
       });
     },
     addGroupDevOk(){
