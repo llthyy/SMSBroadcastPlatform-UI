@@ -311,6 +311,15 @@ export default {
                             showInTags:false,
                             showInMenus:true,
                             choosed:false
+                        },
+                        {
+                            title:'短信网关配置',
+                            name:'Short-Message',
+                            href:'/Smessage',
+                            closable:true,
+                            showInTags:false,
+                            showInMenus:true,
+                            choosed:false
                         }
                     ]
                 },

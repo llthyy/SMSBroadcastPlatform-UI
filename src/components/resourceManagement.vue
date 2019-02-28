@@ -13,7 +13,7 @@
         <div style="width:20%;background:#fff;float:left;">
           <Tree :data="baseData" @on-select-change="getID"></Tree>
         </div>
-        <div style="width:75%;float:right;padding-right:60px;">
+        <div style="width:79%;float:right;padding-right:60px;">
           <div class="devBtn">
             <Button type="success" @click="modalForm3click">多个设备权限设置</Button>
             <Button type="success" @click="modal1= true">添加终端设备</Button>
@@ -112,8 +112,24 @@
           <div slot="footer"></div>
         </Modal>
         <!-- 权限设置 -->
-        <Modal v-model="modalForm3" title="权限设置" class="set">
+        <Modal v-model="modalForm3" title="终端参数设置" class="set">
            <Tabs value="name1">
+<<<<<<< HEAD
+            <TabPane label="回传服务器" name="name1">
+              <Form ref="formValidate5" :model="formValidate5" :rules="ruleValidate5" :label-width="80">
+                  <FormItem label="回传地址:" prop="address">
+                    <Input v-model="formValidate5.address" placeholder="请输入回传地址" type="text"></Input>
+                  </FormItem>
+                  <FormItem label="回传端口:" prop="port">
+                    <Input v-model="formValidate5.port" placeholder="请输入回传端口" type="text"></Input>
+                  </FormItem>
+                  <FormItem >
+                    <Button type="primary" @click="handleSubmit5('formValidate5')">提交</Button>
+                    <Button type="error" style="margin-left:8px" @click="handleReset('formValidate5')" >重置</Button>
+                  </FormItem>            
+              </Form>
+            </TabPane>
+=======
              <TabPane label="回传服务器" name="name1">
                 <Form ref="formValidate2" :model="formValidate2" :rules="ruleValidate2" :label-width="80">
             <FormItem label="回传地址:" prop="address">
@@ -130,6 +146,7 @@
             </FormItem>            
           </Form>
              </TabPane>
+>>>>>>> f4916930a70501725fb1f1ec6cd15a6d181f3543
 
              <TabPane label="在线升级" name="name2">
                  <Form style="padding-bottom: 40px;" ref="formValidate3" :model="formValidate3" :rules="ruleValidate3" :label-width="100">
@@ -276,7 +293,7 @@ export default {
       modalForm1: false,
       modalForm2: false,
       modalForm3: false,
-      formValidate2:false,
+      formValidate5:false,
       baseData: [],
       formValidate: {
         name: "",
@@ -284,7 +301,7 @@ export default {
         latitude: "",
         orgCode: ""
       },
-      formValidate2: {
+      formValidate5: {
         name: "",
         longitude: "",
         orgCode: ""
@@ -297,7 +314,7 @@ export default {
         name: "",
         orgCode: ""
       },
-      ruleValidate2: {},
+      ruleValidate5: {},
       ruleValidate3: {},
       ruleValidate4: {},
       ruleValidate: {
@@ -363,7 +380,11 @@ export default {
           key: "model"
         },
         {
-          title: "在线状态",
+          title: "设备状态",
+          key: "model"
+        },
+        {
+          title: "播发状态",
           key: "model"
         },
         {
@@ -389,7 +410,7 @@ export default {
         {
           title: "相关操作",
           key: "action",
-          width: 220,
+          width: 200,
           align: "center",
           render: (h, params) => {
                 return h("div", [
@@ -649,18 +670,17 @@ export default {
 
    /* 权限提交 */
      /*  1.回传服务器 */
-    handleSubmit2(formValidate2) {      
-      this.$refs[formValidate2].validate(valid => {
+    handleSubmit5(formValidate5) {      
+      this.$refs[formValidate5].validate(valid => {
         if (valid) {
-          console.log(this.ids)
           this.axios({
             url: `${this.baseUrl1}/msg/setMsgTerminal`,
             method: "post",
             data: {
                  ids: this.ids,
                  type:"reback",
-                 address : this.formValidate2.address,
-                 port: this.formValidate2.port
+                 address : this.formValidate5.address,
+                 port: this.formValidate5.port
             }
           }).then(res => {
             this.modalForm3 = false;
