@@ -159,18 +159,18 @@
                 <Button type="primary"  style="margin-bottom:0px" @click="handleSubmit3('formValidate3')">提交</Button>
                 <Button  type="error" style="margin-left:8px" @click="handleReset('formValidate3')">重置</Button>
               </div>
-            </FormItem>            
+            </FormItem>
           </Form>
              </TabPane>
 
              <TabPane label="调频频率" name="name3">
                  <Form ref="formValidate4" :model="formValidate4" :rules="ruleValidate4" :label-width="100">
-            <FormItem label="频率级别:" prop="level">              
+            <FormItem label="频率级别:" prop="level">
                 <Select v-model="formValidate4.level">
                   <Option value="1">1</Option>
                   <Option value="2">2</Option>
                   <Option value="3">3</Option>
-                </Select>              
+                </Select>
             </FormItem>
             <FormItem label="频率（Mhz）:" prop="freq">
               <Input v-model="formValidate4.freq" placeholder="请输入频率" type="text"></Input>
@@ -180,7 +180,7 @@
                 <Button type="primary" style="margin-bottom:0px" @click="handleSubmit4('formValidate4')">提交</Button>
                 <Button type="error" style="margin-left: 8px" @click="handleReset('formValidate4')">重置</Button>
               </div>
-            </FormItem>           
+            </FormItem>
           </Form>
              </TabPane>
           </Tabs>
@@ -363,7 +363,7 @@ export default {
           title: "设备别名",
           key: "alias"
         },
-        
+
         {
           title: "设备型号",
           key: "model"
@@ -575,7 +575,8 @@ export default {
           key: "phone"
         },
       ],
-      data4:[]
+      data4:[],
+      areaIDarr:[]
     };
   },
   methods: {
@@ -658,7 +659,7 @@ export default {
 
    /* 权限提交 */
      /*  1.回传服务器 */
-    handleSubmit5(formValidate5) {      
+    handleSubmit5(formValidate5) {
       this.$refs[formValidate5].validate(valid => {
         if (valid) {
           this.axios({
@@ -729,7 +730,7 @@ export default {
         }
       });
     },
-      
+
       /* 多个设备权限设置 */
     modalForm3click(){
       if(this.ids.length>1){
@@ -773,15 +774,19 @@ export default {
     getID(data) {
       this.areaID = data[0].id;
       this.pearentID = data[0].parentId;
+      var arr=[]
+      for(var i=0;i<data.length;i++){
+        arr.push(data[i].id)
+      }
+      this.areaIDarr=arr;
       this.areaDevice();
     },
     //根据区域显示终端设备
     areaDevice() {
       this.axios({
-        method: "get",
-        url: `${this.baseUrl}/device/getByOrg?ids=${
-          this.areaID
-        }&page=${this.page - 1}&size=${this.list}`
+        method: "post",
+        url: `${this.baseUrl}/device/getByOrg`,
+        data:this.qs.stringify({ids:JSON.stringify(this.areaIDarr) ,page:this.page-1,size:this.list})
       }).then(res => {
         this.total = res.data.body.totalElements;
         this.data = res.data.body.content;
@@ -1021,11 +1026,15 @@ export default {
     getID1(data){
       this.areaID = data[0].id;
       this.pearentID = data[0].parentId;
+      var arr=[]
+      for(var i=0;i<data.length;i++){
+        arr.push(data[i].id)
+      }
+      this.areaIDarr=arr;
       this.axios({
-        method: "get",
-        url: `${this.baseUrl}/device/getByOrg?ids=${
-          this.areaID
-        }&page=${this.page - 1}&size=${this.list}`
+        method: "post",
+        url: `${this.baseUrl}/device/getByOrg`,
+        data:this.qs.stringify({ids:JSON.stringify(this.areaIDarr) ,page:this.page-1,size:this.list})
       }).then(res => {
         this.data=res.data.body.content
         this.check();
