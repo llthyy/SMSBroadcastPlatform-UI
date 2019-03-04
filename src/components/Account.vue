@@ -3,7 +3,7 @@
     <div style="margin:0 0 20px 10px;font-size:20px">账号管理</div>
     <Button type="success" @click="addUser" style="margin-right:5px">添加账号</Button>
     <Button type="error" @click="remove" style="margin-right:5px">删除多个</Button>
-    <Input search v-model="input2" placeholder="请输入姓名" :style="{width:200+'px'}" />
+    <Input search v-model="input2" placeholder="请输入姓名或账号" :style="{width:200+'px'}" />
     <Button type="info" @click="sousuo">搜索</Button>
     <Modal v-model="modal1" title="修改信息" :loading="loading" >
       <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
@@ -24,16 +24,18 @@
               <Option v-for="item in userRoleData" :value="item.roleName" :key="item.roleName" >{{item.roleName}}</Option>
           </Select>
         </FormItem>
-        <FormItem>
+        <FormItem class="fuck" style="width:95%;margin-bottom:25px">
+          <div style="float: right;">
           <Button type="primary" @click="handleSubmit('formValidate')">提交</Button>
           <Button type="error" @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
+          </div>
         </FormItem>
       </Form>
       <div slot="footer">
       </div>
     </Modal>
     <Table border ref="selection" :columns="columns1" :data="data" @on-selection-change="onSelect"></Table>
-    <Page :total="total" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer></Page>
+     <Page :total="total" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer show-total></Page>
   </div>
 </template>
 
@@ -158,7 +160,7 @@ export default {
       data: [],
       total: 0,
       page: 1,
-      list: 10,
+      list: 5,
       input2: "",
       modal1: false,
       loading: true,
@@ -191,6 +193,7 @@ export default {
           1}&size=${this.list}`,
       }).then(res => {
         this.userRoleData = res.data.body.content;
+        console.log(this.userRoleData)
       });
     },
      // 请示数据，打开对话框，显示表单的数据，进行提交
@@ -297,18 +300,19 @@ export default {
       this.ids = ids;
     },
     sousuo() {
-      console.log(this.input2);
+      console.log(this.page);
       this.axios({
         method: "post",
-        url: "http://10.31.162.59:3000/forum/list",
-        data: {
-          page: this.page,
-          limit: this.list,
-          articalname: this.input2
-        }
+        url: `${this.baseUrl}/user/findByNameOrLoggerName`,
+        data: this.qs.stringify({
+          page: this.page-1,
+          size: this.list,
+          message: this.input2
+        })
       }).then(res => {
-        this.total = res.data.total;
-        this.data = res.data.docs;
+        console.log(res)
+        this.total = res.data.totalElements;
+        this.data = res.data.body.content;
       });
     },
   },

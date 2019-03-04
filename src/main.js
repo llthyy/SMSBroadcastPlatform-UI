@@ -7,7 +7,9 @@ import VueAxios from 'vue-axios';
 import qs from 'qs'
 import axios from './http'
 import VueCookie  from 'vue-cookie'
+import echarts from 'echarts'
 
+Vue.prototype.$echarts = echarts
 Vue.use(Vuex);
 
 import store from './vuex/store'

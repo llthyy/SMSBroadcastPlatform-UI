@@ -10,16 +10,18 @@
         <FormItem label="敏感词" prop="input">
           <Input v-model="formValidate.input" placeholder="请输入敏感词"></Input>
         </FormItem>
-        <FormItem>
+        <FormItem class="fuck" style="width:95%;margin-bottom:25px">
+           <div style="float: right;">
           <Button type="primary" @click="handleSubmit('formValidate')">提交</Button>
-          <Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
+          <Button type="error" @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
+           </div>
         </FormItem>
       </Form>
       <div slot="footer">
       </div>
     </Modal>
     <Table border ref="selection" :columns="columns1" :data="data" @on-selection-change="onSelect"></Table>
-    <Page :total="total" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer></Page>
+    <Page :total="total" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer show-total></Page>
   </div>
 </template>
 
@@ -128,14 +130,14 @@ export default {
         method: "post",
         url: `${this.baseUrl1}/system/queryCharacter`,
         data: {
-          newObj: {
+          
             page: this.page,
             size: this.list,
             keyword : {
 		            charContent: this.input2,
 	          },
           }
-        }
+        
       }).then(res => {
         this.total = res.data.body.totalElements;
         this.data = res.data.body.content;
@@ -148,9 +150,9 @@ export default {
         onOk: () => {
           this.axios({
             method: "post" ,
-            url: `${this.baseUrl1}/system/queryCharacter`,
-            data: {
-              ids : id
+            url: `${this.baseUrl1}/system/delCharacter`,
+            data:{
+              ids : [id] 
             }
           }).then(res => {
             alert("你已经删除成功");
@@ -170,7 +172,7 @@ export default {
         onOk: () => {
           this.axios({
             method: 'post',
-            url: `${this.baseUrl1}/system/queryCharacter`,
+            url: `${this.baseUrl1}/system/delCharacter`,
             data: {
               ids: this.ids
             }

@@ -10,9 +10,11 @@
         <FormItem label="敏感词" prop="input">
           <Input v-model="formValidate.input" placeholder="请输入敏感词"></Input>
         </FormItem>
-        <FormItem>
+        <FormItem class="fuck" style="width:95%;margin-bottom:25px">
+          <div style="float: right;">
           <Button type="primary" @click="handleSubmit('formValidate')">提交</Button>
-          <Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
+          <Button type="error" @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
+        </div>
         </FormItem>
       </Form>
       <div slot="footer">
