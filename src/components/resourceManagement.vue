@@ -27,6 +27,9 @@
         <!--区域添加  -->
         <Modal v-model="modalForm1" title="添加区域">
           <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
+            <FormItem label="上级区域:" prop="upname">
+              <Input v-model="formValidate.upname"  readonly type="text"></Input>
+            </FormItem>
             <FormItem label="区域名称:" prop="name">
               <Input v-model="formValidate.name" placeholder="请输入区域名称" type="text"></Input>
             </FormItem>
@@ -49,6 +52,9 @@
         <!--区域修改  -->
         <Modal v-model="modalForm2" title="修改区域">
           <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
+            <FormItem label="上级区域:" prop="upname">
+              <Input v-model="formValidate.upname"  readonly type="text"></Input>
+            </FormItem>
             <FormItem label="区域名称:" prop="name">
               <!-- <Input v-model="formValidate.name" ></Input> -->
               <Input v-model="formValidate.name" placeholder="请输入区域名称" type="text"></Input>
@@ -270,6 +276,7 @@ export default {
       }
     };
     return {
+      pearentTitle:"",
       checkData:'',
       modalForm1: false,
       modalForm2: false,
@@ -277,6 +284,7 @@ export default {
       formValidate5:false,
       baseData: [],
       formValidate: {
+        upname:'',
         name: "",
         longitude: "",
         latitude: "",
@@ -300,18 +308,10 @@ export default {
       ruleValidate4: {},
       ruleValidate: {
         name: [
-          {
-            required: true,
-            message: "区域名称不能为空",
-            trigger: "blur"
-          }
-        ],
+          {required: true,message: "区域名称不能为空",trigger: "blur"}
+          ],
         orgCode: [
-          {
-            required: true,
-            message: "区域编码不能为空",
-            trigger: "blur"
-          },
+          {required: true, message: "区域编码不能为空",trigger: "blur"},
           {pattern:/^[0-9]{12}$/,message: "必须为11位数字值",trigger: "change"}
         ],
         longitude: [
@@ -591,7 +591,19 @@ export default {
           content: "<p>请先点击确认具体区域</p>"
         });
       } else {
+        this.axios({
+        method: "get",
+        url: `${this.baseUrl}/org/getAreaName?id=${this.pearentID}`
+      }).then(res => {
+        if(res.data.body=="无该区域"){
+           this.pearentTitle="中国"
+        }else{
+          this.pearentTitle = res.data.body;
+        }
+        this.formValidate.upname=this.pearentTitle;
         this.modalForm1 = true;
+      });
+        
       }
     },
     handleSubmit(username) {
@@ -621,13 +633,24 @@ export default {
           content: "<p>请先点击确认具体区域</p>"
         });
       } else {
-        this.axios({
-          url: `${this.baseUrl}/org/getArea?id=${this.areaID}`,
-          method: "get"
-        }).then(res => {
-          this.formValidate = res.data.body;
-          this.modalForm2 = true;
-        });
+         this.axios({
+            method: "get",
+            url: `${this.baseUrl}/org/getAreaName?id=${this.pearentID}`
+          }).then(res => {
+            if(res.data.body=="无该区域"){
+              this.pearentTitle="中国"
+            }else{
+              this.pearentTitle = res.data.body;
+            }
+            this.axios({
+              url: `${this.baseUrl}/org/getArea?id=${this.areaID}`,
+              method: "get"
+            }).then(res => {
+              this.formValidate = res.data.body;
+              this.formValidate.upname=this.pearentTitle;
+              this.modalForm2 = true;
+            });
+          });
       }
     },
     handleSubmit1(username) {
@@ -647,89 +670,6 @@ export default {
           this.$Message.error("提交失败");
         }
       });
-    },
-
-   /* 权限提交 */
-     /*  1.回传服务器 */
-    handleSubmit5(formValidate5) {
-      this.$refs[formValidate5].validate(valid => {
-        if (valid) {
-          this.axios({
-            url: `${this.baseUrl1}/msg/setMsgTerminal`,
-            method: "post",
-            data: {
-                 ids: this.ids,
-                 type:"reback",
-                 address : this.formValidate5.address,
-                 port: this.formValidate5.port
-            }
-          }).then(res => {
-            this.modalForm3 = false;
-            this.getDatas();
-            this.ids=[];
-          });
-        } else {
-          this.$Message.error("提交失败");
-        }
-      });
-    },
-    /*2. 在线升级提交 */
-     handleSubmit3(formValidate3) {
-      this.$refs[formValidate3].validate(valid => {
-        if (valid) {
-          this.axios({
-            url: `${this.baseUrl1}/msg/setMsgTerminal`,
-            method: "post",
-            data: {
-                 ids: this.ids,
-                 type:"upgrade",
-                 address : this.formValidate3.address,
-                 port: this.formValidate3.port,
-                 username: this.formValidate3.username,
-                 pwd : this.formValidate3.pwd,
-                 filename : this.formValidate3.filename,
-            }
-          }).then(res => {
-            this.modalForm3 = false;
-            this.getDatas();
-          });
-        } else {
-          this.$Message.error("提交失败");
-        }
-      });
-    },
-    /*3. 调频频率提交 */
-     handleSubmit4(formValidate4) {
-      this.$refs[formValidate4].validate(valid => {
-        if (valid) {
-          this.axios({
-            url: `${this.baseUrl1}/msg/setMsgTerminal`,
-            method: "post",
-            data: {
-                 ids: this.ids,
-                 type:"setfreq",
-                freqArray:[
-                  {level: this.formValidate4.level ,
-                  freq: this.formValidate4.freq}
-                ]
-            }
-          }).then(res => {
-            this.modalForm3 = false;
-            this.getDatas();
-          });
-        } else {
-          this.$Message.error("提交失败");
-        }
-      });
-    },
-
-      /* 多个设备权限设置 */
-    modalForm3click(){
-      if(this.ids.length>1){
-          this.modalForm3=true
-      }else{
-         this.$Message.info('请选择多个设备')
-      }
     },
     //删除数据
     confirm() {
@@ -1141,6 +1081,88 @@ export default {
       this.delGroupDev_ids = ids;
       console.log(this.delGroupDev_ids);
     },
+       /* 权限提交 */
+     /*  1.回传服务器 */
+    handleSubmit5(formValidate5) {
+      this.$refs[formValidate5].validate(valid => {
+        if (valid) {
+          this.axios({
+            url: `${this.baseUrl1}/msg/setMsgTerminal`,
+            method: "post",
+            data: {
+                 ids: this.ids,
+                 type:"reback",
+                 address : this.formValidate5.address,
+                 port: this.formValidate5.port
+            }
+          }).then(res => {
+            this.modalForm3 = false;
+            this.getDatas();
+            this.ids=[];
+          });
+        } else {
+          this.$Message.error("提交失败");
+        }
+      });
+    },
+    /*2. 在线升级提交 */
+     handleSubmit3(formValidate3) {
+      this.$refs[formValidate3].validate(valid => {
+        if (valid) {
+          this.axios({
+            url: `${this.baseUrl1}/msg/setMsgTerminal`,
+            method: "post",
+            data: {
+                 ids: this.ids,
+                 type:"upgrade",
+                 address : this.formValidate3.address,
+                 port: this.formValidate3.port,
+                 username: this.formValidate3.username,
+                 pwd : this.formValidate3.pwd,
+                 filename : this.formValidate3.filename,
+            }
+          }).then(res => {
+            this.modalForm3 = false;
+            this.getDatas();
+          });
+        } else {
+          this.$Message.error("提交失败");
+        }
+      });
+    },
+    /*3. 调频频率提交 */
+     handleSubmit4(formValidate4) {
+      this.$refs[formValidate4].validate(valid => {
+        if (valid) {
+          this.axios({
+            url: `${this.baseUrl1}/msg/setMsgTerminal`,
+            method: "post",
+            data: {
+                 ids: this.ids,
+                 type:"setfreq",
+                freqArray:[
+                  {level: this.formValidate4.level ,
+                  freq: this.formValidate4.freq}
+                ]
+            }
+          }).then(res => {
+            this.modalForm3 = false;
+            this.getDatas();
+          });
+        } else {
+          this.$Message.error("提交失败");
+        }
+      });
+    },
+
+      /* 多个设备权限设置 */
+    modalForm3click(){
+      if(this.ids.length>1){
+          this.modalForm3=true
+      }else{
+         this.$Message.info('请选择多个设备')
+      }
+    },
     //搜索内容
     sousuo() {
       // this.axios({
@@ -1200,6 +1222,9 @@ export default {
   width: 100%;
   bottom: 0;
   margin-bottom: 0;
+}
+.ivu-table td, .ivu-table th{
+  height:44px;
 }
 </style>
 
