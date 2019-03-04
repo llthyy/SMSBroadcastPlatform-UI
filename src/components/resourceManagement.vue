@@ -42,9 +42,11 @@
             <FormItem label="纬度:" prop="latitude">
               <Input v-model="formValidate.latitude" placeholder="请输入区域纬度" type="text"></Input>
             </FormItem>
-            <FormItem>
+              <FormItem class="fuck" style="width:95%;margin-bottom:25px">
+                <div style="float: right;">
               <Button type="primary" @click="handleSubmit('formValidate')">提交</Button>
-              <Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
+              <Button type="error" @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
+                </div>
             </FormItem>
           </Form>
           <div slot="footer"></div>
@@ -68,9 +70,11 @@
             <FormItem label="纬度:" prop="latitude">
               <Input v-model="formValidate.latitude" placeholder="请输入区域纬度" type="text"></Input>
             </FormItem>
-            <FormItem>
+            <FormItem class="fuck" style="width:95%;margin-bottom:25px">
+              <div style="float: right;">
               <Button type="primary" @click="handleSubmit1('formValidate')">提交</Button>
-              <Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
+              <Button type="error" @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
+              </div>
             </FormItem>
           </Form>
           <div slot="footer"></div>
@@ -105,9 +109,11 @@
             <FormItem label="联系电话:" prop="phone">
               <Input v-model="formValidate1.phone" placeholder="请输入区域联系电话" type="text"></Input>
             </FormItem>
-            <FormItem>
-              <Button type="primary" @click="handleSubmitDev('formValidate1')">提交</Button>
-              <Button @click="handleReset('formValidate1')" style="margin-left: 8px">重置</Button>
+            <FormItem class="fuck" style="width:95%;margin-bottom:25px">
+              <div style="float: right;">
+                <Button type="primary"  style="margin-bottom:0px" @click="handleSubmitDev('formValidate1')">提交</Button>
+                <Button  type="error" style="margin-left:8px" @click="handleReset('formValidate1')">重置</Button>
+              </div>
             </FormItem>
           </Form>
           <div slot="footer"></div>
@@ -128,10 +134,12 @@
                   <FormItem label="回传端口:" prop="port">
                     <Input v-model="formValidate5.port" placeholder="请输入回传端口" type="text"></Input>
                   </FormItem>
-                  <FormItem >
-                    <Button type="primary" @click="handleSubmit5('formValidate5')">提交</Button>
-                    <Button type="error" style="margin-left:8px" @click="handleReset('formValidate5')" >重置</Button>
-                  </FormItem>
+                  <FormItem class="fuck">
+                    <div style="float: right;">
+                       <Button type="primary" @click="handleSubmit5('formValidate5')">提交</Button>
+                       <Button type="error" style="margin-left:8px" @click="handleReset('formValidate5')" >重置</Button>
+                     </div>  
+                  </FormItem>            
               </Form>
             </TabPane>
 
@@ -171,9 +179,9 @@
                 </Select>
             </FormItem>
             <FormItem label="频率（Mhz）:" prop="freq">
-              <Input v-model="formValidate4.freq" placeholder="" type="text"></Input>
-            </FormItem>
-            <FormItem class="fuck">
+              <Input v-model="formValidate4.freq" placeholder="请输入频率" type="text"></Input>
+            </FormItem> 
+            <FormItem class="fuck" >
               <div style="float: right;">
                 <Button type="primary" style="margin-bottom:0px" @click="handleSubmit4('formValidate4')">提交</Button>
                 <Button type="error" style="margin-left: 8px" @click="handleReset('formValidate4')">重置</Button>

@@ -72,9 +72,11 @@ textarea {
                     <Input v-model="formValidate.input5" placeholder="请输入播放次数"></Input>
                 </FormItem>
 
-                <FormItem >
+                <FormItem class="fuck" style="width:95%;margin-bottom:25px">
+                  <div style="float: right;">
                     <Button type="primary" @click="handleSubmit('formValidate')" >提交</Button>
                     <Button type="error" @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
+                  </div>
                 </FormItem>
             </Form>
              <div slot="footer">
