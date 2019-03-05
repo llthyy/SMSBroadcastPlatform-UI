@@ -34,11 +34,24 @@
        titles: [],
        baseData:[],
        idd:[],
+       Data1:[],
        data:["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"],
        data1:[],
      }
    },
    methods:{
+    getData(){
+       this.axios({
+        method: "post",
+        url: `${this.baseUrl1}/statistical/main`,
+        data:{
+            ids:this.ids
+        }
+      }).then(res => {
+          console.log(res)
+        this.Data1 = res.data.body;
+      });
+     },
     drawLine(){
         // 基于准备好的dom，初始化echarts实例
         let myChart = this.$echarts.init(document.getElementById('myChart'))
@@ -188,17 +201,20 @@
     },
     //点击当前的树节点
     getID(data) {
-      this.idd = []
+      this.ids = []
       this.titles = []
      data.forEach((item, index) => {
         let id = item.id        
         this.titles.push(item.title)  
-        this.idd.push(item.id)   
+        this.ids.push(item.id)   
       }) ; 
-      //console.log(this.titles) 
+     // console.log(this.titles)
+      console.log(this.ids)  
      this.drawLine1();
      this.drawLine2();
      this.drawLine3();
+     this.drawLine4();
+     this.getData();
     },    
    },
    mounted(){
