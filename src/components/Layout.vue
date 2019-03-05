@@ -239,6 +239,24 @@ export default {
 
                 },
                 {
+                    title:'地图模式',
+                    name:'b-map',
+                    icon:'ios-globe',
+                    // icon:'ios-pin',
+                    children:[
+                        {
+                            title:'地图模式',
+                            name:'BMap',
+                            href:'/BMap',
+                            closable:true,
+                            showInTags:false,
+                            showInMenus:true,
+                            choosed:false
+                        },
+                    ]
+
+                },
+                {
                     title:'播放记录',
                     name:'Playback-record',
                     icon:'ios-cash',

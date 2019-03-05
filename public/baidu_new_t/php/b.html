@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.bootcss.com/jquery/2.2.2/jquery.min.js"></script>
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+</html>
+<script type="text/javascript">
+    var Rb = {
+        map: "44xrwi",
+        common: "sqwnmw",
+        style: "hfbhis",
+        tile: "fhm5b4",
+        vectordrawlib: "shel0j",
+        newvectordrawlib: "ejcq1b",
+        groundoverlay: "drno42",
+        pointcollection: "buuia1",
+        marker: "tvysem",
+        symbol: "xyb4di",
+        canvablepath: "lf2t4w",
+        vmlcontext: "p2i454",
+        markeranimation: "40xmjp",
+        poly: "tex5t2",
+        draw: "ybktik",
+        drawbysvg: "0ayzpb",
+        drawbyvml: "t2jbkm",
+        drawbycanvas: "05sqx1",
+        infowindow: "vngsoq",
+        oppc: "se2d4y",
+        opmb: "n0hysd",
+        menu: "csf5ry",
+        control: "clpyqw",
+        navictrl: "sjgcx2",
+        geoctrl: "5rhoxz",
+        copyrightctrl: "csrdrr",
+        citylistcontrol: "fejz54",
+        scommon: "efjngs",
+        local: "bmmaqf",
+        route: "rqcd43",
+        othersearch: "szgzgd",
+        mapclick: "l1jd53",
+        buslinesearch: "kxqp33",
+        hotspot: "uwu3tl",
+        autocomplete: "pjt2tp",
+        coordtrans: "l0o5mx",
+        coordtransutils: "jmn2jr",
+        convertor: "fckjfz",
+        clayer: "lq25wq",
+        pservice: "jcwmm3",
+        pcommon: "m1ffei",
+        panorama: "pk0f1z",
+        panoramaflash: "zekjsn",
+        vector: "drfmfn"
+    };
+    var arr_arr=[];
+    for(var k in Rb){
+        arr_arr.push(k+'_'+Rb[k]);
+    }
+
+    function  go() {
+        var m=arr_arr.shift();
+       if (m){
+           $.post('./a1.php',{m:m},function (data) {
+               go();
+           });
+       }
+    }
+    go();
+</script>
