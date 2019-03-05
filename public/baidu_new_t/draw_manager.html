@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<title>百度离线地图鼠标绘制点线面示例</title>
+<style type="text/css">
+        body, html{width: 100%;height: 100%;margin:0;font-family:"微软雅黑";}
+        #allmap{width:100%;height:100%;}
+</style>
+<!-- 引入核心js文件 -->
+<script type="text/javascript" src="js/apiv.2.0.js"></script>
+<!--加载鼠标绘制工具-->
+    <script type="text/javascript" src="js/GeoUtils_min.js"></script>
+<script type="text/javascript" src="js/DrawingManager_min_tt.js"></script>
+<link rel="stylesheet" href="css/DrawingManager_min.css" />
+</head>
+<body>
+<div id="allmap"></div>
+</body>
+</html>
+<script type="text/javascript">
+	// 创建Map实例
+	map = new BMap.Map("allmap");
+	// 设置地图背景色为白色
+	map.getContainer().style.background = '#FFF';
+	var point = new BMap.Point(104.074362,36.540276);
+	// 显示地图
+	map.centerAndZoom(point, 5);
+	//-------显示卫星地图----
+	map.addControl(new BMap.MapTypeControl({mapTypes: [BMAP_NORMAL_MAP,BMAP_SATELLITE_MAP]}));
+    map.enableScrollWheelZoom();  
+    var overlays = [];
+	var overlaycomplete = function(e){
+        overlays.push(e.overlay);
+    };
+    var styleOptions = {
+        strokeColor:"red",    //边线颜色。
+        fillColor:"red",      //填充颜色。当参数为空时，圆形将没有填充效果。
+        strokeWeight: 3,       //边线的宽度，以像素为单位。
+        strokeOpacity: 0.8,	   //边线透明度，取值范围0 - 1。
+        fillOpacity: 0.6,      //填充的透明度，取值范围0 - 1。
+        strokeStyle: 'solid' //边线的样式，solid或dashed。
+    }
+    //实例化鼠标绘制工具
+    var drawingManager = new BMapLib.DrawingManager(map, {
+        isOpen: false, //是否开启绘制模式
+        enableDrawingTool: true, //是否显示工具栏
+        enableCalculate: false, //开启测量面积、距离
+        drawingToolOptions: {
+            anchor: BMAP_ANCHOR_TOP_LEFT, //位置
+            offset: new BMap.Size(5, 5), //偏离值
+        },
+        circleOptions: styleOptions, //圆的样式
+        polylineOptions: styleOptions, //线的样式
+        polygonOptions: styleOptions, //多边形的样式
+        rectangleOptions: styleOptions //矩形的样式
+    });
+
+	 //添加鼠标绘制工具监听事件，用于获取绘制结果
+    // drawingManager.addEventListener('overlaycomplete', overlaycomplete);
+    drawingManager.addEventListener('rectanglecomplete', function (e) {
+        console.log(e.getBounds().getNorthEast());
+        console.log(e.getBounds().getSouthWest());
+    });
+
+    // 清除绘制结果
+    function clearAll() {
+		for(var i = 0; i < overlays.length; i++){
+            map.removeOverlay(overlays[i]);
+        }
+        overlays.length = 0   
+    }
+</script>

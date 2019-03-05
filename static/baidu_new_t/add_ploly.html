@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<title>百度离线地图</title>
+<style type="text/css">
+        body, html {width: 100%;height: 100%;margin:0;font-family:"微软雅黑";}
+        #allmap{width:100%;height:100%;}
+</style>
+<!-- 引入核心js文件 -->
+<script type="text/javascript" src="js/apiv.2.0.js"></script>
+</head>
+<body>
+<div id="allmap"></div>
+</body>
+</html>
+<script type="text/javascript">
+        // 创建Map实例
+        var map = new BMap.Map("allmap", {enableMapClick:false});
+        // 设置地图背景色为白色
+        map.getContainer().style.background = '#FFF';
+       	var point = new BMap.Point(104.074362,30.540276);
+		map.centerAndZoom(point, 5);
+        map.enableScrollWheelZoom();
+        console.log(map);
+        //创建多边形,可设置线条颜色、粗细、透明度
+		var polygon = new BMap.Polygon([
+			new BMap.Point(116.387112,39.920977),
+			new BMap.Point(110.385243,33.913063),
+			new BMap.Point(109.394226,34.917988),
+			new BMap.Point(105.401772,30.921364),
+			new BMap.Point(100.41248,36.927893)
+		], {strokeColor:"blue", strokeWeight:2, strokeOpacity:0.5}); 
+
+		map.addOverlay(polygon);   //在地图上增加多边形
+		// polygon.enableEditing(); // 设置多边形可编辑
+		//清除多边形方法
+		// function remove_overlay(){
+		// 	map.clearOverlays(polygon);
+		// }
+        // //1个坐标以上才进行轨迹画线
+        // var sy = new BMap.Symbol(BMap_Symbol_SHAPE_BACKWARD_CLOSED_ARROW, {
+         //    scale: 0.6, //图标缩放大小
+         //    strokeColor: 'yellow', //设置矢量图标的线填充颜色
+         //    strokeWeight: '4', //设置线宽
+        // });
+        // var icons = new BMap.IconSequence(sy, '30', '30');
+        // var ppp=[new BMap.Point(104,30),new BMap.Point(111,32),new BMap.Point(119,36)];
+        // map.addOverlay(new BMap.Polyline(ppp, {
+         //    //添加矢量路线
+         //    strokeColor: "blue",
+         //    strokeWeight: 6,
+         //    icons: [icons],
+         //    strokeOpacity: 0.5,
+         //    enableClicking: false //不响应点击事件
+        // })); //添加路线
+</script>

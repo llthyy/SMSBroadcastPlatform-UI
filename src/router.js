@@ -42,6 +42,11 @@ const router = new Router({
           component: () => import('@/components/resourceManagement')
         },
         {
+          path: '/BMap',
+          name: '地图模式',
+          component: () => import('@/components/BMap')
+        },
+        {
           path: '/record',
           name:'播放记录',
           component: () => import('@/components/Record')

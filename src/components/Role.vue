@@ -189,7 +189,7 @@ export default {
       console.log(this.data)
       this.$Modal.info({
         title: "",
-        content: 
+        content:
                `角色名称：${this.data[index].roleName}<br>
                 角色说明：${this.data[index].roleDetails}<br>`
       });
