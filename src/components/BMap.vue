@@ -59,6 +59,18 @@
   top: 100px;
   right: 0px;
 }
+#query {
+   z-index:20;
+   width:665px;
+   height:44px;
+   background:#ccc;
+   position:absolute;
+   left:30px;
+   top:10px;
+   padding: 10px;
+   line-height:24px;
+   font-size:14px;
+  }
 </style>
 	<template>
   <!-- <div style="margin-top:30px;padding-left:10px" id="allmap" >
