@@ -311,7 +311,16 @@ export default {
         name: "",
         orgCode: ""
       },
-      ruleValidate5: {},
+      ruleValidate5: {
+        address: [
+          {required: true, message: "回传地址不能为空",trigger: "blur"},
+          {pattern:/((25[0-5])|(2[0-4]d)|(1dd)|([1-9]d)|d)(.((25[0-5])|(2[0-4]d)|(1dd)|([1-9]d)|d)){3}/,message: "请输入正确的回传地址",trigger: "change"}
+        ],
+        port: [
+          {required: true, message: "回传端口不能为空",trigger: "blur"},
+          {pattern:/^[0-9]{4}$/,message: "必须为4位数字值",trigger: "change"}
+        ]
+      },
       ruleValidate3: {},
       ruleValidate4: {},
       ruleValidate: {
@@ -320,7 +329,7 @@ export default {
           ],
         orgCode: [
           {required: true, message: "区域编码不能为空",trigger: "blur"},
-          {pattern:/^[0-9]{12}$/,message: "必须为11位数字值",trigger: "change"}
+          {pattern:/^[0-9]{12}$/,message: "必须为12位数字值",trigger: "change"}
         ],
         longitude: [
           { required: true, validator: validatelongitude, trigger: "blur" }
@@ -419,7 +428,7 @@ export default {
                       }
                     }
                   },
-                  "权限设置"
+                  "参数设置"
                 ),
                 h(
                   "Button",
