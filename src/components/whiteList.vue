@@ -3,7 +3,7 @@
     <div style="margin:0 0 20px 10px;font-size:20px">白名单管理</div>
     <Button type="success" @click="addwhiteList" style="margin-right:5px">添加白名单</Button>
     <Button type="error" @click="remove" style="margin-right:5px">删除多个</Button>
-    <Input search v-model="input2" placeholder="请输入关键词" :style="{width:200+'px'}" />
+    <Input search v-model="input2" placeholder="请输入姓名或电话号码" :style="{width:200+'px'}" />
     <Button type="info" @click="sousuo">搜索</Button>
     <Table border :columns="columns" :data="data" @on-selection-change="onSelect"></Table>
     <Page :total="total1" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer></Page>
@@ -460,18 +460,18 @@ export default {
       this.ids = ids;
     },
     sousuo() {
-      // this.axios({
-      //   method: "post",
-      //   url: "http://10.31.162.59:3000/forum/list",
-      //   data: {
-      //     page: this.page,
-      //     limit: this.list,
-      //     articalname: this.input2
-      //   }
-      // }).then(res => {
-      //   this.total = res.data.total;
-      //   this.data = res.data.docs;
-      // });
+      this.axios({
+        method: "post",
+        url: `${this.baseUrl}/whiteList/findByNameOrPhone`,
+        data:this.qs.stringify( {
+          page: this.page-1,
+          size: this.list,
+          message: this.input2
+        })
+      }).then(res => {
+        this.total = res.data.body.totalElements;
+        this.data = res.data.body.content;
+      });
     }
   },
   mounted() {

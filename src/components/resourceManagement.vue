@@ -18,7 +18,7 @@
             <Button type="success" @click="modalForm3click">多个设备权限设置</Button>
             <Button type="success" @click="modal1= true">添加终端设备</Button>
             <Button type="error" @click="remove">删除多个</Button>
-            <Input search v-model="input2" placeholder="请输入..." :style="{width:200+'px'}" />
+            <Input search v-model="input2" placeholder="请输入设备别名" :style="{width:200+'px'}" />
             <Button type="info" @click="sousuo">搜索</Button>
           </div>
           <Table border :columns="columns" :data="data" @on-selection-change="onSelect" @on-row-dblclick="detail" ></Table>
@@ -314,14 +314,23 @@ export default {
       ruleValidate5: {
         address: [
           {required: true, message: "回传地址不能为空",trigger: "blur"},
-          {pattern:/((25[0-5])|(2[0-4]d)|(1dd)|([1-9]d)|d)(.((25[0-5])|(2[0-4]d)|(1dd)|([1-9]d)|d)){3}/,message: "请输入正确的回传地址",trigger: "change"}
+          {pattern:/((?:(?:25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(?:25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d))))/,message: "请输入正确的回传地址如：192.168.4.114",trigger: "change"}
         ],
         port: [
           {required: true, message: "回传端口不能为空",trigger: "blur"},
           {pattern:/^[0-9]{4}$/,message: "必须为4位数字值",trigger: "change"}
         ]
       },
-      ruleValidate3: {},
+      ruleValidate3: {
+        address: [
+          {required: true, message: "FTP服务器地址不能为空",trigger: "blur"},
+          {pattern:/((?:(?:25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(?:25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d))))/,message: "请输入正确的地址如192.168.4.114",trigger: "change"}
+        ],
+        port: [
+          {required: true, message: "FTP服务端口不能为空",trigger: "blur"},
+          {pattern:/^[0-9]{4}$/,message: "必须为4位数字值",trigger: "change"}
+        ]
+      },
       ruleValidate4: {},
       ruleValidate: {
         name: [
@@ -348,6 +357,7 @@ export default {
       input2: "",
       ids: [],
       id:'',
+      sid:'',
       Group_ids: [],
       GroupDev_ids: [],
       loading: true,
@@ -721,6 +731,7 @@ export default {
     },
     //点击当前的树节点
     getID(data) {
+      if(data.length>0){
       this.areaID = data[0].id;
       this.pearentID = data[0].parentId;
       var arr=[]
@@ -728,7 +739,11 @@ export default {
         arr.push(data[i].id)
       }
       this.areaIDarr=arr;
-      this.areaDevice();
+      this.areaDevice();      
+      }else{
+        this.areaID='';
+      }
+      //console.log(this.areaIDarr)
     },
     //根据区域显示终端设备
     areaDevice() {
@@ -1109,10 +1124,11 @@ export default {
             data: {
                  ids: this.ids,
                  type:"reback",
-                 address : this.formValidate5.address,
+                 address : "http://"+this.formValidate5.address,
                  port: this.formValidate5.port
             }
           }).then(res => {
+            this.$refs[name].resetFields();
             this.modalForm3 = false;
             this.getDatas();
             this.ids=[];
@@ -1132,13 +1148,14 @@ export default {
             data: {
                  ids: this.ids,
                  type:"upgrade",
-                 address : this.formValidate3.address,
+                 address : "ftp://"+this.formValidate3.address,
                  port: this.formValidate3.port,
                  username: this.formValidate3.username,
                  pwd : this.formValidate3.pwd,
                  filename : this.formValidate3.filename,
             }
           }).then(res => {
+            this.$refs[name].resetFields();
             this.modalForm3 = false;
             this.getDatas();
           });
@@ -1163,6 +1180,7 @@ export default {
                 ]
             }
           }).then(res => {
+            this.$refs[name].resetFields();
             this.modalForm3 = false;
             this.getDatas();
           });
@@ -1182,18 +1200,25 @@ export default {
     },
     //搜索内容
     sousuo() {
-      // this.axios({
-      //   url: `http://localhost:3000/${this.module}/list`,
-      //   method: "post",
-      //   data: {
-      //     username: this.searchval,
-      //     page: 1,
-      //     rows: this.rows
-      //   }
-      // }).then(res => {
-      //   this.total = res.data.total;
-      //   this.data = res.data.rows;
-      // });
+      console.log(this.areaID)
+      if(this.areaID){
+        this.sid=this.areaID
+      }else{
+        this.sid=-1
+      }
+      this.axios({
+        method: "post",
+        url: `${this.baseUrl}/device/findDeviceByRegion`,
+        data:this.qs.stringify({
+          id: this.sid,
+          page: this.page-1,
+          size: this.list,         
+          message: this.input2          
+        })
+      }).then(res => {
+        this.total = res.data.body.totalElements;
+        this.data = res.data.body.content;
+      });
     },
   },
   mounted() {

@@ -66,7 +66,7 @@ textarea {
         </FormItem>
 
         <FormItem label="播放次数" prop="input5">
-          <Input type="text" v-model="formValidate.input5" placeholder="请输入播放次数"></Input>
+          <Input v-model="formValidate.input5" placeholder="请输入播放次数"></Input>
         </FormItem>
 
         <FormItem class="fuck" style="width:95%;margin-bottom:25px">
@@ -121,7 +121,10 @@ export default {
           }
         ],
         input3: [{ required: true, message: "请选择发布区域" }],
-        input5: [{ required: true, type:'number', message: "请输入播放次数", trigger: "blur" }]
+        input5: [
+          { required: true, message: "请输入播放次数", trigger: "blur" },
+          
+        ]
       },
 
       columns1: [
@@ -444,7 +447,7 @@ export default {
               }
             }
           }).then(res => {
-            this.resdata=res.data.body
+            this.resdata=res.data.msg
             if(status==200){
               this.$Message.info('修改成功');
             this.modal1 = false;
@@ -469,12 +472,13 @@ export default {
                   playCount: Number(this.formValidate.input5)
                 }
               }
-            }).then(res => { this.resdata=res.data.body
+            }).then(res => { 
+              this.resdata=res.data.msg
             if(status==200){
               this.$Message.info('修改成功');
-            this.modal1 = false;
-            this.$refs[name].resetFields();
-            this.getData();
+              this.modal1 = false;
+              this.$refs[name].resetFields();
+              this.getData();
             }else{
               this.$Message.info(this.resdata);
             }
