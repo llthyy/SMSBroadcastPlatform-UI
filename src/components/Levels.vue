@@ -26,28 +26,23 @@ textarea {
         <Button type="error" @click="removes" style="margin-right:5px">多个审核不通过</Button> 
         <Input search  v-model="input2" placeholder="请输入标题" :style="{width:200+'px'}" />
         <Button type="info" @click="sousuo" >搜索</Button>
-        <Modal
-           v-model = "modal1"
-           title   = "添加信息"
-           :loading  = "loading"
-           @on-ok  = "asyncOK">
-            <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">               
-                 <FormItem label="标题" prop="input">
-                    <Input v-model="formValidate.input" placeholder="请输入标题"></Input>
-                </FormItem>              
-               
-                <FormItem label="内容" prop="desc">
-                  <textarea v-model="formValidate.desc"  placeholder="请输入内容"></textarea>
-                </FormItem> 
-
-                <!-- <FormItem >
-                    <Button type="primary" @click="handleSubmit('formValidate')" >提交</Button>
-                    <Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
-                </FormItem> -->
-            </Form>
-             <div slot="footer">
-            </div>
-            </Modal>
+    
+    <!-- 信息查看 -->
+    <Modal v-model="modal1" title="信息查看" >
+      <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
+        <FormItem label="标题" prop="input">
+          <Input v-model="formValidate.input"  readonly="readonly"></Input>
+        </FormItem>
+        <FormItem label="内容" prop="desc">
+          <Input type="textarea" v-model="formValidate.desc" readonly="readonly"></Input>
+        </FormItem>
+        <FormItem label="添加时间" prop="input5">
+          <Input v-model="formValidate.input5"  readonly="readonly"></Input>
+        </FormItem>
+      </Form>
+      <div slot="footer">
+      </div>
+    </Modal>
         <Table border ref="selection" :columns="columns1" :data="data" @on-selection-change="onSelect"></Table>
          <Page :total="total" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer></Page>
     </div>
@@ -60,23 +55,9 @@ export default {
       formValidate: {
         input: "",
         desc: "",
+        input5: "",
       },
-      ruleValidate: {
-        date: [
-          {
-            required: true,
-            type: "date",
-            message: "Please select the date",
-            trigger: "change"
-          }
-        ],
-         input: [
-          { required: true, message: '请输入标题', trigger: 'blur' },
-        ],
-        desc: [
-          { required: true, message: '请输入短信内容', trigger: 'blur' },
-        ]
-      },
+      ruleValidate: {},
 
       columns1: [
         {
@@ -182,6 +163,7 @@ export default {
       page: 0,
       list: 10,
       input2:'',
+      ids:[],
       modal1: false,
       loading: true,
       removesdata: []
@@ -189,49 +171,56 @@ export default {
   },
   methods: {
     onChangePage(page) {
-    this.page = page;
-    if (this.input2 != "") {
-      this.sousuo();
-    } else {
-      this.getData();
-    }
-  },
-  onPageSizeChange(list) {
-    this.list = list;
-    if (this.input2 != "") {
-      this.sousuo();
-    } else {
-      this.getData();
-    }
-  },
+      this.page = page;
+      if (this.input2 != "") {
+        this.sousuo();
+      } else {
+        this.getData();
+      }
+     },
+    onPageSizeChange(list) {
+      this.list = list;
+      if (this.input2 != "") {
+        this.sousuo();
+      } else {
+        this.getData();
+      }
+     },
     handleReset(name) {
       this.$refs[name].resetFields();
-    },
+     },
     show(index) {
-      console.log(this.data[index].id)
-      this.$Modal.info({
-        title: "",
-        content: `表题：${this.data[index].msgName}<br>
-                  内容：${this.data[index].msgContent}<br>
-                  添加时间：${this.data[index].msgTime}<br>`
-      });
+      this.modal1=true;
+      this.formValidate.input=this.data[index].msgName;
+      this.formValidate.desc=this.data[index].msgContent;
+      this.formValidate.input5=this.data[index].msgTime
     },
-    edit(index) {
-      /* 审核通过 */
-      this.axios({
-        url: `${this.baseUrl1}/msg/auditPass`,
-        method: "post",
-        data: {
-          ids: [this.data[index].id]
+
+     // 单个审核通过
+      edit(index) {      
+      this.$Modal.confirm({
+        title: "确认操作",
+        content: "<p>你确认该记录审核通过吗?</p>",
+        onOk: () => {
+          this.axios({
+            url: `${this.baseUrl1}/msg/auditPass`,
+            method: "post",
+            data: {
+              ids: [this.data[index].id]
+            }
+          }).then(res => {
+            this.$Message.info("操作成功");
+            this.getData();
+          });
+        },
+        onCancel: () => {
+          this.$Message.info("已取消审核");
         }
-      }).then(res => {
-        alert("审核成功")
-        this.getData();
       });
     },
-  
+  /* 多个审核通过 */
    edits(ids) {
-      console.log(ids);
+     if(this.ids.length>0){
       this.$Modal.confirm({
         title: "确认操作",
         content: "<p>你确认记录审核通过吗?</p>",
@@ -243,16 +232,19 @@ export default {
               ids: this.ids
             }
           }).then(res => {
-            alert("审核成功");
+            this.$Message.info("审核成功");
             this.getData();
           });
-        },
-        onCancel: () => {
+        }, 
+         onCancel: () => {
           this.$Message.info("取消审核");
         }
-      });
+        });
+        }else{
+          this.$Message.info("请选择数据");
+        }
+              
     },
-
     getData() {
       this.axios({
         method: "post",
@@ -297,7 +289,7 @@ export default {
         this.data = res.data.body.content;
       });
     },
-    remove(ids) {
+    remove(ids) {      
       this.$Modal.confirm({
         title: "确认操作",
         content: "<p>你确认该记录审核不通过吗?</p>",
@@ -309,7 +301,7 @@ export default {
               ids: [ids]
             }
           }).then(res => {
-            alert("你已经审核成功");
+            this.$Message.info("操作成功");
             this.getData();
           });
         },
@@ -320,10 +312,10 @@ export default {
     },
     // 多选审核不通过
     removes(ids) {
-      console.log(ids);
+     if(this.ids.length>0){
       this.$Modal.confirm({
         title: "确认操作",
-        content: "<p>你确认该记录审核不通过吗?</p>",
+        content: "<p>你确认该信息审核不通过吗?</p>",
         onOk: () => {
           this.axios({
             url: `${this.baseUrl1}/msg/auditUnPass`,
@@ -332,7 +324,7 @@ export default {
               ids: this.ids
             }
           }).then(res => {
-            alert("审核成功");
+            this.$Message.info("操作成功");
             this.getData();
           });
         },
@@ -340,6 +332,9 @@ export default {
           this.$Message.info("已取消审核");
         }
       });
+      }else{
+        this.$Message.info("请选择数据");
+      }
     },
     // 在此函数进行帖子提交
     handleSubmit(name) {

@@ -106,21 +106,25 @@
           Div5.style.display="block"
       }
      },
+     /* 按月播放 折线图 */
     getData(){
        this.axios({
         method: "post",
-        url: `${this.baseUrl1}/statistical/main`,
+        url: `${this.baseUrl1}/statistical/play/month`,
         data:{
             ids:this.ids
         }
       }).then(res => {
-          //console.log(res)
+       // console.log(res.data.body)
+        var sb1 = res.data.body
+        var sb2=sb1[0].play_time 
+        console.log(sb2.Substring(6,7))
         this.Data1 = res.data.body;
       });
      },
 
      /* 按月播放 */
-     getData1(){
+     /* getData1(){
        this.axios({
         method: "post",
         url: `${this.baseUrl1}//play/month`,
@@ -128,10 +132,10 @@
             ids:this.ids
         }
       }).then(res => {
-          console.log(res)
+          //console.log(res)
         this.Data2 = res.data.body;
       });
-     },
+     }, */
 
 /* 折线图 */
     drawLine(){
@@ -152,7 +156,6 @@
             series: [{
                 name: '播放次数',
                 type: 'line',
-                //data: this.data2
                 data: this.data1
             }]
         });
@@ -442,13 +445,13 @@
         this.ids.push(item.id)   
       }) ; 
      // console.log(this.titles)
-      console.log(this.ids)  
+      //console.log(this.ids)  
      this.drawLine();
      this.drawLine2();
      this.drawLine3();
      this.drawLine4();
      this.getData();
-     this.getData1();
+     //this.getData1();
     },    
    },
    mounted(){
