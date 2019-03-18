@@ -573,7 +573,7 @@ export default {
 }
 #allmap {
   width: 100%;
-  height: 100% !important;
+  height: 600px !important;
   position: relative;
 }
 #query {

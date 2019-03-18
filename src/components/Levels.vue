@@ -26,7 +26,6 @@ textarea {
         <Button type="error" @click="removes" style="margin-right:5px">多个审核不通过</Button>
         <Input search  v-model="input2" placeholder="请输入标题" :style="{width:200+'px'}" />
         <Button type="info" @click="sousuo" >搜索</Button>
-
     <!-- 信息查看 -->
     <Modal v-model="modal1" title="信息查看" >
       <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
@@ -213,8 +212,8 @@ export default {
     },
 
      // 单个审核通过
-      edit(index) {         
-        if(this.data[index].msgAudit == 0){    
+      edit(index) {
+        if(this.data[index].msgAudit == 0){
       this.$Modal.confirm({
         title: "确认操作",
         content: "<p>你确认该记录审核通过吗?</p>",
@@ -264,7 +263,7 @@ export default {
         });}else{this.$Message.info("存在已审核数据"); }
         }else{
           this.$Message.info("请选择数据");
-        }              
+        }
     },
     getData() {
       this.axios({
@@ -315,7 +314,7 @@ export default {
       });
     },
     remove(index) {
-      if(this.data[index].msgAudit == 0){     
+      if(this.data[index].msgAudit == 0){
       this.$Modal.confirm({
         title: "确认操作",
         content: "<p>你确认该记录审核不通过吗?</p>",
