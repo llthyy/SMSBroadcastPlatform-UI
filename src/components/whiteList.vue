@@ -3,7 +3,7 @@
     <div style="margin:0 0 20px 10px;font-size:20px">白名单管理</div>
     <Button type="success" @click="addwhiteList" style="margin-right:5px">添加白名单</Button>
     <Button type="error" @click="remove" style="margin-right:5px">删除多个</Button>
-    <Input search v-model="input2" placeholder="请输入关键词" :style="{width:200+'px'}" />
+    <Input search v-model="input2" placeholder="请输入姓名或电话号码" :style="{width:200+'px'}" />
     <Button type="info" @click="sousuo">搜索</Button>
     <Table border :columns="columns" :data="data" @on-selection-change="onSelect"></Table>
     <Page :total="total1" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer></Page>
@@ -69,18 +69,26 @@ export default {
         },
         {
           title: "用户名称",
+          align: "center",
+          tooltip:true,
           key: "name"
         },
         {
           title: "电话号码",
+          align: "center",
+          tooltip:true,
           key: "phone"
         },
         {
           title: "密码",
+          align: "center",
+          tooltip:true,
           key: "password"
         },
         {
           title: "白名单类型",
+          align: "center",
+          tooltip:true,
           key: "level",
           render: (h, params) => {
             var txt = "";
@@ -144,39 +152,47 @@ export default {
         },
         {
           title: "设备别名",
-          key: "alias",
-          align: "center"
+          align: "center",
+          tooltip:true,
+          key: "alias"
         },
+
         {
           title: "设备型号",
-          key: "model",
-          align: "center"
+          tooltip:true,
+          align: "center",
+          key: "model"
         },
         {
-          title: "设备厂家",
-          key: "manufacturer",
-          align: "center"
+          title: "设备状态",
+          tooltip:true,
+          align: "center",
+          key: "model"
         },
         {
-          title: "硬件版本",
-          key: "hardwareVersion",
-          align: "center"
-        },
-        {
-          title: "固件版本",
-          key: "softwareVersion",
-          align: "center"
+          title: "播发状态",
+          tooltip:true,
+          align: "center",
+          key: "model"
         },
         {
           title: "联系人",
-          key: "person",
-          align: "center"
+          tooltip:true,
+          align: "center",
+          key: "person"
         },
         {
           title: "联系电话",
-          key: "phone",
-          align: "center"
-        }
+          tooltip:true,
+          align: "center",
+          key: "personPhone"
+        },
+        {
+          title: "设备电话",
+          tooltip:true,
+          align: "center",
+          key: "devicePhone"
+        },
       ],
       data: [],
       data1: [],
@@ -210,6 +226,7 @@ export default {
     //添加白名单数据
     addwhiteList() {
       this.modal = true;
+      this.formValidate = {};
       this.getDatas();
       this.getdeviceData();
     },
@@ -235,18 +252,6 @@ export default {
         this.data1 = res.data.body.content;
       });
     },
-    //点击勾选树节点递归
-    // dg(arr, data, j) {
-    //   if (arr.children.length > 0) {
-    //     for (var i = 0; i < arr.children.length; i++) {
-    //       // console.log(111,arr.children[i].id,data[j].id);
-    //       if (arr.children[i].id == data[j].id) {
-    //         arr.children[i].checked = data[j].checked;
-    //       }
-    //       this.dg(arr.children[i], data, j);
-    //     }
-    //   }
-    // },
     //点击当前的树节点
     getID(data, dd) {
       // var arr = this.baseData;
@@ -337,6 +342,7 @@ export default {
       }).then(res => {
         this.total = res.data.body.totalElements;
         this.data1 = res.data.body.content;
+        console.log(this.data1);
         this.checkData = this.formValidate.broDeviceList;
         for (var i = 0; i < this.data1.length; i++) {
           for (var j = 0; j < this.checkData.length; j++) {
@@ -460,18 +466,18 @@ export default {
       this.ids = ids;
     },
     sousuo() {
-      // this.axios({
-      //   method: "post",
-      //   url: "http://10.31.162.59:3000/forum/list",
-      //   data: {
-      //     page: this.page,
-      //     limit: this.list,
-      //     articalname: this.input2
-      //   }
-      // }).then(res => {
-      //   this.total = res.data.total;
-      //   this.data = res.data.docs;
-      // });
+      this.axios({
+        method: "post",
+        url: `${this.baseUrl}/whiteList/findByNameOrPhone`,
+        data: this.qs.stringify({
+          page: this.page - 1,
+          size: this.list,
+          message: this.input2
+        })
+      }).then(res => {
+        this.total = res.data.body.totalElements;
+        this.data = res.data.body.content;
+      });
     }
   },
   mounted() {

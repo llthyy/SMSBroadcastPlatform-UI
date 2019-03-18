@@ -95,7 +95,7 @@
                     <div class="header-wapper">
                         <div class="header-left">
                             <Icon @click.native="collapsedSider" :class="rotateIcon" type="md-menu" size="28"></Icon>
-                            <span class="header-title">短信应急广播平台</span>
+                            <span class="header-title">应急广播短信中心系统</span>
                         </div>
                         <div class="header-right" style="margin-right:20px">
                             <Avatar icon="ios-person" size="large" style="margin-right:10px;"/>

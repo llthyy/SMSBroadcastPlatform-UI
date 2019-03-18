@@ -1,9 +1,9 @@
 <template>
  <div style="margin-top:30px;padding-left:10px">
    <div style="margin:0 0 20px 10px;font-size:20px">播放记录</div>
-        <Button type="error" @click="removes" style="margin-right:5px">删除多个</Button>        
+        <Button type="error" @click="removes" style="margin-right:5px">删除多个</Button>
         <Input search  v-model="input2" placeholder="请输入姓名" :style="{width:200+'px'}" />
-        <Button type="info" @click="sousuo" >搜索</Button>       
+        <Button type="info" @click="sousuo" >搜索</Button>
         <Table border ref="selection" :columns="columns1" :data="data" @on-selection-change="onSelect"></Table>
          <Page :total="total" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer></Page>
     </div>
@@ -23,6 +23,8 @@ export default {
 
         {
           title: "用户名称",
+          align: "center",
+          tooltip:true,
           key: "name",
           render: (h, params) => {
             return h("div", [
@@ -38,18 +40,26 @@ export default {
 
         {
           title: "操作类型",
+          align: "center",
+          tooltip:true,
           key: "agender"
         },
         {
           title: "操作对象",
+          align: "center",
+          tooltip:true,
           key: "loginname"
         },
         {
           title: "发送对象",
+          align: "center",
+          tooltip:true,
           key: "password"
         },
         {
           title: "发送时间",
+          align: "center",
+          tooltip:true,
           key: "contact"
         },
       ],
@@ -86,7 +96,7 @@ export default {
         title: "",
         content: `用户名称：${this.data[index].articalname}<br>
                   操作类型：${this.data[index].authorname}<br>
-                  操作对象：${this.data[index].postingtime}<br>                            
+                  操作对象：${this.data[index].postingtime}<br>
                   发送对象：${this.data[index].content}<br>
                   发送时间：${this.data[index].Lastreviewer}<br>`
       });
@@ -241,7 +251,7 @@ export default {
       });
     }
   },
-  
+
   mounted() {
     this.getData();
   }

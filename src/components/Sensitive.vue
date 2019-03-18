@@ -46,10 +46,14 @@ export default {
         },
         {
           title: "敏感词汇",
+          align: "center",
+          tooltip:true,
           key: "charContent"
         },
         {
           title: "添加时间",
+          align: "center",
+          tooltip:true,
           key: "createTime"
         },
 
@@ -130,14 +134,14 @@ export default {
         method: "post",
         url: `${this.baseUrl1}/system/queryCharacter`,
         data: {
-          
+
             page: this.page,
             size: this.list,
             keyword : {
 		            charContent: this.input2,
 	          },
           }
-        
+
       }).then(res => {
         this.total = res.data.body.totalElements;
         this.data = res.data.body.content;
@@ -152,7 +156,7 @@ export default {
             method: "post" ,
             url: `${this.baseUrl1}/system/delCharacter`,
             data:{
-              ids : [id] 
+              ids : [id]
             }
           }).then(res => {
             alert("你已经删除成功");

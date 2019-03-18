@@ -19,6 +19,9 @@
         <FormItem label="联系方式" prop="userPhone">
           <Input v-model="formValidate.userPhone" placeholder="请输入联系方式"></Input>
         </FormItem>
+        <FormItem label="区域码" prop="orgCodea">
+          <Input v-model="formValidate.orgCodea" placeholder="请输入联系方式"></Input>
+        </FormItem>
         <FormItem label="所属角色" prop="userRole">
           <Select v-model="formValidate.userRole"  placeholder="请选择角色"   style="width:160px">
               <Option v-for="item in userRoleData" :value="item.roleName" :key="item.roleName" >{{item.roleName}}</Option>
@@ -77,18 +80,32 @@ export default {
         },
         {
           title: "姓名",
+          align: "center",
+          tooltip:true,
           key: "userName",
         },
         {
           title: "登录账号",
+          align: "center",
+          tooltip:true,
           key: "loggerName"
         },
         {
           title: "联系方式",
+          align: "center",
+          tooltip:true,
           key: "userPhone"
         },
         {
+          title: "区域码",
+          align: "center",
+          tooltip:true,
+          key: "orgCodea"
+        },
+        {
           title: "所属角色",
+          align: "center",
+          tooltip:true,
           key: "userRole",
           render: function(h,params){
                    return h('div', [h('span', params.row.userRole.roleName)]);

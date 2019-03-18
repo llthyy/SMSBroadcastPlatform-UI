@@ -7,9 +7,9 @@ import VueAxios from 'vue-axios';
 import qs from 'qs'
 import axios from './http'
 import VueCookie  from 'vue-cookie'
-import echarts from 'echarts'
+// import echarts from 'echarts'
 
-Vue.prototype.$echarts = echarts
+// Vue.prototype.$echarts = echarts
 Vue.use(Vuex);
 
 import store from './vuex/store'
@@ -28,9 +28,18 @@ Vue.use(VueCookie)
 
 
 Vue.prototype.qs = qs
-Vue.prototype.baseUrl = "http://192.168.4.114:8080";
-//Vue.prototype.baseUrl1 = "http://192.168.4.165:9090";
-Vue.prototype.baseUrl1 = "http://192.168.4.114:8080";
+
+
+
+// Vue.prototype.baseUrl = "";
+// Vue.prototype.baseUrl1 = "";
+
+// Vue.prototype.baseUrl = "http://192.168.4.114:9090";
+// Vue.prototype.baseUrl1 = "http://192.168.4.114:9090";
+
+Vue.prototype.baseUrl = "http://192.168.4.129:9090";
+Vue.prototype.baseUrl1 = "http://192.168.4.129:9090";
+
 
 
 // Vue.prototype.baseUrl = "http://192.168.4.100:9090";

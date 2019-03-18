@@ -504,7 +504,7 @@ window.BMAP_AUTHENTIC_KEY = "b";
     z.We = function (a) {
         this.Gr.push(a)
     };
-    
+
     z.wr = [];
     z.Vm = function (a) {
         this.wr.push(a)

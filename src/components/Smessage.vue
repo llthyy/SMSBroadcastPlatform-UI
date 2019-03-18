@@ -43,6 +43,9 @@ export default {
                  "levelName" : "中国移动",         
                  }, {
                  "levelName" : "秒滴",      
+              },
+               {
+                 "levelName" : "中天网景",      
               }],
                leveldata1:[{     
                  "levelName" : "2.0",         

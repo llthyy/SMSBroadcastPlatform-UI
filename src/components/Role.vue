@@ -73,10 +73,14 @@ export default {
         },
         {
           title: "角色名称",
+          align: "center",
+          tooltip:true,
           key: "roleName",
         },
         {
           title: "角色说明",
+          align: "center",
+          tooltip:true,
           key: "roleDetails"
         },
         {
