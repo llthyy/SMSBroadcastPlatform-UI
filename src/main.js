@@ -43,7 +43,7 @@ Vue.prototype.baseUrl1 = "http://192.168.4.129:9090";
 
 
 
-Vue.prototype.baseUrl = "http://192.168.4.100:9090";
+// Vue.prototype.baseUrl = "http://192.168.4.100:9090";
 //Vue.prototype.baseUrl1 = "http://192.168.4.100:9090";
 new Vue({
   router,
