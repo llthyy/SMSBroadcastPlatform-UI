@@ -167,22 +167,6 @@ export default {
         desc: "",
         date: "",
         time: "",
-        input3: ['11'],
-        input5: ""
-      },
-      formValidate1: {
-        input: "",
-        desc: "",
-        date: "",
-        time: "",
-        input3: '',
-        input5: ""
-      },
-       formValidate2: {
-        input: "",
-        desc: "",
-        date: "",
-        time: "",
         input3: [],
         input5: ""
       },
@@ -461,11 +445,8 @@ export default {
         method: "get",
         url: `${this.baseUrl}/org/allArea`
       }).then(res => {
-
-        //this.baseData = res.data.body;
-        this.baseData = this.treedata;
-      }); */
-      this.baseData = this.treedata;
+        this.baseData = res.data.body;
+      });
     },
   setChecked(data, arr) {
     data.forEach((value, index) => {
@@ -573,7 +554,6 @@ export default {
           size: this.list
         }
       }).then(res => {
-        //console.log(res.data.body.content[0].sendArea)
         this.data = res.data.body.content;
         this.total = res.data.body.totalElements;
       });
@@ -651,6 +631,7 @@ export default {
         onCancel: () => {
           this.$Message.info("取消删除");
         }
+      });
     },
     // 多选删除
     removes(ids) {
