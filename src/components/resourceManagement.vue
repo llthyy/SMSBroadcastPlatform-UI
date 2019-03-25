@@ -108,31 +108,31 @@
         <!--终端设备查看详情  -->
         <Modal v-model="modal2" title="终端设备" class="detail">
           <Form>
-            <p>物理编码:
+            <p>物理编码: 
               <span>{{this.formValidate1.devCode}}</span>
             </p>
-            <p>逻辑编码:
+            <p>逻辑编码: 
               <span>{{this.formValidate1.devLogic}}</span>
             </p>
-            <p>设备别名:
+            <p>设备别名: 
               <span>{{this.formValidate1.alias}}</span>
             </p>
-            <p>设备型号:
+            <p>设备型号: 
               <span>{{this.formValidate1.model}}</span>
             </p>
-            <p>设备厂家:
+            <p>设备厂家: 
               <span>{{this.formValidate1.manufacturer}}</span>
             </p>
-            <p>硬件版本:
+            <p>硬件版本: 
               <span>{{this.formValidate1.hardwareVersion}}</span>
             </p>
-            <p>固件版本:
+            <p>固件版本: 
               <span>{{this.formValidate1.softwareVersion}}</span>
             </p>
-            <p>联系人:
+            <p>联系人: 
               <span>{{this.formValidate1.person}}</span>
             </p>
-            <p>联系电话:
+            <p>联系电话: 
               <span>{{this.formValidate1.devCode}}</span>
             </p>
           </Form>
@@ -183,13 +183,13 @@
           <Table border :columns="columns2" :data="data2" @on-selection-change="onSelectdelGroupDev"></Table>
           <Page :total="total2" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer transfer show-total></Page>
           <!--分组设备添加-->
-           <Modal v-model="modalGroupDev1" title="添加分组设备" width="70%"  @on-ok="addGroupDevOk" :transition-names=[]>
+           <Modal v-model="modalGroupDev1" title="添加分组设备" width="80%"  @on-ok="addGroupDevOk" :transition-names=[]>
             <Form >
               <FormItem>
               <div style="width:20%;background:#fff;float:left;">
                 <Tree :data="baseData" @on-select-change="getID"></Tree>
               </div>
-              <div style="width:75%;float:right;padding-right:20px;">
+              <div style="width:80%;float:right;">
                 <Table border :columns="columns" :data="data" @on-selection-change="onSelectaddGroupDev"></Table>
                 <Page :total="total" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer transfer show-total></Page>
               </div>
@@ -230,28 +230,28 @@ export default {
       }
     };
     return {
-      modalForm1: false,
-      modalForm2: false,
-      baseData: [],
+      modalForm1  : false,
+      modalForm2  : false,
+      baseData    : [],
       formValidate: {
-        name: "",
+        name     : "",
         longitude: "",
-        latitude: "",
-        orgCode: ""
+        latitude : "",
+        orgCode  : ""
       },
       ruleValidate: {
         name: [
           {
             required: true,
-            message: "区域名称不能为空",
-            trigger: "blur"
+            message : "区域名称不能为空",
+            trigger : "blur"
           }
         ],
         orgCode: [
           {
             required: true,
-            message: "区域编码不能为空",
-            trigger: "blur"
+            message : "区域编码不能为空",
+            trigger : "blur"
           },
           { validator: validateorgCode, trigger: "blur" }
         ],
@@ -262,67 +262,67 @@ export default {
           { required: true, validator: validatelatitude, trigger: "blur" }
         ]
       },
-      modal1: false,
-      modal2: false,
-      data: [],
-      total: 0,
-      page: 1,
-      list: 10,
-      input2: "",
-      ids: [],
-      Group_ids: [],
-      GroupDev_ids: [],
-      loading: true,
+      modal1       : false,
+      modal2       : false,
+      data         : [],
+      total        : 0,
+      page         : 1,
+      list         : 10,
+      input2       : "",
+      ids          : [],
+      Group_ids    : [],
+      GroupDev_ids : [],
+      loading      : true,
       formValidate1: {
-        devCode: "",
-        devLogic: "",
-        alias: "",
-        model: "",
-        manufacturer: "",
+        devCode        : "",
+        devLogic       : "",
+        alias          : "",
+        model          : "",
+        manufacturer   : "",
         hardwareVersion: "",
         softwareVersion: "",
-        person: "",
-        phone: ""
+        person         : "",
+        phone          : ""
       },
       columns: [
         {
-          type: "selection",
+          type : "selection",
           width: 60,
           align: "center"
         },
         {
           title: "设备别名",
-          key: "alias"
+          key  : "alias"
         },
         {
           title: "设备型号",
-          key: "model"
+          key  : "model"
         },
         {
           title: "设备厂家",
-          key: "manufacturer"
+          key  : "manufacturer"
         },
         {
           title: "硬件版本",
-          key: "hardwareVersion"
+          key  : "hardwareVersion"
         },
         {
           title: "固件版本",
-          key: "softwareVersion"
+          key  : "softwareVersion"
         },
         {
           title: "联系人",
-          key: "person"
+          key  : "person"
         },
         {
           title: "联系电话",
-          key: "phone"
+          key  : "phone"
         },
         {
-          title: "相关操作",
-          key: "action",
-          width: 200,
-          align: "center",
+          title : "相关操作",
+          key   : "action",
+          width : 200,
+          align : "center",
           render: (h, params) => {
             if(!this.modalGroupDev1){
                 return h("div", [
@@ -403,64 +403,64 @@ export default {
           }
         }
       ],
-      data1: [],
-      modalGroup1: false,
+      data1        : [],
+      modalGroup1  : false,
       formValidate2: {
         groupName: "",
-        remarks: ""
+        remarks  : ""
       },
-      total1: 0,
+      total1  : 0,
       columns1: [
         {
-          type: "selection",
+          type : "selection",
           width: 50,
           align: "center"
         },
         {
           title: "分组管理",
-          key: "groupName"
+          key  : "groupName"
         },
         {
           title: "备注",
-          key: "remarks"
+          key  : "remarks"
         }
       ],
-      data2: [],
-      total2: 0,
-      modalGroupDev1:false,
-      columns2: [
+      data2         : [],
+      total2        : 0,
+      modalGroupDev1: false,
+      columns2      : [
         {
-          type: "selection",
+          type : "selection",
           width: 60,
           align: "center"
         },
         {
           title: "设备别名",
-          key: "alias"
+          key  : "alias"
         },
         {
           title: "设备型号",
-          key: "model"
+          key  : "model"
         },
         {
           title: "设备厂家",
-          key: "manufacturer"
+          key  : "manufacturer"
         },
         {
           title: "硬件版本",
-          key: "hardwareVersion"
+          key  : "hardwareVersion"
         },
         {
           title: "固件版本",
-          key: "softwareVersion"
+          key  : "softwareVersion"
         },
         {
           title: "联系人",
-          key: "person"
+          key  : "person"
         },
         {
           title: "联系电话",
-          key: "phone"
+          key  : "phone"
         },
       ],
     };
@@ -471,7 +471,7 @@ export default {
     getDatas() {
       this.axios({
         method: "get",
-        url: `${this.baseUrl}/org/allArea`
+        url   : `${this.baseUrl}/org/allArea`
       }).then(res => {
         this.baseData = res.data.body;
       });
@@ -480,7 +480,7 @@ export default {
     addRoot() {
       if (typeof this.areaID == "undefined") {
         this.$Modal.confirm({
-          title: "温馨提示",
+          title  : "温馨提示",
           content: "<p>请先点击确认具体区域</p>"
         });
       } else {
@@ -490,12 +490,12 @@ export default {
     handleSubmit(username) {
       this.$refs[username].validate(valid => {
         if (valid) {
-          this.formValidate.id = -1;
+          this.formValidate.id        = -1;
           this.formValidate.parent_id = this.areaID;
           this.axios({
-            url: `${this.baseUrl}/org/modifyArea`,
+            url   : `${this.baseUrl}/org/modifyArea`,
             method: "post",
-            data: this.qs.stringify(this.formValidate)
+            data  : this.qs.stringify(this.formValidate)
           }).then(res => {
             this.modalForm1 = false;
             this.getDatas();
@@ -510,28 +510,28 @@ export default {
     changeTree() {
       if (typeof this.areaID == "undefined") {
         this.$Modal.confirm({
-          title: "温馨提示",
+          title  : "温馨提示",
           content: "<p>请先点击确认具体区域</p>"
         });
       } else {
         this.axios({
-          url: `${this.baseUrl}/org/getArea?id=${this.areaID}`,
+          url   : `${this.baseUrl}/org/getArea?id=${this.areaID}`,
           method: "get"
         }).then(res => {
           this.formValidate = res.data.body;
-          this.modalForm2 = true;
+          this.modalForm2   = true;
         });
       }
     },
     handleSubmit1(username) {
       this.$refs[username].validate(valid => {
         if (valid) {
-          this.formValidate.id = this.areaID;
+          this.formValidate.id       = this.areaID;
           this.formValidate.parentid = this.pearentID;
           this.axios({
-            url: `${this.baseUrl}/org/modifyArea`,
+            url   : `${this.baseUrl}/org/modifyArea`,
             method: "post",
-            data: this.qs.stringify(this.formValidate)
+            data  : this.qs.stringify(this.formValidate)
           }).then(res => {
             this.modalForm2 = false;
             this.getDatas();
@@ -545,18 +545,18 @@ export default {
     confirm() {
       if (typeof this.areaID == "undefined") {
         this.$Modal.confirm({
-          title: "温馨提示",
+          title  : "温馨提示",
           content: "<p>请先点击确认具体区域</p>"
         });
       } else {
         this.$Modal.confirm({
-          title: "确认删除？",
+          title  : "确认删除？",
           content: "<p>数据删除后将不可恢复</p>",
-          onOk: () => {
+          onOk   : () => {
             this.axios({
               method: "post",
-              url: `${this.baseUrl}/org/deleteArea`,
-              data: this.qs.stringify({ id: this.areaID })
+              url   : `${this.baseUrl}/org/deleteArea`,
+              data  : this.qs.stringify({ id: this.areaID })
             }).then(res => {
               this.getDatas(this.type);
               this.$Message.info("删除成功");
@@ -574,7 +574,7 @@ export default {
     },
     //点击当前的树节点
     getID(data) {
-      this.areaID = data[0].id;
+      this.areaID    = data[0].id;
       this.pearentID = data[0].parentId;
       this.areaDevice();
     },
@@ -582,12 +582,12 @@ export default {
     areaDevice() {
       this.axios({
         method: "get",
-        url: `${this.baseUrl}/device/getByOrg?ids=${
+        url   : `${this.baseUrl}/device/getByOrg?ids=${
           this.areaID
         }&page=${this.page - 1}&size=${this.list}`
       }).then(res => {
         this.total = res.data.body.totalElements;
-        this.data = res.data.body.content;
+        this.data  = res.data.body.content;
       });
     },
     /* .........................   终端设备管理 .........................  */
@@ -595,33 +595,33 @@ export default {
     getdeviceData() {
       this.axios({
         method: "get",
-        url: `${this.baseUrl}/device/getAll?page=${this.page -
+        url   : `${this.baseUrl}/device/getAll?page=${this.page -
           1}&size=${this.list}`
       }).then(res => {
         this.total = res.data.body.totalElements;
-        this.data = res.data.body.content;
+        this.data  = res.data.body.content;
       });
     },
     //查看详情
     detail(id) {
       // 请示数据，打开对话框，显示表单的数据，进行提交
       this.axios({
-        url: `${this.baseUrl}/device/getOne?ids=${id}`,
+        url   : `${this.baseUrl}/device/getOne?ids=${id}`,
         method: "get"
       }).then(res => {
         this.formValidate1 = res.data.body;
-        this.modal2 = true;
+        this.modal2        = true;
       });
     },
     //添加修改设备数据
     edit(id) {
       // 请示数据，打开对话框，显示表单的数据，进行提交
       this.axios({
-        url: `${this.baseUrl}/device/getOne?ids=${id}`,
+        url   : `${this.baseUrl}/device/getOne?ids=${id}`,
         method: "get"
       }).then(res => {
         this.formValidate1 = res.data.body;
-        this.modal1 = true;
+        this.modal1        = true;
       });
     },
     handleSubmitDev(username) {
@@ -635,9 +635,9 @@ export default {
         if (valid) {
           if (this.formValidate1.id) {
             this.axios({
-              url: `${this.baseUrl}/device/save`,
+              url   : `${this.baseUrl}/device/save`,
               method: "post",
-              data: params
+              data  : params
             }).then(res => {
               this.getdeviceData();
               this.modal1 = false;
@@ -645,9 +645,9 @@ export default {
             });
           } else {
             this.axios({
-              url: `${this.baseUrl}/device/save`,
+              url   : `${this.baseUrl}/device/save`,
               method: "post",
-              data: params
+              data  : params
             }).then(res => {
               this.modal1 = false;
               this.getdeviceData();
@@ -664,13 +664,13 @@ export default {
       var params = new URLSearchParams();
       params.append("ids", JSON.stringify(this.ids));
       this.$Modal.confirm({
-        title: "确认删除？",
+        title  : "确认删除？",
         content: "<p>数据删除后将不可恢复</p>",
-        onOk: () => {
+        onOk   : () => {
           this.axios({
             method: "post",
-            url: `${this.baseUrl}/device/delete`,
-            data: params
+            url   : `${this.baseUrl}/device/delete`,
+            data  : params
           }).then(res => {
             this.getdeviceData(this.type);
             this.$Message.info("删除成功");
@@ -692,11 +692,11 @@ export default {
     getgroupData() {
       this.axios({
         method: "get",
-        url: `${this.baseUrl}/device/findAllGroup?page=${this.page -
+        url   : `${this.baseUrl}/device/findAllGroup?page=${this.page -
           1}&size=${this.list}`
       }).then(res => {
         this.total1 = res.data.body.totalElements;
-        this.data1 = res.data.body.content;
+        this.data1  = res.data.body.content;
       });
     },
     //添加分组
@@ -707,9 +707,9 @@ export default {
       this.$refs[username].validate(valid => {
         if (valid) {
           this.axios({
-            url: `${this.baseUrl}/device/saveGroup`,
+            url   : `${this.baseUrl}/device/saveGroup`,
             method: "post",
-            data: this.qs.stringify(this.formValidate2)
+            data  : this.qs.stringify(this.formValidate2)
           }).then(res => {
             this.modalGroup1 = false;
             this.getgroupData();
@@ -723,16 +723,16 @@ export default {
     changeGroup() {
       if (typeof this.groupID == "undefined") {
         this.$Modal.confirm({
-          title: "温馨提示",
+          title  : "温馨提示",
           content: "<p>请先点击确认具体分组</p>"
         });
       } else {
         this.axios({
-          url: `${this.baseUrl}/device/findGroup?id=${this.groupID}`,
+          url   : `${this.baseUrl}/device/findGroup?id=${this.groupID}`,
           method: "get"
         }).then(res => {
           this.formValidate2 = res.data.body;
-          this.modalGroup1 = true;
+          this.modalGroup1   = true;
         });
       }
     },
@@ -740,9 +740,9 @@ export default {
       this.$refs[username].validate(valid => {
         if (valid) {
           this.axios({
-            url: `${this.baseUrl}/device/saveGroup`,
+            url   : `${this.baseUrl}/device/saveGroup`,
             method: "post",
-            data: this.qs.stringify(this.formValidate2)
+            data  : this.qs.stringify(this.formValidate2)
           }).then(res => {
             this.modalGroup1 = false;
             this.getDatas();
@@ -756,7 +756,7 @@ export default {
     removeGroup() {
       if (typeof this.groupID == "undefined") {
         this.$Modal.confirm({
-          title: "温馨提示",
+          title  : "温馨提示",
           content: "<p>请先点击你要删除的分组</p>"
         });
       } else {
@@ -764,13 +764,13 @@ export default {
       var params = new URLSearchParams();
       params.append("groupId", JSON.stringify(this.Group_ids));
       this.$Modal.confirm({
-        title: "确认删除？",
+        title  : "确认删除？",
         content: "<p>数据删除后将不可恢复</p>",
-        onOk: () => {
+        onOk   : () => {
           this.axios({
             method: "post",
-            url: `${this.baseUrl}/device/deleteDeviceGroup`,
-            data: params
+            url   : `${this.baseUrl}/device/deleteDeviceGroup`,
+            data  : params
           }).then(res => {
             this.getdeviceData(this.type);
             this.$Message.info("删除成功");
@@ -790,22 +790,22 @@ export default {
       params.append("size",this.list);
        this.axios({
         method: "post",
-        url: `${this.baseUrl}/device/findDeviceByGroup`,
-        data:params
+        url   : `${this.baseUrl}/device/findDeviceByGroup`,
+        data  : params
       }).then(res => {
         this.total2 = res.data.body.totalElements;
-        this.data2 = res.data.body.content;
+        this.data2  = res.data.body.content;
       });
     },
     //添加分组终端设备
     modaladdGroupDev(){
-      this.modalGroupDev1=true;
+      this.modalGroupDev1 = true;
     },
     addGroupDevOk(){
       this.axios({
-        url: `${this.baseUrl}/device/updateDeviceGroup`,
+        url   : `${this.baseUrl}/device/updateDeviceGroup`,
         method: "post",
-        data:this.qs.stringify({groupId:this.groupID,deviceIds: JSON.stringify(this.GroupDev_ids) ,update:0})
+        data  : this.qs.stringify({groupId:this.groupID,deviceIds: JSON.stringify(this.GroupDev_ids) ,update:0})
       }).then(res => {
         this.modalGroup1 = false;
         this.getGroupDevData();
@@ -815,7 +815,7 @@ export default {
     removeGroupDev(){
       if (typeof this.groupID == "undefined") {
         this.$Modal.confirm({
-          title: "温馨提示",
+          title  : "温馨提示",
           content: "<p>请先点击你要删除的分组设备</p>"
         });
       } else {
@@ -824,13 +824,13 @@ export default {
       params.append("deviceIds", JSON.stringify(this.delGroupDev_ids) );
       params.append("update",1);
       this.$Modal.confirm({
-        title: "确认删除？",
+        title  : "确认删除？",
         content: "<p>数据删除后将不可恢复</p>",
-        onOk: () => {
+        onOk   : () => {
           this.axios({
             method: "post",
-            url: `${this.baseUrl}/device/updateDeviceGroup`,
-            data: params
+            url   : `${this.baseUrl}/device/updateDeviceGroup`,
+            data  : params
           }).then(res => {
             this.getGroupDevData();
             this.$Message.info("删除成功");
@@ -923,19 +923,19 @@ export default {
 }
 .ctrl {
   position: absolute;
-  right: 10px;
-  top: 0px;
+  right   : 10px;
+  top     : 0px;
 }
 .devBtn {
   margin-bottom: 20px;
 }
 .detail p {
-  font-size: 15px;
-  font-weight: bolder;
+  font-size     : 15px;
+  font-weight   : bolder;
   padding-bottom: 10px;
 }
 .detail p span {
-  font-size: 15px;
+  font-size  : 15px;
   font-weight: 100;
 }
 .group-height .ivu-table-row-highlight td {

@@ -42,64 +42,67 @@ export default {
   data() {
     return {
       formValidate: {
-        userName: "",
-        loggerName: "",
+        userName       : "",
+        loggerName     : "",
         loggerPassworld: "",
-        userRole: "",
-        userPhone: ""
+        userRole       : "",
+        userPhone      : ""
       },
       ruleValidate: {
         userName: [
-          {required: true,message: "姓名不能为空",trigger: "change"}
+          {required: true,message: "姓名不能为空",trigger: "blur"}
         ],
         loggerName: [
-          {required: true,message: "登录账户不能为空",trigger: "change"}
+          {required: true,message: "登录账户不能为空",trigger: "blur"}
         ],
         loggerPassworld: [
-          {required: true,message: "登录密码不能为空",trigger: "change"}
+          {required: true,message: "登录密码不能为空",trigger: "blur"}
         ],
         userPhone: [
-          {required: true,message: "联系方式不能为空",trigger: "change"},
-          {required: true,min:11,max:11,message: "必须为11位数字值",trigger: "change"}
+          {required: true,message: "联系方式不能为空",trigger: "blur"},
+          { type: 'number', message: '请输入数字格式',trigger: 'blur', transform(value) {
+        return Number(value);
+    }},
+          // {len:11,message: "必须为11位数字值",trigger: "blur"}
         ],
         userRole: [
-          {required: true,message: "所属角色不能为空",trigger: "change"}
+          {required: true,message: "所属角色不能为空",trigger: "blur"}
         ],
       },
       columns1: [
         {
-          type: "selection",
+          type : "selection",
           width: 60,
           align: "center"
         },
         {
           title: "姓名",
-          key: "userName",
+          key  : "userName",
         },
         {
           title: "登录账号",
-          key: "loggerName"
+          key  : "loggerName"
         },
         {
           title: "登录密码",
-          key: "loggerPassworld"
+          key  : "loggerPassworld"
         },
         {
           title: "联系方式",
-          key: "userPhone"
+          key  : "userPhone"
         },
         {
-          title: "所属角色",
-          key: "userRole",
+          title : "所属角色",
+          key   : "userRole",
           render: function(h,params){
                    return h('div', [h('span', params.row.userRole.roleName)]);
                     }
         },
         {
-          title: "功能",
-          key: "action",
-          width: 200,
-          align: "center",
+          title : "功能",
+          key   : "action",
+          width : 200,
+          align : "center",
           render: (h, params) => {
             return h("div", [
               h(
@@ -157,13 +160,13 @@ export default {
           }
         }
       ],
-      data: [],
-      total: 0,
-      page: 1,
-      list: 10,
-      input2: "",
-      modal1: false,
-      loading: true,
+      data        : [],
+      total       : 0,
+      page        : 1,
+      list        : 10,
+      input2      : "",
+      modal1      : false,
+      loading     : true,
       userRoleData: []
     };
   },
@@ -172,12 +175,12 @@ export default {
     getData() {
       this.axios({
         method: "post",
-        url: `${this.baseUrl}/user/findAll?page=${this.page -
+        url   : `${this.baseUrl}/user/findAll?page=${this.page -
           1}&size=${this.list}`,
       }).then(res => {
         console.log(999,res.data.body.content);
         this.total = res.data.body.totalElements;
-        this.data = res.data.body.content;
+        this.data  = res.data.body.content;
       });
     },
     //添加修改数据
@@ -189,7 +192,7 @@ export default {
     getRoleData() {
       this.axios({
         method: "get",
-        url: `${this.baseUrl}/role/findAll?page=${this.page -
+        url   : `${this.baseUrl}/role/findAll?page=${this.page -
           1}&size=${this.list}`,
       }).then(res => {
         this.userRoleData = res.data.body.content;
@@ -198,11 +201,11 @@ export default {
      // 请示数据，打开对话框，显示表单的数据，进行提交
     edit(id) {
       this.axios({
-        url: `${this.baseUrl}/user/findOne?id=${id}`,
+        url   : `${this.baseUrl}/user/findOne?id=${id}`,
         method: "get"
       }).then(res => {
         this.formValidate = res.data.body;
-        this.modal1 = true;
+        this.modal1       = true;
       });
     },
     handleSubmit(username) {
@@ -210,9 +213,9 @@ export default {
                 if (valid) {
                     if (this.formValidate.id) {
                         this.axios({
-                            url: `${this.baseUrl}/user/addOrUpdate`,
+                            url   : `${this.baseUrl}/user/addOrUpdate`,
                             method: 'post',
-                            data: this.qs.stringify(this.formValidate)
+                            data  : this.qs.stringify(this.formValidate)
                         }).then(res => {
                             this.$Message.info("修改成功");
                             this.getData();
@@ -221,9 +224,9 @@ export default {
                     } else {
                         this.formValidate.id = -1;
                         this.axios({
-                            url: `${this.baseUrl}/user/addOrUpdate`,
+                            url   : `${this.baseUrl}/user/addOrUpdate`,
                             method: 'post',
-                            data: this.qs.stringify(this.formValidate)
+                            data  : this.qs.stringify(this.formValidate)
                         }).then(res => {
                             this.modal1 = false;
                             this.getData();
@@ -240,13 +243,13 @@ export default {
       var params = new URLSearchParams();
       params.append("ids", JSON.stringify(this.ids));
       this.$Modal.confirm({
-        title: "确认删除？",
+        title  : "确认删除？",
         content: "<p>数据删除后将不可恢复</p>",
-        onOk: () => {
+        onOk   : () => {
           this.axios({
             method: "post",
-            url: `${this.baseUrl}/user/delete`,
-            data: params
+            url   : `${this.baseUrl}/user/delete`,
+            data  : params
           }).then(res => {
             this.getdeviceData(this.type);
             this.$Message.info("删除成功");
@@ -282,7 +285,7 @@ export default {
     //查看详情
     show(index) {
       this.$Modal.info({
-        title: "",
+        title  : "",
         content: `姓名：${this.data[index].userName}<br>
                   登录账号：${this.data[index].loggerName}<br>
                   登录密码：${this.data[index].loggerPassworld}<br>
@@ -303,15 +306,15 @@ export default {
       console.log(this.input2);
       this.axios({
         method: "post",
-        url: "http://10.31.162.59:3000/forum/list",
-        data: {
-          page: this.page,
-          limit: this.list,
+        url   : "http://10.31.162.59:3000/forum/list",
+        data  : {
+          page       : this.page,
+          limit      : this.list,
           articalname: this.input2
         }
       }).then(res => {
         this.total = res.data.total;
-        this.data = res.data.docs;
+        this.data  = res.data.docs;
       });
     },
   },
