@@ -35,7 +35,7 @@
                 <Icon type="log-in"></Icon>
                 欢迎登录
             </p>
-            <Form ref="userForm" :model="userForm" :rules="ruleInline">
+            <Form ref="userForm" :model="userForm" :rules="ruleCustom">
                 <FormItem prop="username">
                     <Input v-model.trim="userForm.username" placeholder="请输入" size="large">
                         <Icon type="ios-person-outline" slot="prepend" class="icon-cls"></Icon>
@@ -66,7 +66,7 @@ export default {
                 username:'',
                 password:''
             },
-            ruleInline: {
+            ruleCustom: {
                 username: [
                     { required: true, message: '用户名不能为空', trigger: 'blur' }
                 ],
@@ -76,31 +76,48 @@ export default {
             }
         }
     },
+
     methods:{
-        btn_login(name) {
-            this.$refs[name].validate(valid => {
-                if (valid) {
-                this.axios({
+    btn_login(userForm){
+        this.$router.push('/home')
+     this.$refs[userForm].validate((valid) => {
+          if (valid) {
+            // 调用登录请求接口
+            this.axios({
                     method: 'post',
                     url   : `${this.baseUrl}/login/user`,
                     data  : this.qs.stringify({
                     userName: this.userForm.username,
                     pwd: this.userForm.password
                     })
-                }).then(res => {
-                    if(res.data.status=="200"){
-                        this.$router.push('/')
-                        this.$Message.success('登录成功!');
-                    } else {
-                        this.$Message.error(res.data.msg);
+                }).then(res=>{
+              // 登录成功,提示成功信息，然后跳转到首页，同时将token保存到localstorage中, 将登录名使用vuex传递到Home页面
+              if(res.data.status === 200){
+               this.$Message.success('登录成功!');
+                this.$cookie.set('test', JSON.stringify(res.data.body) );
+                // 跳转到首页
+                   this.$router.push('/home')
+                //localStorage.setItem('token',res.data.token)
+                // 将登录名使用vuex传递到Home页面
+                let information={
+                         "username":res.data.body.userName,
+                         "id":res.data.body.id,
+                         "loggerName":res.data.body.loggerName,
+                         "loggerPassworld":res.data.body.loggerPassworld
                     }
-                });
-                } else {
-                this.$Message.error('用户名或密码错误!');
-                }
-            });
-    },
+                this.$store.commit('handleUserName',information);
+               // console.log(this.$store)
+              }else{
+                this.$Message.error(res.data.msg);
+              }
+            })
+          } else {
+            this.$Message.error('用户名或密码错误!');
+          }
+        });
     }
+  },
+
 }
 </script>
 

@@ -22,31 +22,27 @@ textarea {
 <template>
  <div style="margin-top:30px;padding-left:10px">
    <div style="margin:0 0 20px 10px;font-size:20px">信息调度</div>
+        <Button type="success" @click="edits"  style="margin-right:5px">多个审核通过</Button>
+        <Button type="error" @click="removes" style="margin-right:5px">多个审核不通过</Button>
         <Input search  v-model="input2" placeholder="请输入标题" :style="{width:200+'px'}" />
         <Button type="info" @click="sousuo" >搜索</Button>
-        <Modal
-           v-model = "modal1"
-           title   = "添加信息"
-           :loading  = "loading"
-           @on-ok  = "asyncOK">
-            <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">               
-                 <FormItem label="标题" prop="input">
-                    <Input v-model="formValidate.input" placeholder="请输入标题"></Input>
-                </FormItem>              
-               
-                <FormItem label="内容" prop="desc">
-                  <textarea v-model="formValidate.desc"  placeholder="请输入内容"></textarea>
-                </FormItem> 
-
-                <FormItem >
-                    <Button type="primary" @click="handleSubmit('formValidate')" >提交</Button>
-                    <Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
-                </FormItem>
-            </Form>
-             <div slot="footer">
-            </div>
-            </Modal>
-        <Table border ref="selection" :columns="columns1" :data="data" @on-selection-change="onSelect"></Table>
+    <!-- 信息查看 -->
+    <Modal v-model="modal1" title="信息查看" >
+      <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
+        <FormItem label="标题" prop="input">
+          <Input v-model="formValidate.input"  readonly="readonly"></Input>
+        </FormItem>
+        <FormItem label="内容" prop="desc">
+          <Input type="textarea" v-model="formValidate.desc" readonly="readonly"></Input>
+        </FormItem>
+        <FormItem label="添加时间" prop="input5">
+          <Input v-model="formValidate.input5"  readonly="readonly"></Input>
+        </FormItem>
+      </Form>
+      <div slot="footer">
+      </div>
+    </Modal>
+        <Table border ref="selection" :columns="columns1" :data="data" @on-selection-change="onSelect" @on-row-dblclick="detail"></Table>
          <Page :total="total" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer></Page>
     </div>
 </template>
@@ -58,76 +54,59 @@ export default {
       formValidate: {
         input: "",
         desc: "",
+        input5: "",
       },
-      ruleValidate: {
-        date: [
-          {
-            required: true,
-            type: "date",
-            message: "Please select the date",
-            trigger: "change"
-          }
-        ],
-         input: [
-          { required: true, message: '请输入标题', trigger: 'blur' },
-         /*  {
-            type: "string",
-            min: 20,
-            message: "Introduce no less than 20 words",
-            trigger: "blur"
-          } */
-        ],
-        desc: [
-          { required: true, message: '请输入短信内容', trigger: 'blur' },
-         /*  {
-            type: "string",
-            min: 20,
-            message: "Introduce no less than 20 words",
-            trigger: "blur"
-          } */
-        ]
-      },
+      ruleValidate: {},
 
       columns1: [
-        /* {
+        {
           type: "selection",
           width: 60,
           align: "center"
-        }, */
-
-        /* {
-          title: "标题",
-          key: "msgName",
-          width:200,
-          render: (h, params) => {
-            return h("div", [
-              h("Icon", {
-                props: {
-                  type: "person"
-                }
-              }),
-              h("strong", params.row.title)
-            ]);
-          }
-        }, */
+        },
 
         {
           title: "标题",
+          align: "center",
+          tooltip:true,
           key: "msgName"
         },
 
         {
           title: "内容",
+          align: "center",
+          tooltip:true,
           key: "msgContent"
         },
         {
           title: "添加时间",
+          align: "center",
+          tooltip:true,
           key: "msgTime"
+        },
+        {
+          title: "审核状态",
+          align: "center",
+          tooltip:true,
+          key: "msgAudit",
+          render: function(h,params){
+            if(params.row.msgAudit==0){
+              params.row.msgAudit= '未审核'
+            }else if(params.row.msgAudit==1){
+              params.row.msgAudit= '审核已通过'
+            }else if(params.row.msgAudit==2){
+              params.row.msgAudit= '审核未通过'
+            }
+                   return h('div', [h('span',
+                     params.row.msgAudit
+                      )]);
+                    }
+
         },
         {
           title: "功能",
           key: "action",
-          width: 200,
+          width: 250,
           align: "center",
           render: (h, params) => {
             return h("div", [
@@ -165,9 +144,9 @@ export default {
                     }
                   }
                 },
-                "发送设置"
+                "审核通过"
               ),
-             /*  h(
+              h(
                 "Button",
                 {
                   props: {
@@ -176,85 +155,129 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.remove(params.row.id);
+                      this.remove(params.index);
                     }
                   }
                 },
-                "删除"
-              ) */
+                "审核不通过"
+              )
             ]);
           }
         }
       ],
       data: [],
       total: 0,
-      page: 1,
-      list: 10,
+      page: 0,
+      list: 5,
       input2:'',
+      ids:[],
+      msgAudit:[],
       modal1: false,
       loading: true,
       removesdata: []
     };
   },
   methods: {
+    detail(row){
+      console.log(row)
+      this.modal1=true;
+      this.formValidate.input=row.msgName;
+      this.formValidate.desc=row.msgContent;
+      this.formValidate.input5=row.msgTime
+    },
     onChangePage(page) {
-    this.page = page;
-    if (this.input2 != "") {
-      this.sousuo();
-    } else {
-      this.getData();
-    }
-  },
-  onPageSizeChange(list) {
-    console.log(list);
-    this.list = list;
-    if (this.input2 != "") {
-      this.sousuo();
-    } else {
-      this.getData();
-    }
-  },
+      this.page = page;
+      if (this.input2 != "") {
+        this.sousuo();
+      } else {
+        this.getData();
+      }
+     },
+    onPageSizeChange(list) {
+      this.list = list;
+      if (this.input2 != "") {
+        this.sousuo();
+      } else {
+        this.getData();
+      }
+     },
     handleReset(name) {
       this.$refs[name].resetFields();
-    },
+     },
     show(index) {
-      console.log(this.data[index].id)
-      this.$Modal.info({
-        title: "",
-        content: `表题：${this.data[index].msgName}<br>
-                  内容：${this.data[index].msgContent}<br>
-                  添加时间：${this.data[index].msgTime}<br>`
-      });
+      this.modal1=true;
+      this.formValidate.input=this.data[index].msgName;
+      this.formValidate.desc=this.data[index].msgContent;
+      this.formValidate.input5=this.data[index].msgTime
     },
-    edit(index) {
-      /* console.log('修改啊'); */
-      this.axios({
-        url: `http://192.168.4.165:8080/msg/queryMsg?page=0&size=20`,
-        method: "post"
-      }).then(res => {
-        //console.log(index);
-        this.formValidate = res.data.content[index];
-        this.formValidate.input = this.data[index].msgName;
-        this.formValidate.desc = this.data[index].msgContent;
-        this.modal1 = true;
-        console.log(this.formValidate.id)
-      });
+
+     // 单个审核通过
+      edit(index) {
+        if(this.data[index].msgAudit == 0){
+      this.$Modal.confirm({
+        title: "确认操作",
+        content: "<p>你确认该记录审核通过吗?</p>",
+        onOk: () => {
+          this.axios({
+            url: `${this.baseUrl1}/msg/auditPass`,
+            method: "post",
+            data: {
+              ids: [this.data[index].id]
+            }
+          }).then(res => {
+            this.$Message.info("操作成功");
+            this.getData();
+          });
+        },
+        onCancel: () => {
+          this.$Message.info("已取消审核");
+        }
+      });} else{
+        this.$Message.info("已审核");
+      }
     },
-   /*  remove(index) {
-      this.data.splice(index, 1);
-    }, */
+  /* 多个审核通过 */
+   edits(ids) {
+     if(this.ids.length>0){
+       if(this.msgAudit.indexOf(1)== -1 && this.msgAudit.indexOf(2)== -1){
+      this.$Modal.confirm({
+        title: "确认操作",
+        content: "<p>你确认记录审核通过吗?</p>",
+        onOk: () => {
+          this.axios({
+            url: `${this.baseUrl1}/msg/auditPass`,
+            method: "post",
+            data: {
+              ids: this.ids
+            }
+          }).then(res => {
+            this.$Message.info("审核成功");
+            this.getData();
+            this.ids.length=0;
+            this.msgAudit.length=0;
+          });
+        },
+         onCancel: () => {
+          this.$Message.info("取消审核");
+        }
+        });}else{this.$Message.info("存在已审核数据"); }
+        }else{
+          this.$Message.info("请选择数据");
+        }
+    },
     getData() {
       this.axios({
         method: "post",
-        url: "http://192.168.4.165:8080/msg/queryMsg?page=0&size=20",
+        url:`${this.baseUrl1}/msg/queryMsg`,
         data: {
           page: this.page,
-          size: this.list
+          size: this.list,
+          //listType: audit ,
         }
       }).then(res=>{
         //console.log(res.data.content);
-        //this.total = res.data.total;
-        this.data = res.data.content;
+        this.total = res.data.body.totalElements;
+        this.data = res.data.body.content;
       });
     },
     asyncOK() {
@@ -263,76 +286,84 @@ export default {
       }, 500);
     },
     onSelect(selections) {
-      //console.log(selections);
-      //console.log(selections[0].id);
-      var ids = [];
+      let ids = [];
+      let msgAudit=[];
       for (let i = 0; i < selections.length; i++) {
         ids.push(selections[i].id);
+        msgAudit.push(selections[i].msgAudit)
       }
-      //console.log(ids)
-     // this.ids = ids.toString();
      this.ids = ids;
-      console.log(ids);
+     this.msgAudit=msgAudit
     },
     sousuo() {
-      console.log(this.input2);
+      //console.log(this.input2);
       this.axios({
         method: "post",
-        url: "http://10.31.162.59:3000/forum/list",
+        url: `${this.baseUrl1}/msg/queryMsg`,
         data: {
           page: this.page,
           size: this.list,
-          msgNmae: this.input2
+          keyword : {
+	           	msgName : this.input2,
+	        },
+          listType: "audit",
         }
       }).then(res => {
-        this.total = res.data.total;
-        this.data = res.data.content;
+        this.total = res.data.body.total;
+        this.data = res.data.body.content;
       });
     },
-    remove(ids) {
-      console.log(ids)
+    remove(index) {
+      if(this.data[index].msgAudit == 0){
       this.$Modal.confirm({
         title: "确认操作",
-        content: "<p>你确认删除该记录吗?</p>",
+        content: "<p>你确认该记录审核不通过吗?</p>",
         onOk: () => {
           this.axios({
-            url: `http://192.168.4.165:8080/msg/delMsg`,
+            url: `${this.baseUrl1}/msg/auditUnPass`,
             method: "post",
             data: {
-              id: ids
+              ids: [this.data[index].id]
             }
           }).then(res => {
-            alert("你已经删除成功");
+            this.$Message.info("操作成功");
             this.getData();
           });
         },
         onCancel: () => {
-          this.$Message.info("Clicked cancel");
+          this.$Message.info("已取消审核");
         }
-      });
+      });} else {
+        this.$Message.info("已审核");
+      }
     },
-    // 多选删除
+    // 多选审核不通过
     removes(ids) {
-      console.log(ids);
+     if(this.ids.length>0){
+        if(this.msgAudit.indexOf(1)== -1 && this.msgAudit.indexOf(2)== -1){
       this.$Modal.confirm({
         title: "确认操作",
-        content: "<p>你确认删除该记录吗?</p>",
+        content: "<p>你确认该信息审核不通过吗?</p>",
         onOk: () => {
           this.axios({
-            url: `http://192.168.4.165:8080/msg/delMulMsg`,
+            url: `${this.baseUrl1}/msg/auditUnPass`,
             method: "post",
             data: {
               ids: this.ids
             }
           }).then(res => {
-            alert("你已经删除成功");
+            this.$Message.info("操作成功");
             this.getData();
+            this.ids.length=0;
           });
         },
         onCancel: () => {
-          this.$Message.info("Clicked cancel");
+          this.$Message.info("已取消审核");
         }
-      });
+      });}else{ this.$Message.info("存在已审核数据"); }
+      }else{
+        this.$Message.info("请选择数据");
+      }
     },
     // 在此函数进行帖子提交
     handleSubmit(name) {
@@ -340,7 +371,7 @@ export default {
         //console.log(this.formValidate.id)
         if (this.formValidate.id) {
           this.axios({
-            url: `http://192.168.4.165:8080/msg/saveMsg`,
+            url: `${this.baseUrl1}/msg/saveMsg`,
             method: "put",
             data: {
               	newObj : {
@@ -357,7 +388,7 @@ export default {
         } else {
           this.axios({
             method: "post",
-            url: "http://192.168.4.165:8080/msg/saveMsg",
+            url: `${this.baseUrl1}/msg/saveMsg`,
             data: {
               newObj : {
 	                  	msgName : this.formValidate.input,
@@ -373,7 +404,7 @@ export default {
       });
     }
   },
-  
+
   mounted() {
     this.getData();
   }

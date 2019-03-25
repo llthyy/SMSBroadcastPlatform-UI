@@ -3,7 +3,7 @@
     <div style="margin:0 0 20px 10px;font-size:20px">账号管理</div>
     <Button type="success" @click="addUser" style="margin-right:5px">添加账号</Button>
     <Button type="error" @click="remove" style="margin-right:5px">删除多个</Button>
-    <Input search v-model="input2" placeholder="请输入姓名" :style="{width:200+'px'}" />
+    <Input search v-model="input2" placeholder="请输入姓名或账号" :style="{width:200+'px'}" />
     <Button type="info" @click="sousuo">搜索</Button>
     <Modal v-model="modal1" title="修改信息" :loading="loading" >
       <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
@@ -19,21 +19,26 @@
         <FormItem label="联系方式" prop="userPhone">
           <Input v-model="formValidate.userPhone" placeholder="请输入联系方式"></Input>
         </FormItem>
+        <FormItem label="区域码" prop="orgCodea">
+          <Input v-model="formValidate.orgCodea" placeholder="请输入联系方式"></Input>
+        </FormItem>
         <FormItem label="所属角色" prop="userRole">
-          <Select v-model="formValidate.userRole"  placeholder="请选择角色" filterable clearable style="width:160px">
+          <Select v-model="formValidate.userRole"  placeholder="请选择角色"   style="width:160px">
               <Option v-for="item in userRoleData" :value="item.roleName" :key="item.roleName" >{{item.roleName}}</Option>
           </Select>
         </FormItem>
-        <FormItem>
+        <FormItem class="fuck" style="width:95%;margin-bottom:25px">
+          <div style="float: right;">
           <Button type="primary" @click="handleSubmit('formValidate')">提交</Button>
-          <Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
+          <Button type="error" @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
+          </div>
         </FormItem>
       </Form>
       <div slot="footer">
       </div>
     </Modal>
     <Table border ref="selection" :columns="columns1" :data="data" @on-selection-change="onSelect"></Table>
-    <Page :total="total" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer></Page>
+     <Page :total="total" :page-size="list" @on-change="onChangePage" :page-size-opts=[5,10,15,20] @on-page-size-change="onPageSizeChange" size="small" show-elevator show-sizer show-total></Page>
   </div>
 </template>
 
@@ -60,9 +65,7 @@ export default {
         ],
         userPhone: [
           {required: true,message: "联系方式不能为空",trigger: "blur"},
-          { type: 'number', message: '请输入数字格式',trigger: 'blur', transform(value) {
-        return Number(value);
-    }},
+          {pattern:/^[0-9]{11}$/,message: "必须为11位数字值",trigger: "blur"}
           // {len:11,message: "必须为11位数字值",trigger: "blur"}
         ],
         userRole: [
@@ -76,25 +79,35 @@ export default {
           align: "center"
         },
         {
-          title: "姓名",
-          key  : "userName",
+          title  : "姓名",
+          align  : "center",
+          tooltip: true,
+          key    : "userName",
         },
         {
-          title: "登录账号",
-          key  : "loggerName"
+          title  : "登录账号",
+          align  : "center",
+          tooltip: true,
+          key    : "loggerName"
         },
         {
-          title: "登录密码",
-          key  : "loggerPassworld"
+          title  : "联系方式",
+          align  : "center",
+          tooltip: true,
+          key    : "userPhone"
         },
         {
-          title: "联系方式",
-          key  : "userPhone"
+          title  : "区域码",
+          align  : "center",
+          tooltip: true,
+          key    : "orgCodea"
         },
         {
-          title : "所属角色",
-          key   : "userRole",
-          render: function(h,params){
+          title  : "所属角色",
+          align  : "center",
+          tooltip: true,
+          key    : "userRole",
+          render : function(h,params){
                    return h('div', [h('span', params.row.userRole.roleName)]);
                     }
         },
@@ -160,10 +173,11 @@ export default {
           }
         }
       ],
+      ids         : [],
       data        : [],
       total       : 0,
       page        : 1,
-      list        : 10,
+      list        : 5,
       input2      : "",
       modal1      : false,
       loading     : true,
@@ -178,14 +192,14 @@ export default {
         url   : `${this.baseUrl}/user/findAll?page=${this.page -
           1}&size=${this.list}`,
       }).then(res => {
-        console.log(999,res.data.body.content);
         this.total = res.data.body.totalElements;
         this.data  = res.data.body.content;
       });
     },
     //添加修改数据
     addUser(){
-      this.modal1 = true;
+      this.modal1       = true;
+      this.formValidate = {};
       this.getRoleData();
     },
     //获取下拉框数据
@@ -196,6 +210,7 @@ export default {
           1}&size=${this.list}`,
       }).then(res => {
         this.userRoleData = res.data.body.content;
+        console.log(this.userRoleData)
       });
     },
      // 请示数据，打开对话框，显示表单的数据，进行提交
@@ -204,8 +219,10 @@ export default {
         url   : `${this.baseUrl}/user/findOne?id=${id}`,
         method: "get"
       }).then(res => {
-        this.formValidate = res.data.body;
-        this.modal1       = true;
+        this.formValidate          = res.data.body;
+        this.formValidate.userRole = res.data.body.userRole.roleName;
+        this.getRoleData();
+        this.modal1 = true;
       });
     },
     handleSubmit(username) {
@@ -251,7 +268,7 @@ export default {
             url   : `${this.baseUrl}/user/delete`,
             data  : params
           }).then(res => {
-            this.getdeviceData(this.type);
+            this.getData();
             this.$Message.info("删除成功");
           });
         },
@@ -285,40 +302,37 @@ export default {
     //查看详情
     show(index) {
       this.$Modal.info({
-        title  : "",
+        title  : "账号详情：",
         content: `姓名：${this.data[index].userName}<br>
                   登录账号：${this.data[index].loggerName}<br>
-                  登录密码：${this.data[index].loggerPassworld}<br>
                   联系方式：${this.data[index].userPhone}<br>
-                  所属角色：${this.data[index].userRole}<br>`
+                  所属角色：${this.data[index].userRole.roleName}<br>`
       });
     },
     onSelect(selections) {
-      /*  console.log(selections); */
       var ids = [];
       for (let i = 0; i < selections.length; i++) {
-        ids.push(selections[i]._id);
+        ids.push(selections[i].id);
       }
-      this.ids = ids.toString();
-      console.log(ids);
+      this.ids = ids;
     },
     sousuo() {
-      console.log(this.input2);
+      console.log(this.page);
       this.axios({
         method: "post",
-        url   : "http://10.31.162.59:3000/forum/list",
-        data  : {
-          page       : this.page,
-          limit      : this.list,
-          articalname: this.input2
-        }
+        url   : `${this.baseUrl}/user/findByNameOrLoggerName`,
+        data  : this.qs.stringify({
+          page   : this.page-1,
+          size   : this.list,
+          message: this.input2
+        })
       }).then(res => {
-        this.total = res.data.total;
-        this.data  = res.data.docs;
+        console.log(res)
+        this.total = res.data.totalElements;
+        this.data  = res.data.body.content;
       });
     },
   },
-
   mounted() {
     this.getData();
   }

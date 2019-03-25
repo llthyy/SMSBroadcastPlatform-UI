@@ -36,10 +36,13 @@
                                 <Icon :size="20" :type="menu.icon"></Icon>
                                 <span>{{menu.title}}</span>
                             </template>
-                            <MenuItem :name="child.name" v-for="(child ,child_index) in menu.children" :key="child_index">
-                                <Icon :size="20" :type="child.icon"></Icon>
-                                <span>{{child.title}}</span>
+                            <div v-for="(child ,child_index) in menu.children" :key="child_index">
+                                <MenuItem  :name="child.name"  v-if=" child.showInMenus" >
+                                    <Icon :size="20" :type="child.icon"></Icon>
+                                    <span>{{child.title}}</span>
                             </MenuItem>
+                            </div>
+
                         </Submenu>
                         <MenuItem :name="menu.name" v-if="!menu.children && menu.showInMenus" :key="menu_index">
                             <Icon :size="20" :type="menu.icon" :key="menu_index"></Icon>
@@ -92,11 +95,13 @@
                     <div class="header-wapper">
                         <div class="header-left">
                             <Icon @click.native="collapsedSider" :class="rotateIcon" type="md-menu" size="28"></Icon>
-                            <span class="header-title">短信应急广播平台</span>
+                            <span class="header-title">应急广播短信中心系统</span>
                         </div>
                         <div class="header-right" style="margin-right:20px">
-                            <Button type="text" icon="person" size="large">个人中心</Button>
-                            <Button type="text" icon="android-notifications" size="large" @click="clickNotice">消息通知</Button>
+                            <Avatar icon="ios-person" size="large" style="margin-right:10px;"/>
+                            <span class="user-name">{{username}}</span>
+                            <Button type="text" class="btn-blue" icon="person" size="large" @click="personalSet">个人设置</Button>
+                            <!-- <Button type="text" icon="android-notifications" size="large" @click="clickNotice">消息通知</Button>
                             <Dropdown style="margin-left:10px">
                                 <a href="javascript:void(0)">
                                     下拉菜单
@@ -106,7 +111,7 @@
                                     <DropdownItem>个人设置</DropdownItem>
                                     <DropdownItem>退出登录</DropdownItem>
                                 </DropdownMenu>
-                            </Dropdown>
+                            </Dropdown> -->
                             <Button type="text" icon="md-exit" class="btn-blue" size="large" @click="quit">退出系统</Button>
                         </div>
                     </div>
@@ -177,6 +182,8 @@ export default {
             contextMenuTop: 0,
             visible: false,
 
+            pers:{choosed: false,name:'personalSet',href: "/personalSet",closable: true,showInTags: false,choosed:false,title:"个人设置"},
+
             menus:[
                 {
                     title:'首页',
@@ -209,20 +216,38 @@ export default {
                             href:'/levels',
                             closable:true,
                             showInTags:false,
-                            showInMenus:true,
+                            showInMenus:false,
                             choosed:false
                         },
                     ]
                 },
                 {
                     title:'资源管理',
-                    name:'resource-manage',
+                    name:'resourceManagement-manage',
                     icon:'ios-cog',
                     children:[
                         {
                             title:'资源管理',
                             name:'resourceManagement',
                             href:'/resourceManagement',
+                            closable:true,
+                            showInTags:false,
+                            showInMenus:true,
+                            choosed:false
+                        },
+                    ]
+
+                },
+                {
+                    title:'地图模式',
+                    name:'b-map',
+                    icon:'ios-globe',
+                    // icon:'ios-pin',
+                    children:[
+                        {
+                            title:'地图模式',
+                            name:'BMap',
+                            href:'/BMap',
                             closable:true,
                             showInTags:false,
                             showInMenus:true,
@@ -295,6 +320,24 @@ export default {
                             showInTags:false,
                             showInMenus:true,
                             choosed:false
+                        },
+                        {
+                            title:'白名单管理',
+                            name:'whiteList-Management',
+                            href:'/whiteList',
+                            closable:true,
+                            showInTags:false,
+                            showInMenus:true,
+                            choosed:false
+                        },
+                        {
+                            title:'短信网关配置',
+                            name:'Short-Message',
+                            href:'/Smessage',
+                            closable:true,
+                            showInTags:false,
+                            showInMenus:true,
+                            choosed:false
                         }
                     ]
                 },
@@ -303,6 +346,11 @@ export default {
         }
     },
     computed: {
+        username(){
+            // console.log(this.$store.getters)
+             return this.$store.getters.userName.username;
+         },
+
         // 筛选menus中选中的menu
         tags(){
             let tags = [];
@@ -318,8 +366,9 @@ export default {
                     })
                 }
             });
-            // console.log('tags=>',tags)
-
+            if(this.pers.showInTags){
+                        tags.push(this.pers)
+                }
             //标签数组排序，从小到到
             tags.sort((a,b)=>{
                 return (a.num - b.num)
@@ -346,7 +395,6 @@ export default {
             // 通过 `vm` 访问组件实例
             let activeMenuName = localStorage.activeMenuName;
             vm.activeMenuName = activeMenuName;
-
             let tags_last_num = vm.tags[vm.tags.length - 1].num;
 
             if(activeMenuName && activeMenuName.length != 0){
@@ -365,6 +413,11 @@ export default {
                                 vm.openMenuName = [_menu.name];
                             }
                         })
+                    }else if(activeMenuName==vm.pers.name){
+                        vm.pers.choosed = true;
+                        vm.pers.showInTags = true;
+                        vm.pers.num = tags_last_num + 1;
+                        _menu.choosed = false;
                     }
                     else{
                         // 排除首页
@@ -386,6 +439,20 @@ export default {
     },
     // ------------------------------  菜单操作结束  --------------------------------
     methods: {
+        //权限设置
+         permission(){
+            var perm=JSON.parse(this.$cookie.get('test'));
+            if(perm.userRole.admin){
+                this.menus[1].children[1].showInMenus=true;
+            }
+         },
+        personalSet(){
+            // this.tags.push(this.pers)
+            this.choosedMenu(this.pers.name)
+            this.clickTag(this.pers)
+            this.pers.showInTags=true;
+            this.$router.push('/personalSet')
+        },
         /*tags 滚动事件 */
         handlescroll (e) {
             var type = e.type
@@ -417,16 +484,13 @@ export default {
         /* 右边导航栏 */
         quit(){
             if(window.confirm('你确定要退出吗？')){
-                this.axios({
-                    method: 'post',
-                    url   : `${this.baseUrl}/logout/user`,
-                }).then(res => {
-                        this.$router.push('/login')
-                        this.$Message.success('退出成功!');
-                });
+                 this.$router.push('/login')
+                 this.$cookie.delete('test');
+                 //return true;
               }else{
                  return false;
              }
+
         },
         clickNotice(){
             this.choosedMenu('notice');
@@ -451,6 +515,9 @@ export default {
                             child.showInTags = false;
                         }
                     })
+                }else if(name=="personalSet"){
+                    is_choosed = this.pers.choosed;
+                    this.pers.showInTags = false;
                 }
             })
             // 关闭标签并选中tags中最后一个标签高亮
@@ -466,10 +533,18 @@ export default {
             this.tags.forEach(_tag=>{
                 if(_tag.name == tag.name){
                     _tag.choosed=true;
+                    this.pers.choosed=false;
                 }else{
                     _tag.choosed= false;
+                    this.pers.choosed=false;
                 }
             })
+            if(this.pers.name==tag.name){
+                this.pers.choosed=true
+            }else{
+                this.pers.choosed=false
+            }
+
             // 设置菜单选中name
             this.activeMenuName = tag.name;
             localStorage.activeMenuName = this.activeMenuName;
@@ -488,7 +563,6 @@ export default {
             // 设置选中菜单name
             this.activeMenuName = name;
             localStorage.activeMenuName = this.activeMenuName;
-
             //根据name查找对应的菜单对象
             let menu = null;
             this.menus.forEach(_menu=>{
@@ -500,6 +574,7 @@ export default {
                     menu = _menu;
                     _menu.showInTags = true;
                     _menu.choosed = true;
+                    this.pers.choosed=false;
 
                 }
                 else if(_menu.children){
@@ -512,7 +587,7 @@ export default {
                             menu = child;
                             child.showInTags = true;
                             child.choosed = true;
-
+                            this.pers.choosed=false;
                         }else{
                             child.choosed = false;
                         }
@@ -522,12 +597,25 @@ export default {
                     _menu.choosed = false;
                 }
             })
-            this.$router.push(`${menu.href}`);
+            // if(this.pers.name=name){
+            //     if(!this.pers.showInTags){
+            //             this.pers.num = tags_last_num + 1;
+            //         }
+            //         this.pers.showInTags = true;
+            // }
+            if(menu==null){
+                this.$router.push(`${this.pers.href}`);
+            }else{
+                this.$router.push(`${menu.href}`);
+            }
         },
         dropdownClick(name){
             this.choosedMenu(name);
         }
         // ------------------------------  菜单操作结束  --------------------------------
-    }
+    },
+    mounted() {
+        this.permission()
+    },
 }
 </script>

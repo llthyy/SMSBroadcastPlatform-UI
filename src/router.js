@@ -1,15 +1,19 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
+import VueCookie  from 'vue-cookie'
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   // mode: 'history',
   routes: [
     {
       path: '',
       name: '导航栏',
+      meta: {
+            requireAuth: true,
+        },
       component: () => import('@/components/Layout'),
       children:[
         {
@@ -38,6 +42,11 @@ export default new Router({
           component: () => import('@/components/resourceManagement')
         },
         {
+          path: '/BMap',
+          name: '地图模式',
+          component: () => import('@/components/BMap')
+        },
+        {
           path: '/record',
           name:'播放记录',
           component: () => import('@/components/Record')
@@ -61,7 +70,22 @@ export default new Router({
           path: '/sensitive',
           name:'敏感词管理',
           component: () => import('@/components/Sensitive')
-        }
+        },
+        {
+          path: '/personalSet',
+          name:'个人设置',
+          component: () => import('@/components/personalSet')
+        },
+        {
+          path: '/whiteList',
+          name:'白名单管理',
+          component: () => import('@/components/whiteList')
+        },
+        {
+          path: '/Smessage',
+          name:'短信网关配置',
+          component: () => import('@/components/Smessage')
+        },
       ]
     },
     {
@@ -72,5 +96,24 @@ export default new Router({
       },
       component: () => import('@/views/Login')
     },
-  ]
+
+  ],
+
 })
+/* router.beforeEach((to, from, next) => {
+  if (to.matched.some(r => r.meta.requireAuth)) {
+      if (VueCookie.get('test')) {
+          next();
+      }
+      else {
+          next({
+              path: '/login',
+              query: {redirect: to.fullPath}
+          })
+      }
+  }
+  else {
+      next();
+  }
+}) */
+export default router;

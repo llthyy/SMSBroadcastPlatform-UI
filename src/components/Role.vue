@@ -20,9 +20,11 @@ h1 {
           <Input v-model="formValidate.desc" placeholder="请输入性别"></Input>
         </FormItem>
 
-        <FormItem>
+        <FormItem class="fuck" style="width:95%;margin-bottom:25px">
+           <div style="float: right;">
           <Button type="primary" @click="handleSubmit('formValidate')">提交</Button>
-          <Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
+          <Button type="error" @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
+           </div>
         </FormItem>
       </Form>
       <div slot="footer">
@@ -63,21 +65,22 @@ export default {
           } */
         ]
       },
-
       columns1: [
         {
           type: "selection",
           width: 60,
           align: "center"
         },
-
         {
           title: "角色名称",
+          align: "center",
+          tooltip:true,
           key: "roleName",
         },
-
         {
           title: "角色说明",
+          align: "center",
+          tooltip:true,
           key: "roleDetails"
         },
         {
@@ -182,23 +185,17 @@ export default {
         url: `${this.baseUrl}/role/findAll?page=${this.page -
           1}&size=${this.list}`,
       }).then(res => {
-        console.log(res);
         this.total = res.data.body.totalElements;
         this.data = res.data.body.content;
       });
     },
     show(index) {
+      console.log(this.data)
       this.$Modal.info({
         title: "",
-        content: `姓名：${this.data[index].articalname}<br>
-                             性别：${this.data[index].authorname}<br>
-                             登录名：${
-                               this.data[index].postingtime
-                             }<br>
-                            密码：${this.data[index].content}<br>
-                             联系方式：${this.data[index].Lastreviewer}<br>
-                             所属角色：${this.data[index].Lastreviewtime}<br>
-                             `
+        content:
+               `角色名称：${this.data[index].roleName}<br>
+                角色说明：${this.data[index].roleDetails}<br>`
       });
     },
     edit(id) {
@@ -207,15 +204,9 @@ export default {
         url: `http://10.31.162.59:3000/forum/${id}`,
         method: "get"
       }).then(res => {
-        console.log(res);
         this.formValidate = res.data;
         this.formValidate.input = res.data.articalname;
         this.formValidate.desc = res.data.content;
-        this.formValidate.input1 = res.data.authorname;
-        this.formValidate.input3 = res.data.postingtime;
-        this.formValidate.input4 = res.data.Lastreviewer;
-        this.formValidate.input5 = res.data.Lastreviewtime;
-        this.formValidate.input6 = res.data.Pointofpraise;
         this.modal1 = true;
       });
     },
@@ -292,53 +283,8 @@ export default {
         }
       });
     },
-    // 在此函数进行帖子提交
-    handleSubmit(name) {
-      this.$refs[name].validate(valid => {
-        var misstimel = new Date(this.formValidate.date);
-        var misstimeleft = misstimel.toLocaleDateString();
-        let misstime = misstimeleft + " " + this.formValidate.time;
-        if (this.formValidate._id) {
-          this.axios({
-            url: `http://10.31.162.59:3000/forum/${this.formValidate._id}`,
-            method: "put",
-            data: {
-              articalname: this.formValidate.input,
-              authorname: this.formValidate.input1,
-              postingtime: this.formValidate.input3,
-              Lastreviewer: this.formValidate.input4,
-              Lastreviewtime: this.formValidate.input5,
-              Pointofpraise: this.formValidate.input6,
-              content: this.formValidate.desc
-            }
-          }).then(res => {
-            this.modal1 = false;
-            this.$refs[name].resetFields();
-            this.getData();
-          });
-        } else {
-          this.axios({
-            method: "post",
-            url: "http://10.31.162.59:3000/forum",
-            data: {
-              articalname: this.formValidate.input,
-              authorname: this.formValidate.input1,
-              postingtime: this.formValidate.input3,
-              Lastreviewer: this.formValidate.input4,
-              Lastreviewtime: this.formValidate.input5,
-              Pointofpraise: this.formValidate.input6,
-              content: this.formValidate.desc
-            }
-          }).then(res => {
-            this.modal1 = false;
-            this.$refs[name].resetFields();
-            this.getData();
-          });
-        }
-      });
-    }
-  },
 
+  },
   mounted() {
     this.getData();
   }
